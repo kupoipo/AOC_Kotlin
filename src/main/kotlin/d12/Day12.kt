@@ -1,73 +1,134 @@
 package d12
+import afficheMap
 import readInput
+import java.lang.Exception
 import kotlin.math.abs
 
-var arrive : Pair<Int, Int> = Pair(0,0)
-var map : List<Array<Char>> = mutableListOf<Array<Char>>()
-class Node(val parent : Node?, val cout : Int, val col : Int, val lig : Int) {
+enum class DIRECTION(val dy : Int, val dx : Int) {
+    UP(-1,0), DOWN(1,0), RIGHT(0,1), LEFT(0,-1)
+}
 
+var arrive : Pair<Int, Int> = Pair(0,0)
+var start : MutableList<Pair<Int, Int>> = mutableListOf<Pair<Int,Int>>()
+var map : MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
+
+class Node(val parent : Node?, val lig : Int, val col : Int) {
+    var id = ID++
     fun getNeighbors() : List<Node> {
-        var height : Char = map[lig][col]
+        var height = map[lig][col]
         var neighbors = mutableListOf<Node>()
 
-        for (i in 1 ..  1) {
-            for (j in -1 ..  1) {
-                if (abs(i+j) == 1) {
-                    var newLig = lig + i
-                    var newCol = col + 1
-                    if (newLig > 0 && newCol > 0 && newCol < map[0].size && newLig < map.size) {
-                        if (map[newLig][newCol] <= height) {
-                            neighbors.add(Node(this, cout + 1, newCol, newLig))
-                        }
-                    }
+        for (dir in DIRECTION.values()) {
+            var newLig = lig + dir.dy
+            var newCol = col + dir.dx
+
+            if (newLig >= 0 && newCol >= 0 && newCol < map[0].size && newLig < map.size) {
+
+                if (map[newLig][newCol] - 1 <= height) {
+                    neighbors.add(Node(this,  newLig, newCol))
                 }
             }
+
         }
 
         return neighbors
     }
 
-    fun heuristique(): Int {
-        return abs(col - arrive.second) + abs(lig - arrive.first) + cout
+    override fun equals(other : Any?) : Boolean {
+        if (other == null || other !is Node) return false
+
+        return this.col == other.col && this.lig == other.lig
+    }
+
+    override fun toString(): String {
+        return "Node n°" + id + " - " + map[lig][col].toString() + "  [" + lig + "," + col + "]"
+    }
+
+    fun isFinish(): Boolean {
+        return arrive.first == lig && arrive.second == col
+    }
+
+    fun showPath() : Int {
+        var compteur = 0
+        var parent : Node? = this
+
+        while (parent != null) {
+          //  println(parent)
+            parent = parent.parent
+            compteur++
+        }
+
+        return compteur - 1
+    }
+
+    companion object {
+        var ID = 0
     }
 }
 
-fun part1(content : List<String>) : String {
-    var closedList = mutableListOf<Node>()
-    var openList = mutableListOf<Node>()
+fun part1(startingPoint : Pair<Int, Int>) : Int {
+    var nodeStart = Node(null, startingPoint.first, startingPoint.second)
+    var queue = mutableListOf<Node>()
+    var visitedQueue = mutableListOf<Node>()
 
-    var depart = Node(null, 0, 0, 0)
+    queue.add(nodeStart)
 
-    while (openList.isNotEmpty()) {
-        
+    while (queue.isNotEmpty()) {
+        var currentNode = queue.removeFirst()
+
+        if (currentNode.isFinish()) {
+            return currentNode.showPath()
+        }
+
+        visitedQueue.add(currentNode)
+        currentNode.getNeighbors().forEach {
+            if (it !in visitedQueue && it !in queue) {
+                queue.add(it)
+            }
+        }
+
     }
 
-    return ""
+    return -1
 }
 
-fun part2(content : List<String>) : String {
 
-    return ""
-}
+fun readMap(content : List<String>) {
+    map = MutableList<MutableList<Int>> (0) { mutableListOf() }
 
-fun readMap(content : List<String>) : List<Array<Char>>{
-    map = List<Array<Char>> (5) { Array<Char> (8) { '.' } }
-
-    for ((lig, line) in map.withIndex()) {
+    for ((lig, line) in content.withIndex()) {
+        map.add(mutableListOf())
         for ((col, cell) in line.withIndex()) {
+
+            if (cell == 'S' || cell == 'a') {
+                start.add(Pair(lig, col))
+                map[lig].add(0)
+                continue
+            }
+
             if (cell == 'E') {
                 arrive = Pair(lig, col)
+                map[lig].add(26)
+                continue
             }
-            map[lig][col] = cell
+
+            map[lig].add(cell.code - 97)
+
         }
     }
-
-    return map
 }
+
 
 fun main() {
     var content = readInput("d12/input")
-    
-    println(part1(content))
-    println(part2(content))
+
+    readMap(content)
+    for (startingPoint in start) {
+        var cout = part1(startingPoint)
+        if (cout != -1) println( cout)
+        else println(startingPoint)
+    }
 }
+
+
+
