@@ -6,10 +6,18 @@ import kotlin.io.path.writeText
 
 import java.lang.StrictMath.abs
 
+enum class Direction(val dx: Int, val dy : Int) {
+    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1)
+}
+
 fun readInput(name: String) = File("src/main/kotlin", "$name.txt")
     .readLines()
 
 fun afficheMap(map : List<List<Any>>) {
+    afficheMap(map, 0, map.size)
+}
+
+fun afficheMap(map : List<List<Any>>, from : Int, to : Int) {
     print( "   ")
 
     for (i in 0 until map[0].size) {
@@ -18,7 +26,7 @@ fun afficheMap(map : List<List<Any>>) {
 
     println()
 
-    for ((index, line) in map.withIndex()) {
+    for ((index, line) in map.drop(from).take(to - from).withIndex()) {
         print("%3d".format(index))
         for (cell in line) {
             print("%3s".format(cell))
@@ -26,6 +34,7 @@ fun afficheMap(map : List<List<Any>>) {
         println()
     }
 }
+
 
 fun generateDirectories() {
     for (i in 12..25) {
@@ -70,6 +79,15 @@ infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this
 
 fun String.allInts() : List<Int> {
     return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
+}
+
+typealias Matrix<Char> = MutableList<MutableList<Char>>
+
+fun <T> matrixOf(vararg rows: MutableList<T>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
+fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
+fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
+fun Matrix<Char>.addFirstLine(element : Char?) {
+    this.add(0, MutableList<Char>(this[0].size) { element?.let { element } ?: ' ' })
 }
 
 fun main() {

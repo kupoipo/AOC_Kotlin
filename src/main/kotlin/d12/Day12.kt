@@ -4,9 +4,7 @@ import readInput
 import java.lang.Exception
 import kotlin.math.abs
 
-enum class DIRECTION(val dy : Int, val dx : Int) {
-    UP(-1,0), DOWN(1,0), RIGHT(0,1), LEFT(0,-1)
-}
+import Direction
 
 var arrive : Pair<Int, Int> = Pair(0,0)
 var start : MutableList<Pair<Int, Int>> = mutableListOf<Pair<Int,Int>>()
@@ -18,7 +16,7 @@ class Node(val parent : Node?, val lig : Int, val col : Int) {
         var height = map[lig][col]
         var neighbors = mutableListOf<Node>()
 
-        for (dir in DIRECTION.values()) {
+        for (dir in Direction.values()) {
             var newLig = lig + dir.dy
             var newCol = col + dir.dx
 
