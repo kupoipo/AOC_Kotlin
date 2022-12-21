@@ -6,6 +6,8 @@
 
 # Toute la sémantique de gradle
 *gradle*
+*out*
+*iml
 
 #IntelliJ file
 .idea
