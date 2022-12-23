@@ -14,7 +14,7 @@ enum class Direction(val facing : Int, val vector : Point) {
     RIGHT(0, Point(1, 0)), DOWN(1, Point(0,1)), LEFT(2, Point(-1, 0)), UP(3, Point(0,-1))
 }
 
-class Day22(val text : String) : Day() {
+class Day22(text : String) : Day() {
     val map : Matrix<Char>
     private var position : Point
     private var direction : Direction
@@ -92,7 +92,7 @@ class Day22(val text : String) : Day() {
 }
 
 fun main() {
-    var content = File("src/main/kotlin/d22/test.txt").readText()
+    var content = File("src/main/kotlin/d22/input.txt").readText()
 
     var d = Day22(content)
 
