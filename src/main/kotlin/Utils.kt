@@ -22,15 +22,15 @@ fun afficheMap(map : List<List<Any>>, from : Int, to : Int) {
     print( "   ")
 
     for (i in 0 until map[0].size) {
-        print("%3d".format(i))
+        print("%2d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%3d".format(index))
+        print("%2d".format(index))
         for (cell in line) {
-            print("%3s".format(cell))
+            print("%2s".format(cell))
         }
         println()
     }
@@ -67,10 +67,16 @@ fun generateDirectories() {
     }
 }
 
-class Point(var x : Int, var y : Int) {
+data class Point(var x : Int, var y : Int) {
+    constructor(p : Point) : this(p.x, p.y)
+
     operator fun plus(other : Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
     fun manhattan(other : Point) = abs(other.x - x) + abs(other.y - y)
+
+    override fun toString(): String {
+        return "[$y,$x]"
+    }
 }
 
 infix fun IntRange.overlaps(other: IntRange): Boolean =
@@ -86,7 +92,22 @@ typealias Matrix<Char> = MutableList<MutableList<Char>>
 
 fun <T> matrixOf(vararg rows: MutableList<T>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
 fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
-fun <T> Matrix<T>.matrixToString(): String = this.joinToString("\n") { it.joinToString(", ") }
+fun <T> Matrix<T>.toString(): String = this.joinToString("\n") { it.joinToString(", ") }
+
+fun <T> Matrix<T>.rotateRight() : Unit {
+    var temp = matrixOf(this)
+    this.removeAll { true }
+
+    repeat (temp[0].size) {
+        this.add(MutableList<T> (temp.size) { temp[0][0] } )
+    }
+
+    for (y in 0 until temp.size) {
+        for (x in 0 until temp[0].size) {
+            this[x][temp.size - 1 - y] = temp[y][x]
+        }
+    }
+}
 fun Matrix<Char>.addFirstLine(element : Char?) {
     this.add(0, MutableList<Char>(this[0].size) { element?.let { element } ?: ' ' })
 }
