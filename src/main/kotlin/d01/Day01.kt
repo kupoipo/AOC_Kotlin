@@ -1,11 +1,17 @@
 package d01
 
 import Day
+import java.io.File
 
-class Day01 : Day() {
-    override fun solve1(content: String): String = content.split("\n\n").map { it.split("\n").map { it.toInt() }.sum() }.sorted().take(1).toString()
+class Day01(override val input : String) : Day<Int>(input) {
+    override fun solve1(): Int = input.split("\r\n\r\n").
+        map { it.split("\r\n").sumOf { it.toInt() } }.sortedDescending()[0]
 
-    override fun solve2(content: String): String {
-        TODO("Not yet implemented")
-    }
+    override fun solve2(): Int = input.split("\r\n\r\n")
+        .map { it.split("\r\n").sumOf { it.toInt() } }.sortedDescending().take(3).sum()
+
+}
+
+fun main() {
+    println(Day01(File("src/main/kotlin/d01/input.txt").readText()).solve2())
 }

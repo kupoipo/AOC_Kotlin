@@ -1,9 +1,9 @@
 package d22
 
-import Matrix
-import Point
-import afficheMap
-import rotateRight
+import util.Matrix
+import util.Point
+import util.afficheMap
+import util.rotateRight
 import java.io.File
 
 const val SIZE = 50
@@ -60,12 +60,6 @@ class Face(var origin : Point, val isTop : Boolean = false, val isBot : Boolean 
 
     override fun toString(): String {
         return "Face $id"
-    }
-
-    fun getDirection(inst : String) = if (inst.takeLast(1) == "R") {
-        Direction2.values()[(direction.facing+rotate)%4]
-    } else {
-        Direction2.values()[if ((direction.facing-rotate) < 0) 4 - rotate else direction.facing - rotate]
     }
 
     fun show(position: Point): Point {

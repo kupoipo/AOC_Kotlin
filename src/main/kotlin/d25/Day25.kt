@@ -1,7 +1,5 @@
 package d25
-import readInput
 import java.lang.Math.abs
-import kotlin.system.measureTimeMillis
 
 fun part1(content : List<String>) : String {
     

@@ -1,6 +1,6 @@
 package d19
-import allInts
-import readInput
+import util.allInts
+import util.readInput
 
 var blueprints = mutableListOf<BluePrint>()
 const val TIME_MAX = 25

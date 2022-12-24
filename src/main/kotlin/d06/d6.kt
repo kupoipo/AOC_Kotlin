@@ -1,6 +1,6 @@
 package d6
 
-import readInput
+import util.readInput
 
 fun part1(content : String) : Int {
     var letters = mutableListOf<Char>()

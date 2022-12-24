@@ -1,6 +1,5 @@
 package d14
-import readInput
-import afficheMap
+import util.readInput
 
 val FALLING_MOVES = arrayOf(1 to 0, 1 to -1, 1 to 1)
 

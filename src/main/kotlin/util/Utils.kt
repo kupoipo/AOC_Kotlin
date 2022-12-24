@@ -1,15 +1,17 @@
-
+package util
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
-import kotlin.io.path.writeText
 
 
 import java.lang.StrictMath.abs
 
 enum class Direction(val dx: Int, val dy : Int) {
-    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1)
+    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1);
+
+    operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
 }
+
+fun readFullText(name: String) = File("src/main/kotlin", "$name.txt")
+    .readText()
 
 fun readInput(name: String) = File("src/main/kotlin", "$name.txt")
     .readLines()
@@ -36,43 +38,21 @@ fun afficheMap(map : List<List<Any>>, from : Int, to : Int) {
     }
 }
 
-
-fun generateDirectories() {
-    for (i in 12..25) {
-        Files.createDirectory(Paths.get("./src/main/kotlin/d$i"))
-        Files.createFile(Paths.get("./src/main/kotlin/d$i/test.txt"))
-        Files.createFile(Paths.get("./src/main/kotlin/d$i/input.txt"))
-        var f = Files.createFile(Paths.get("./src/main/kotlin/d$i/Day$i.kt"))
-
-        var str = "package d$i\n" +
-                "import readInput\n\n" +
-                "fun part1(content : List<String>) : String {\n" +
-                "    \n" +
-                "    return \"\"\n" +
-                "}\n" +
-                "\n" +
-                "fun part2(content : List<String>) : String {\n" +
-                "\n" +
-                "    return \"\"\n" +
-                "}\n" +
-                "\n" +
-                "fun main() {\n" +
-                "    var content = readInput(\"d$i/input\")\n" +
-                "    \n" +
-                "    println(part1(content))\n" +
-                "    println(part2(content))\n" +
-                "}"
-
-        f.writeText(str)
-    }
-}
-
 data class Point(var x : Int, var y : Int) {
     constructor(p : Point) : this(p.x, p.y)
 
     operator fun plus(other : Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
+    operator fun times(n: Int) = Point(x * n, y * n)
     fun manhattan(other : Point) = abs(other.x - x) + abs(other.y - y)
+
+    fun moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
+        'N', 'U' -> this + (Direction.UP * step)
+        'S', 'D' -> this + (Direction.DOWN * step)
+        'W', 'L' -> this + (Direction.LEFT * step)
+        'E', 'R' -> this + (Direction.RIGHT * step)
+        else -> throw IllegalArgumentException("$direction is not a valid direction")
+    }
 
     override fun toString(): String {
         return "[$y,$x]"
@@ -88,11 +68,17 @@ fun String.allInts() : List<Int> {
     return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
 }
 
-typealias Matrix<Char> = MutableList<MutableList<Char>>
+typealias Matrix<T> = MutableList<MutableList<T>>
 
 fun <T> matrixOf(vararg rows: MutableList<T>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
 fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
 fun <T> Matrix<T>.toString(): String = this.joinToString("\n") { it.joinToString(", ") }
+
+operator fun <E> Matrix<E>.set(pos : Point, value : E) {
+    this[pos.y][pos.x] = value
+}
+
+operator fun <T> Matrix<T>.get(pos : Point)= this[pos.y][pos.x]
 
 fun <T> Matrix<T>.rotateRight() : Unit {
     var temp = matrixOf(this)
@@ -108,6 +94,9 @@ fun <T> Matrix<T>.rotateRight() : Unit {
         }
     }
 }
+
+fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) { MutableList(columns) { default } }
+
 fun Matrix<Char>.addFirstLine(element : Char?) {
     this.add(0, MutableList<Char>(this[0].size) { element?.let { element } ?: ' ' })
 }

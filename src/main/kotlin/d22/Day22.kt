@@ -1,8 +1,8 @@
 package d22
 import Day
-import Matrix
-import Point
-import afficheMap
+import util.Matrix
+import util.Point
+import util.afficheMap
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -14,14 +14,14 @@ enum class Direction(val facing : Int, val vector : Point) {
     RIGHT(0, Point(1, 0)), DOWN(1, Point(0,1)), LEFT(2, Point(-1, 0)), UP(3, Point(0,-1))
 }
 
-class Day22(text : String) : Day() {
+class Day22(override val input : String) : Day<String>(input) {
     val map : Matrix<Char>
     private var position : Point
     private var direction : Direction
     private val instruction : String
     val width : Int; var height : Int
     init {
-        val (field, instruction) = text.split("\n\n")
+        val (field, instruction) = input.split("\n\n")
         this.instruction = instruction
         var content = field.split("\n")
 
@@ -73,7 +73,7 @@ class Day22(text : String) : Day() {
     }
 
 
-    override fun solve1(content: String): String {
+    override fun solve1(): String {
         afficheMap(map)
         for (inst in instruction.split(Regex("((?<=R)|(?<=L))"))) {
             var temp = nextCase(inst)
@@ -85,7 +85,7 @@ class Day22(text : String) : Day() {
         return (1000 * (1 + position.y) + 4 * (1 + position.x) + direction.facing).toString()
     }
 
-    override fun solve2(content: String): String {
+    override fun solve2(): String {
         return ""
     }
 
@@ -97,13 +97,13 @@ fun main() {
     var d = Day22(content)
 
     var p1 = measureTimeMillis {
-        println("Part 1 : " + d.solve1(""))
+        println("Part 1 : " + d.solve1())
     }
 
     println("Part 1 : {$p1}")
 
     p1 = measureTimeMillis {
-        println("Part 2 : " + d.solve2(""))
+        println("Part 2 : " + d.solve2())
     }
 
     println("Part 2 : {$p1}")

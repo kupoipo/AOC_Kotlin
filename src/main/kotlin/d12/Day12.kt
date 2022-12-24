@@ -1,10 +1,7 @@
 package d12
-import afficheMap
-import readInput
-import java.lang.Exception
-import kotlin.math.abs
+import util.readInput
 
-import Direction
+import util.Direction
 
 var arrive : Pair<Int, Int> = Pair(0,0)
 var start : MutableList<Pair<Int, Int>> = mutableListOf<Pair<Int,Int>>()

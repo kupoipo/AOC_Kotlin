@@ -2,10 +2,10 @@ package d15
 
 import kotlin.math.max
 import kotlin.math.min
-import readInput
-import Point
+import util.readInput
+import util.Point
 
-import overlaps
+import util.overlaps
 import java.lang.StrictMath.abs
 
 var sensorsBeacons = mutableListOf<Pair<Point, Point>>()

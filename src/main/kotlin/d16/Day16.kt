@@ -1,5 +1,4 @@
 package d16
-import readInput
 /*
 data class Valve(val name : String, val flow : Int) {
     var adjacentsValve = mutableMapOf<Valve, Int>()
@@ -8,14 +7,14 @@ data class Valve(val name : String, val flow : Int) {
     fun getDist(otherValve : String) : Int =
          adjacentsValve.keys.find { it.name == otherValve }?.let {  adjacentsValve[it]!! } ?: -1
 
-    override fun toString(): String { StringBuilder("")
+    override fun util.toString(): String { StringBuilder("")
         return StringBuilder("$name : {").apply {
             adjacentsValve.forEach{ (valve, dist) -> run { append(valve.name + " - " + dist + ", ") } }
-        }.append("}\n").toString()
+        }.append("}\n").util.toString()
     }
 
     companion object {
-        val allValves = read(readInput("d16/test"))
+        val allValves = read(util.readInput("d16/test"))
         fun read(content: List<String>) : MutableMap<String, Valve> {
             var res = mutableMapOf<String, Valve>()
             var adjacents = mutableMapOf<String, List<String>>()
@@ -64,7 +63,7 @@ var path = mutableListOf<String>()
 
 fun solve(valve: Valve, size: Int, time: Int, flowWhenArrived : Int) {
     if (path.distinct().size == size || time <= 15) {
-      //  println(path.toString() + "  -  " + flowOf(path))
+      //  println(path.util.toString() + "  -  " + flowOf(path))
         return
     }
 
@@ -96,7 +95,7 @@ fun part2(content : List<String>) : String {
 
 
 fun main() {
-    var content = readInput("d16/input")
+    var content = util.readInput("d16/input")
 
     println(Valve.allValves)
 

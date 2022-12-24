@@ -1,6 +1,6 @@
 package d5
 
-import readInput
+import util.readInput
 import java.util.Stack
 
 fun part1(content : List<String>) : String {

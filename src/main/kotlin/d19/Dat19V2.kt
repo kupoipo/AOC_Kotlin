@@ -1,6 +1,6 @@
 package day19
 
-import allInts
+import util.allInts
 import java.io.File
 import kotlin.math.ceil
 import kotlin.math.max

@@ -1,6 +1,6 @@
 package d7
 
-import readInput
+import util.readInput
 
 const val FILE = 'F'
 const val DIRECTORY = 'D'

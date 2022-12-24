@@ -1,10 +1,9 @@
 package d17
-import Direction
-import matrixOf
-import readInput
-import Point
-import addFirstLine
-import afficheMap
+import util.Direction
+import util.matrixOf
+import util.readInput
+import util.Point
+import util.addFirstLine
 
 const val ROCK = '@'
 const val PLACED_ROCK = '#'
@@ -90,7 +89,7 @@ fun part1(content : String) : String {
             nextRock.y = emptyLines - 3 - nextRock.getHeight()
         }
         // Found pattern
-        // println((RockFactory.next % 5).toString()+ " - " + (currentMove%content.length))
+        // println((RockFactory.next % 5).util.toString()+ " - " + (currentMove%content.length))
 
         // Found starting rock pattern, height pattern and number rock by pattern
         // if ((RockFactory.next % 5) == 0 && (currentMove%content.length) == 4) {

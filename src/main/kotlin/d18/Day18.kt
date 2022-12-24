@@ -1,7 +1,7 @@
 package d18
 
-import readInput
-import Point3D
+import util.readInput
+import util.Point3D
 const val MAP_SIZE = 25
 
 /**

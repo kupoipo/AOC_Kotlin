@@ -1,5 +1,5 @@
 package d21
-import readInput
+import util.readInput
 import kotlin.system.measureTimeMillis
 
 const val HUMAN =  "humn"

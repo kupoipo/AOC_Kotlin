@@ -1,4 +1,4 @@
-abstract class Day {
-    abstract fun solve1(content : String) : String
-    abstract fun solve2(content : String) : String
+abstract class Day<T>(open val input : String) {
+    abstract fun solve1() : T
+    abstract fun solve2() : T
 }

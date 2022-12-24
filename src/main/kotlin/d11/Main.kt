@@ -1,6 +1,6 @@
 package d11
 
-import readInput
+import util.readInput
 
 var N : Int = 1
 var myJungl = Jungl()

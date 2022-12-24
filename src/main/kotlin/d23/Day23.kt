@@ -1,8 +1,7 @@
 package d23
-import Point
-import afficheMap
-import matrixOf
-import readInput
+import util.Point
+import util.matrixOf
+import util.readInput
 
 import kotlin.system.measureTimeMillis
 

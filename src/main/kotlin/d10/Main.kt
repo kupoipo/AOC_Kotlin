@@ -1,7 +1,6 @@
 package d10
 
-import d7.list
-import readInput
+import util.readInput
 
 var sommeCycle : Int = 0
 

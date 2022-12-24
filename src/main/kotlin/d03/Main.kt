@@ -1,13 +1,8 @@
 package d3
 
-import readInput
+import util.readInput
 
 import java.io.File
-import java.io.FileReader
-import java.nio.file.Path
-import java.nio.charset.Charset
-import java.nio.file.Files
-import java.nio.file.Paths
 
 fun part1(content : List<String>) : Int {
     var sum = 0

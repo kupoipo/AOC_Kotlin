@@ -1,9 +1,6 @@
 package d9
 
-import readInput
-import java.lang.Math.abs
-import java.lang.String.format
-import kotlin.math.sqrt
+import util.readInput
 
 const val SIZE = 1000
 const val DEBUG = false

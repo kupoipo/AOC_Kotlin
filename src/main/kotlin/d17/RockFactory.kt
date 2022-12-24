@@ -1,8 +1,8 @@
 package d17
 
-import Direction
-import Matrix
-import matrixOf
+import util.Direction
+import util.Matrix
+import util.matrixOf
 
 data class Rock(var piece : Matrix<Char>) {
     var x = STARTING_POINT.x

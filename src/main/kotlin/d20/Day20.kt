@@ -1,5 +1,5 @@
 package d20
-import readInput
+import util.readInput
 import java.util.LinkedList
 
 var li : ArrayList<Long> = ArrayList<Long>()

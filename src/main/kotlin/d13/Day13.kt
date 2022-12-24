@@ -1,7 +1,5 @@
 package d13
-import d7.list
-import readInput
-import kotlin.math.max
+import util.readInput
 
 fun parseLine(s: String): MutableList<Any> {
     var l : MutableList<Any> = MutableList<Any>(0) { }
