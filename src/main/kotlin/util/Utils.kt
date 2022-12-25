@@ -5,7 +5,7 @@ import java.io.File
 import java.lang.StrictMath.abs
 
 enum class Direction(val dx: Int, val dy : Int) {
-    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1);
+    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1), NONE(0,0);
 
     operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
 }
@@ -57,6 +57,10 @@ data class Point(var x : Int, var y : Int) {
     override fun toString(): String {
         return "[$y,$x]"
     }
+
+    operator fun plus(d: Direction): Point {
+        return Point(x + d.dx, y + d.dy)
+    }
 }
 
 infix fun IntRange.overlaps(other: IntRange): Boolean =
@@ -95,7 +99,25 @@ fun <T> Matrix<T>.rotateRight() : Unit {
     }
 }
 
+
 fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) { MutableList(columns) { default } }
+
+fun <T> Matrix<T>.clone() : Matrix<T> {
+    var res = emptyMatrixOf(this.size, this[0].size, this[0][0])
+
+    res.forEachIndexed { y, ligne ->
+        run {
+            ligne.forEachIndexed { x, case ->
+                run {
+                    res[y][x] = this[y][x]
+                }
+            }
+        }
+    }
+
+    return res
+}
+
 
 fun Matrix<Char>.addFirstLine(element : Char?) {
     this.add(0, MutableList<Char>(this[0].size) { element?.let { element } ?: ' ' })
@@ -119,3 +141,4 @@ data class Point3D(val x : Int, val y : Int, val z : Int) {
     }
     override fun toString(): String = "[$x,$y,$z]"
 }
+
