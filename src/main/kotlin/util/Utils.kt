@@ -24,15 +24,15 @@ fun afficheMap(map : List<List<Any>>, from : Int, to : Int) {
     print( "   ")
 
     for (i in 0 until map[0].size) {
-        print("%2d".format(i))
+        print("%3d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%2d".format(index))
+        print("%3d".format(index))
         for (cell in line) {
-            print("%2s".format(cell))
+            print("%3s".format(cell))
         }
         println()
     }

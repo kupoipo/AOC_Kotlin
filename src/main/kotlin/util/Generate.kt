@@ -5,7 +5,7 @@ import kotlin.io.path.writeText
 import java.nio.file.Paths
 
 fun main() {
-    for (i in 1..10) {
+    for (i in 3..10) {
         Files.createDirectory(Paths.get("./src/main/kotlin/_2021/d$i"))
         Files.createFile(Paths.get("./src/main/kotlin/_2021/d$i/test.txt"))
         Files.createFile(Paths.get("./src/main/kotlin/_2021/d$i/input.txt"))
@@ -26,8 +26,8 @@ fun main() {
                 "}\n" +
                 "\n" +
                 "fun main() {\n" +
-                "    //var day = Day1(readFullText(\"_2021.d$i/test\"))\n" +
-                "    var day = Day1(readFullText(\"_2021.d$i/input\"))\n" +
+                "    //var day = Day$i(readFullText(\"_2021/d$i/test\"))\n" +
+                "    var day = Day$i(readFullText(\"_2021/d$i/input\"))\n" +
                 "\n" +
                 "    val t1 = measureTimeMillis { println(\"Part 1 : \" + day.solve1()) }\n" +
                 "    println(\"Temps partie 1 : {\$t1}\")\n" +

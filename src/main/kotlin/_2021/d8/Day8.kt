@@ -13,8 +13,8 @@ class Day8(override val input : String) : Day<Int>(input) {
 }
 
 fun main() {
-    //var day = Day1(readFullText("_2021.d8/test"))
-    var day = Day1(readFullText("_2021.d8/input"))
+    //var day = Day8(readFullText("_2021/d8/test"))
+    var day = Day8(readFullText("_2021/d8/input"))
 
     val t1 = measureTimeMillis { println("Part 1 : " + day.solve1()) }
     println("Temps partie 1 : {$t1}")
