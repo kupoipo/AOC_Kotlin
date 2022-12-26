@@ -2,7 +2,7 @@ package _2022.d22
 import util.Day
 import util.Matrix
 import util.Point
-import util.afficheMap
+import util.showMap
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -74,7 +74,7 @@ class Day22(override val input : String) : Day<String>(input) {
 
 
     override fun solve1(): String {
-        afficheMap(map)
+        showMap(map)
         for (inst in instruction.split(Regex("((?<=R)|(?<=L))"))) {
             var temp = nextCase(inst)
             position.x = temp.x

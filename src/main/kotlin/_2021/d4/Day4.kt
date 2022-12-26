@@ -3,57 +3,43 @@ package _2021.d4
 import util.*
 import kotlin.system.measureTimeMillis
 
-data class Grid(val values : Matrix<String>) {
-    private val found = emptyMatrixOf(values.size, values[0].size, false)
-
-    private fun lineOver(line : Int) : Boolean = (found[line].indices).count{ !found[line][it] } == 0
-    private fun colOver(col : Int)   : Boolean = (found.indices).count{ !found[it][col] } == 0
+data class Grid(val values : Matrix<Int>) {
+    private fun lineOver(line : Int) : Boolean = (values[line].indices).count{ values[line][it] > 0 } == 0
+    private fun colOver(col : Int)   : Boolean = (values.indices).count{ values[it][col] > 0 } == 0
 
     fun isOver() : Boolean {
-        for (lig in found.indices) {
-            if (lineOver(lig)) return true
-        }
-
-        for (col in found[0].indices) {
-            if (colOver(col)) return true
-        }
+        values.indices.forEach    { if (lineOver(it)) return true }
+        values[0].indices.forEach { if (colOver(it)) return true }
 
         return false
     }
 
-    fun putNb(draw: String) {
+    fun putNb(draw: Int) {
         values.forEachIndexed {
             indexLine, line -> line.forEachIndexed {
-                indexCol, nb -> if (nb == draw) found[indexLine][indexCol] = true
+                indexCol, nb -> if (nb == draw) values[indexLine][indexCol] = -nb
             }
         }
     }
 
-    fun score(): Int {
-        var score = 0
-        values.forEachIndexed { lig, line ->
-            line.forEachIndexed { col, case ->
-                if (!found[lig][col])
-                    score += case.toInt()
-            }
-        }
-        return score
-    }
+    fun score(): Int = values.sumOf { it.sumOf { if (it > 0) it else 0 } }
 }
 
 class Day4(override val input : String) : Day<Int>(input) {
-    val draw : MutableList<String>
-    val grids : MutableList<Grid>
+    private val draw : MutableList<Int>
+    private val grids : MutableList<Grid>
 
     init {
-        val values = input.split("\n\n").let{ it[0] to it.drop(1) }
+        val values = input.replace("\r", "").split("\n\n").let{ it[0] to it.drop(1) }
 
-        draw = values.first.split(",").toMutableList()
+        draw = values.first.split(",").map { it.toInt() }.toMutableList()
+
         grids = buildList {
             values.second.forEach {
                 val temp = buildList{
-                    it.split("\n").toMutableList().map{ it.split(" ").filter { it != "" }.let { add(it.toMutableList()) }
-                    } }.toMutableList()
+                        it.split("\n").toMutableList().map{ it.split(" ").filter { it != "" }.map{ it.toInt() }.let { add(it.toMutableList()) }
+                    }
+                }.toMutableList()
                 add(Grid(matrixOf(temp)))
             }
         }.toMutableList()
@@ -63,11 +49,10 @@ class Day4(override val input : String) : Day<Int>(input) {
         while (draw.isNotEmpty()) {
             val nb = draw.removeFirst()
 
-            grids.forEach {
-                it.putNb(nb)
-                if (it.isOver()) {
-                    return it.score() * nb.toInt()
-                }
+            grids.forEach { it.putNb(nb) }
+            grids.filter { it.isOver() }.forEach {
+                grids.remove(it);
+                return it.score() * nb
             }
         }
 
@@ -79,7 +64,7 @@ class Day4(override val input : String) : Day<Int>(input) {
         while (grids.isNotEmpty()) {
             nb = draw.removeFirst().toInt()
 
-            grids.forEach { it.putNb(nb.toString()) }
+            grids.forEach { it.putNb(nb) }
             
             grids.filter { it.isOver() }.forEach { grids.remove(it); last = it }
         }
@@ -92,7 +77,7 @@ fun main() {
     //var day = Day4(readFullText("_2021/d4/test"))
     var day = Day4(readFullText("_2021/d4/input"))
 
-    val t1 = measureTimeMillis { println("Part 1 : " )}//+ day.solve1()) }
+    val t1 = measureTimeMillis { println("Part 1 : " + day.solve1()) }
     println("Temps partie 1 : {$t1}")
 
     val t2 = measureTimeMillis { println("Part 1 : " + day.solve2()) }

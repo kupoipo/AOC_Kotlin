@@ -2,7 +2,7 @@ package _2022.d22
 
 import util.Matrix
 import util.Point
-import util.afficheMap
+import util.showMap
 import util.rotateRight
 import java.io.File
 
@@ -190,7 +190,7 @@ fun nextCase(inst: String): Pair<Point, Face> {
 fun main() {
     initFace()
 
-    afficheMap(faceSix.map)
+    showMap(faceSix.map)
 
     println(solve2())
 }
