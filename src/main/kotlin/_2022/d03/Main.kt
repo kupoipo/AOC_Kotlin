@@ -48,10 +48,7 @@ fun part2(content : List<String> ) : Int {
 
 fun main() {
     try {
-        val file = File("src/main/kotlin/d3/input.txt")
-
         println(part2(readInput("d3/input")))
-
     } catch (e : Exception) {
         println(e)
     }

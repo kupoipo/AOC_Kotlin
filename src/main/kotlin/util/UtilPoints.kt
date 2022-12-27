@@ -28,6 +28,17 @@ data class Point(var x : Int, var y : Int) {
         }
     }
 
+    fun forEachEveryNeighbors(function: (Point) -> Unit) {
+        Direction.values().dropLast(1).forEach {
+            function(this + it)
+        }
+
+        function(this + Point(-1,-1))
+        function(this + Point(-1,1))
+        function(this + Point(1,-1))
+        function(this + Point(1,1))
+    }
+
     override fun toString(): String {
         return "[y=$y,x=$x]"
     }
@@ -43,6 +54,8 @@ data class Point(var x : Int, var y : Int) {
 
         return true
     }
+
+
 }
 
 

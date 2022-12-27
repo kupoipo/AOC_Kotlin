@@ -54,8 +54,6 @@ class Day10(override val input : String) : Day<Long>(input) {
             var type = typeFromOpening(it)
 
             if (type == null) {
-                type = typeFromClosing(it)
-
                 if (pile.removeLast().close != it)
                     return null
             } else {
