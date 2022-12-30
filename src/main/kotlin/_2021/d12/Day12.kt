@@ -18,7 +18,7 @@ data class Day12State(val node : Node<String>, val path : List<String> = listOf(
         return false
     }
 
-    override fun isOver(): Boolean {
+    override fun isDeadLock(): Boolean {
         if (node.value[0] in 'a'..'z') {
 
             // Si deux fois par start
@@ -52,6 +52,7 @@ data class Day12State(val node : Node<String>, val path : List<String> = listOf(
     override fun isGoal(): Boolean {
         return node.value == "end"
     }
+
 
     override fun toString(): String {
         return "\n" + path.joinToString(separator = ",") + ",end"

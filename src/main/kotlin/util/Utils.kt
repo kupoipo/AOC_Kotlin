@@ -1,8 +1,8 @@
 package util
+
 import java.io.File
+import java.lang.Exception
 
-
-import java.lang.StrictMath.abs
 
 fun charToInt(c : Any) : Int {
     return if (c is Char) c.digitToInt() else 0

@@ -1,9 +1,6 @@
 package util
 
-
-
 typealias Matrix<T> = MutableList<MutableList<T>>
-
 
 fun <T> matrixFromString(input: String, emptyDefault : T, function : (Any) -> T): Matrix<T> {
     val lines = input.split("\n")
