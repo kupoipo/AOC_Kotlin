@@ -24,7 +24,7 @@ class Day19(override val input : String) : Day<Long>(input) {
     val scanners = buildList{ input.split("\n\n").forEach { add(Scanner.createScanner(it.split("\n").drop(1))) } }
 
     fun relativePosTo(sc1 : Scanner, sc2 : Scanner) : Point3D {
-        sc1.
+        return Point3D(1,1,1);
     }
 
     override fun solve1(): Long {
