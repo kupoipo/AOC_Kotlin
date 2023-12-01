@@ -8,15 +8,15 @@ import kotlin.system.measureTimeMillis
 class Day1(override val input: String) : Day<Int>(input) {
 
     private val numbers = mapOf(
-        "one" to 1,
-        "two" to 2,
-        "three" to 3,
+        "on" to 1,
+        "tw" to 2,
+        "thre" to 3,
         "four" to 4,
-        "five" to 5,
+        "fiv" to 5,
         "six" to 6,
         "seven" to 7,
-        "eight" to 8,
-        "nine" to 9,
+        "eigh" to 8,
+        "nin" to 9,
         "1" to 1,
         "2" to 2,
         "3" to 3,
@@ -34,19 +34,13 @@ class Day1(override val input: String) : Day<Int>(input) {
             (it.first().toString().first() + "" + it.last().toString().last()).toInt()
         }
 
-    override fun solve2() = input.split("\n").sumOf {
-        val s = mutableListOf<Int>()
-
-        for (i in it.indices) {
-            for (n in numbers.keys) {
-                if (i + n.length <= it.length && it.substring(i, i + n.length) == n) {
-                    s.add(numbers[n]!!)
-                }
-            }
+    override fun solve2() = input.split("\n").map {
+        Regex("""[0-9]|(on(?=e)|tw(?=o)|thre(?=e)|four|fiv(?=e)|six|seven|eigh(?=t)|nin(?=e)|zer(?=o))""").findAll(it)
+    }.map { matches ->
+        buildList {
+            matches.forEach { m -> numbers[m.value]?.let { add(it) } }
         }
-
-        (s.first().toString() + s.last().toString()).toInt()
-    }
+    }.sumOf { (it.first().toString() + "" + it.last().toString()).toInt() }
 }
 
 fun main() {
