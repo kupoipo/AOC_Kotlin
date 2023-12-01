@@ -1,12 +1,41 @@
 package _2015.d6
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureTimeMillis
-class Day6(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day6(override val input: String) : Day<Long>(input) {
+    val lights = matrixOf(MutableList(1000) { MutableList(1000) { 0 } })
+
+    fun playLine(line: String) {
+        var origin: Point
+        var end: Point
+
+        line.allInts().let {
+            origin = Point(it[0], it[1])
+            end = Point(it[2], it[3])
+        }
+
+        for (lig in origin.x..end.x) {
+            for (col in origin.y..end.y) {
+                if (line.startsWith("toggle")) {
+                    lights[lig][col] += 2
+                } else if (line.startsWith("turn off")) {
+                    lights[lig][col] = if (lights[lig][col] - 1 < 0) 0 else lights[lig][col] - 1
+                } else {
+                    lights[lig][col] += 1
+                }
+            }
+        }
     }
+
+    override fun solve1(): Long {
+        input.split("\n").forEach {
+            playLine(it)
+        }
+
+        return lights.sumOf { it.sum() }.toLong()
+    }
+
     override fun solve2(): Long {
         return -1
     }
