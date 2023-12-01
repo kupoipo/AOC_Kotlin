@@ -4,8 +4,82 @@ import util.Day
 import util.readFullText
 import kotlin.system.measureTimeMillis
 class Day5(override val input : String) : Day<Long>(input) {
+    private val tab = input.split(",").map { s -> s.toInt() }.toMutableList()
+
     override fun solve1(): Long {
-        return -1
+        var i = 0
+        val input = 0
+
+        while (i < tab.size) {
+            val instruction = String.format("%05d", tab[i])
+
+            when (instruction.takeLast(2)) {
+                "03" -> {
+                    tab[tab[i+1]] = input
+                    i += 2
+                }
+
+                "04" -> {
+
+                    return (tab[tab[i+1]]).toLong()
+                }
+
+                "99" -> {
+                    println()
+                    println("break")
+                    break
+                }
+
+                else -> {
+
+                    val param1 = if ( instruction[2] == '0' ) tab[tab[i+1]] else tab[i+1]
+                    val param2 = if ( instruction[1] == '0' ) tab[tab[i+2]] else tab[i+2]
+
+
+                    when (instruction.last()) {
+                        '1' -> {
+                            tab[tab[i + 3]] = param1 + param2
+                            i+=4
+                        }
+
+                        '2' -> {
+                            tab[tab[i + 3]] = param1 * param2
+                            i+=4
+                        }
+
+                        '5' -> {
+                            if (param1 != 0) {
+                                i = param2
+                            } else {
+                                i += 3
+                            }
+                        }
+
+                        '6' -> {
+                            if (param1 == 0) {
+                                i = param2
+                            } else {
+                                i += 3
+                            }
+                        }
+
+                        '7' -> {
+                            tab[tab[i + 3]] = if (param1 < param2) 1 else 0
+                            i += 4
+                        }
+
+                        '8' -> {
+                            tab[tab[i + 3]] = if (param1 == param2) 1 else 0
+                            i += 4
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        return 0
     }
     override fun solve2(): Long {
         return -1

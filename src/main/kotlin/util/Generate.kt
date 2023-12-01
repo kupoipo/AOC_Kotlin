@@ -7,7 +7,7 @@ import kotlin.io.path.writeText
 fun main() {
     val startDay = 1
     val endDay = 15
-    val year = 2019
+    val year = 2023
     try {
         Files.createDirectory(Paths.get("./src/main/kotlin/_$year"))
     } catch (_: Exception) {
