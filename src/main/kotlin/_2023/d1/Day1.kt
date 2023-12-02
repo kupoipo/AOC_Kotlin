@@ -35,7 +35,7 @@ class Day1(override val input: String) : Day<Int>(input) {
         }
 
     override fun solve2() = input.split("\n").map {
-        Regex("""[0-9]|(on(?=e)|tw(?=o)|thre(?=e)|four|fiv(?=e)|six|seven|eigh(?=t)|nin(?=e)|zer(?=o))""").findAll(it)
+        Regex("""\d|(on|thre|fiv|nin)(?=e)|(tw|zer)(?=o)|eigh(?=t)|(four|six|seven|)""").findAll(it)
     }.map { matches ->
         buildList {
             matches.forEach { m -> numbers[m.value]?.let { add(it) } }
