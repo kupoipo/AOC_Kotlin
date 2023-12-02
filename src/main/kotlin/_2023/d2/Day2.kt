@@ -1,70 +1,35 @@
 package _2023.d2
 
 import util.Day
+import util.listOfMatch
 import util.readFullText
 import kotlin.system.measureTimeMillis
 
-const val MAX_RED  = 12
-const val MAX_GREEN  = 13
-const val MAX_BLUE  = 14
+val MAX_VALUE = mapOf("red" to 12, "green" to 13, "blue" to 14)
+class Day2(override val input: String) : Day<Long>(input) {
+    override fun solve1(): Long =
+        input.split("\n").map { Regex("""\d+ (red|blue|green)""").listOfMatch(it) }
+            .mapIndexed { index, matches ->
+                if (matches.all { el ->
+                        val el = el.strip().split(" ")
 
-class Tas(var red : Int = 0, var green : Int = 0, var blue : Int = 0) {
-    fun isValid() = red <= MAX_RED && blue <= MAX_BLUE && green <= MAX_GREEN
-}
-class Day2(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long = input.split("\n").map{ it.substring(it.indexOf(":") + 2) }.mapIndexed{ index, s ->
-            var isValid = true
+                        MAX_VALUE[el.last()]!! >= el.first().toInt()
+                    }) index + 1 else 0
+            }.sum().toLong()
 
-            s.split("; ").forEach { t ->
-                val tas = Tas()
+    override fun solve2(): Long =
+        input.split("\n").map { Regex("""\d+ (red|blue|green)""").listOfMatch(it) }.sumOf { matches ->
+            val localMax = mutableMapOf("red" to 0, "green" to 0, "blue" to 0)
+            matches.forEach { el ->
+                val tab =  el.split(" ");
+                val (nb, color) = tab.first().toInt() to tab.last()
 
-                t.split(",").forEach { el ->
-                    val el = el.strip().split(" ")
-
-                    val nb = el[0].toInt()
-
-                    when (el[1]) {
-                        "green" -> tas.green = nb
-                        "red" -> tas.red = nb
-                        "blue" -> tas.blue = nb
-                    }
-                }
-
-                isValid = isValid && tas.isValid()
+                if (localMax[color]!! < nb)
+                    localMax[color] = nb
             }
 
-           if (isValid) index+1 else 0
-        }.sum().toLong()
-
-
-    override fun solve2(): Long {
-        var total = 0L
-
-        input.split("\n").map{ it.substring(it.indexOf(":") + 2) }.forEachIndexed { index, s ->
-            val allTas = s.split("; ")
-            val tasMin = Tas()
-
-            for (t in allTas) {
-                t.split(",").forEach { el ->
-                    val el = el.strip().split(" ")
-
-                    val nb = el[0].toInt()
-
-                    //val c = (tasMin::class.members)
-
-                    val field = tasMin.javaClass.getDeclaredField("green")
-                    if (nb > field.getInt(tasMin))
-                        field.setInt(tasMin, nb)
-
-
-                }
-            }
-
-            total += tasMin.green * tasMin.red * tasMin.blue
+            localMax.values.reduce { i, j -> i * j }.toLong()
         }
-
-        return total
-    }
 }
 
 fun main() {

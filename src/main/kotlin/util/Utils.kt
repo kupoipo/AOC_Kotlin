@@ -23,3 +23,7 @@ infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this
 fun String.allInts() : List<Int> {
     return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
 }
+
+fun Regex.listOfMatch(input: String): List<String> {
+    return this.findAll(input).toMutableList().map { it.value }
+}
