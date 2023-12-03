@@ -6,29 +6,28 @@ import util.readFullText
 import kotlin.system.measureTimeMillis
 
 val MAX_VALUE = mapOf("red" to 12, "green" to 13, "blue" to 14)
-class Day2(override val input: String) : Day<Long>(input) {
-    override fun solve1(): Long =
-        input.split("\n").map { Regex("""\d+ (red|blue|green)""").listOfMatch(it) }
-            .mapIndexed { index, matches ->
+
+class Day2(override val input: String) : Day<Int>(input) {
+    override fun solve1(): Int =
+        input.split("\n").map { Regex("""\d+ (red|blue|green)""").listOfMatch(it) }.mapIndexed { index, matches ->
                 if (matches.all { el ->
-                        val el = el.strip().split(" ")
-
+                        val el = el.split(" ")
                         MAX_VALUE[el.last()]!! >= el.first().toInt()
-                    }) index + 1 else 0
-            }.sum().toLong()
+                }) index + 1 else 0
+            }.sum()
 
-    override fun solve2(): Long =
+    override fun solve2(): Int =
         input.split("\n").map { Regex("""\d+ (red|blue|green)""").listOfMatch(it) }.sumOf { matches ->
             val localMax = mutableMapOf("red" to 0, "green" to 0, "blue" to 0)
             matches.forEach { el ->
-                val tab =  el.split(" ");
+                val tab = el.split(" ");
                 val (nb, color) = tab.first().toInt() to tab.last()
 
                 if (localMax[color]!! < nb)
                     localMax[color] = nb
             }
 
-            localMax.values.reduce { i, j -> i * j }.toLong()
+            localMax.values.reduce { i, j -> i * j }
         }
 }
 

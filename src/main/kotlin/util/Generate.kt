@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import kotlin.io.path.writeText
 
 fun main() {
-    val startDay = 1
+    val startDay = 3
     val endDay = 15
     val year = 2023
     try {
@@ -35,8 +35,7 @@ fun main() {
                 "}\n" +
                 "\n" +
                 "fun main() {\n" +
-                "    //var day = Day$i(readFullText(\"_$year/d$i/test\"))\n" +
-                "    var day = Day$i(readFullText(\"_$year/d$i/input\"))\n" +
+                "    val day = Day$i(readFullText(\"_$year/d$i/input\"))\n" +
                 "\n" +
                 "    val t1 = measureTimeMillis { println(\"Part 1 : \" + day.solve1()) }\n" +
                 "    println(\"Temps partie 1 : {\$t1}\")\n" +
@@ -48,7 +47,7 @@ fun main() {
                 "    println()\n" +
                 "    println()\n" +
                 "\n" +
-                "    var dayTest = Day$i(readFullText(\"_$year/d$i/test\"))\n" +
+                "    val dayTest = Day$i(readFullText(\"_$year/d$i/test\"))\n" +
                 "    val t1Test = measureTimeMillis { println(\"TEST - Part 1 : \" + dayTest.solve1()) }\n" +
                 "    println(\"Temps partie 1 : {\$t1Test}\")\n" +
                 "\n" +

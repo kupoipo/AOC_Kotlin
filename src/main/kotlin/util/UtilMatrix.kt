@@ -2,7 +2,7 @@ package util
 
 typealias Matrix<T> = MutableList<MutableList<T>>
 
-fun <T> matrixFromString(input: String, emptyDefault : T, function : (Any) -> T): Matrix<T> {
+fun <T> matrixFromString(input: String, emptyDefault : T, function : (Char) -> T): Matrix<T> {
     val lines = input.split("\n")
     val res = emptyMatrixOf(lines.size, lines[0].length, emptyDefault)
 
