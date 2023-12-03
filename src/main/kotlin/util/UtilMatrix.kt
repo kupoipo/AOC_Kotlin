@@ -2,7 +2,7 @@ package util
 
 typealias Matrix<T> = MutableList<MutableList<T>>
 
-fun <T> matrixFromString(input: String, emptyDefault : T, function : (Any) -> T): Matrix<T> {
+fun <T> matrixFromString(input: String, emptyDefault : T, function : (Char) -> T): Matrix<T> {
     val lines = input.split("\n")
     val res = emptyMatrixOf(lines.size, lines[0].length, emptyDefault)
 
@@ -82,15 +82,15 @@ fun showMap(map : List<List<Any>>, from : Int, to : Int) {
     print( "   ")
 
     for (i in 0 until map[0].size) {
-        print("%3d".format(i))
+        print("%5d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%3d".format(index))
+        print("%5d".format(index))
         for (cell in line) {
-            print("%3s".format(cell))
+            print("%5s".format(cell))
         }
         println()
     }

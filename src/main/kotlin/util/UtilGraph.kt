@@ -99,14 +99,14 @@ abstract class State(open var parent : State? = null, open var time : Int = 0) {
 }
 
 data class Node<T>(val value : T) {
-    val adjacentsNodes = mutableMapOf<Node<T>, Int>()
+    val adjacentNodes = mutableMapOf<Node<T>, Int>()
 
     fun addNode(node : Node<T>, cost : Int = 1) {
-        adjacentsNodes[node] = 1
+        adjacentNodes[node] = cost
     }
 
     fun getAdjacentsNodes() : MutableList<Node<T>>{
-        return adjacentsNodes.keys.toMutableList()
+        return adjacentNodes.keys.toMutableList()
     }
 
     override fun toString(): String {
@@ -114,7 +114,7 @@ data class Node<T>(val value : T) {
         res += "Value : $value - "
         res += "Lead to "
 
-        adjacentsNodes.forEach { t, u ->
+        adjacentNodes.forEach { t, u ->
             res += "[${t.value} : $u], "
         }
 

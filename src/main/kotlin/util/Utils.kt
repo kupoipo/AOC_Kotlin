@@ -24,6 +24,20 @@ fun String.allInts() : List<Int> {
     return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
 }
 
+fun String.allDigits() : List<Int> {
+    return Regex("""\d""").listOfMatch(this).map { it.toInt() }
+}
+
 fun Regex.listOfMatch(input: String): List<String> {
     return this.findAll(input).toMutableList().map { it.value }
+}
+
+operator fun String.times(i: Int): String {
+    var res = ""
+
+    repeat(i) {
+        res += this
+    }
+
+    return res
 }

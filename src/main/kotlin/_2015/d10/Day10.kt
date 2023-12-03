@@ -1,16 +1,37 @@
 package _2015.d10
 
 import util.Day
+import util.listOfMatch
 import util.readFullText
+import util.times
 import kotlin.system.measureTimeMillis
 class Day10(override val input : String) : Day<Long>(input) {
+    fun process(str: String): String = buildString {
+            for (match in Regex("""([0-9])\1*""").listOfMatch(str)) {
+                append("${match.length}${match.substring(0,1)}")
+            }
+        }
+
     override fun solve1(): Long {
-        return -1
+        var res = input
+        repeat(40) {
+            res = process(res)
+        }
+
+        return res.length.toLong()
     }
     override fun solve2(): Long {
-        return -1
+
+        var res = input
+        repeat(50) {
+            res = process(res)
+        }
+
+        return res.length.toLong()
     }
 }
+
+
 
 fun main() {
     //var day = Day10(readFullText("_2015/d10/test"))

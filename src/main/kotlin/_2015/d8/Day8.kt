@@ -3,13 +3,22 @@ package _2015.d8
 import util.Day
 import util.readFullText
 import kotlin.system.measureTimeMillis
-class Day8(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
-    }
-    override fun solve2(): Long {
-        return -1
-    }
+
+class Day8(override val input: String) : Day<Long>(input) {
+    override fun solve1(): Long = input.split("\n").sumOf {
+        val nbLiteral = it.length
+        val double = Regex("""\\\\""").findAll(it).toList().size
+        val it = it.replace("\\\\", "")
+        val x = Regex("""\\x""").findAll(it).toList().size
+        val slash = it.count { it == '\\' }
+        val nbChar = it.length - (x * 3 + (slash - x) + 2) + double
+
+        nbLiteral - nbChar
+
+    }.toLong()
+
+    override fun solve2(): Long =
+        input.split("\n").sumOf { it.count { c -> c == '\\' } + it.count { c -> c == '\"' } + 2 }.toLong()
 }
 
 fun main() {

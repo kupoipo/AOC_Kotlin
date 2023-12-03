@@ -13,8 +13,7 @@ class Day12(override val input : String) : Day<Long>(input) {
 }
 
 fun main() {
-    //var day = Day12(readFullText("_2023/d12/test"))
-    var day = Day12(readFullText("_2023/d12/input"))
+    val day = Day12(readFullText("_2023/d12/input"))
 
     val t1 = measureTimeMillis { println("Part 1 : " + day.solve1()) }
     println("Temps partie 1 : {$t1}")
@@ -25,7 +24,7 @@ fun main() {
     println()
     println()
 
-    var dayTest = Day12(readFullText("_2023/d12/test"))
+    val dayTest = Day12(readFullText("_2023/d12/test"))
     val t1Test = measureTimeMillis { println("TEST - Part 1 : " + dayTest.solve1()) }
     println("Temps partie 1 : {$t1Test}")
 

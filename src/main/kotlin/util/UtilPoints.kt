@@ -1,18 +1,18 @@
 package util
 
-enum class Direction(val dx: Int, val dy : Int) {
-    LEFT(-1, 0), RIGHT(1,0), UP(0,-1), DOWN (0,1), NONE(0,0);
+enum class Direction(val dx: Int, val dy: Int) {
+    LEFT(-1, 0), RIGHT(1, 0), UP(0, -1), DOWN(0, 1), NONE(0, 0);
 
     operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
 }
 
-data class Point(var x : Int, var y : Int) {
-    constructor(p : Point) : this(p.x, p.y)
+data class Point(var x: Int, var y: Int) {
+    constructor(p: Point) : this(p.x, p.y)
 
-    operator fun plus(other : Point) = Point(x + other.x, y + other.y)
+    operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
     operator fun times(n: Int) = Point(x * n, y * n)
-    fun manhattan(other : Point) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
+    fun manhattan(other: Point) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
 
     fun moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
         'N', 'U' -> this + (Direction.UP * step)
@@ -22,7 +22,7 @@ data class Point(var x : Int, var y : Int) {
         else -> throw IllegalArgumentException("$direction is not a valid direction")
     }
 
-    fun forEachNeighbors(function : (Point) -> Unit) {
+    fun forEachNeighbors(function: (Point) -> Unit) {
         Direction.values().dropLast(1).forEach {
             function(this + it)
         }
@@ -33,10 +33,10 @@ data class Point(var x : Int, var y : Int) {
             function(this + it)
         }
 
-        function(this + Point(-1,-1))
-        function(this + Point(-1,1))
-        function(this + Point(1,-1))
-        function(this + Point(1,1))
+        function(this + Point(-1, -1))
+        function(this + Point(-1, 1))
+        function(this + Point(1, -1))
+        function(this + Point(1, 1))
     }
 
     override fun toString(): String {
@@ -55,19 +55,35 @@ data class Point(var x : Int, var y : Int) {
         return true
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is Point) {
+            val p2 = other as Point
+            return p2.x == this.x && p2.y == this.y
+        }
+        return false
+    }
 
+    fun adjacent(): List<Point> {
+        return buildList {
+            for (dy in -1..1) {
+                for (dx in -1..1) {
+                    add(Point(this@Point.x + dx, this@Point.y + dy))
+                }
+            }
+        }
+    }
 }
 
-
-enum class DIRECTION3D(val dx : Int, val dy : Int, val dz : Int) {
-    X1(1,0,0), X_MINUS_1(-1,0,0),Y1(0,-1,0), Y_MINUS_1(-0,1,0),Z1(0,0,-1), Z_MINUS_1(-0,0,1)
+enum class DIRECTION3D(val dx: Int, val dy: Int, val dz: Int) {
+    X1(1, 0, 0), X_MINUS_1(-1, 0, 0), Y1(0, -1, 0), Y_MINUS_1(-0, 1, 0), Z1(0, 0, -1), Z_MINUS_1(-0, 0, 1)
 }
-data class Point3D(val x : Int, val y : Int, val z : Int) {
+
+data class Point3D(val x: Int, val y: Int, val z: Int) {
     operator fun plus(other: Point3D) = Point3D(other.x + x, other.y + y, other.z + z)
-    operator fun minus(other: Point3D) = Point3D(other.x - x, other.y - y, other.z -z)
-    operator fun times(n: Int) = Point3D    (x * n, y * n, z * n)
+    operator fun minus(other: Point3D) = Point3D(other.x - x, other.y - y, other.z - z)
+    operator fun times(n: Int) = Point3D(x * n, y * n, z * n)
 
-    fun getNeighbors() : List<Point3D> {
+    fun getNeighbors(): List<Point3D> {
         val neighbors = mutableListOf<Point3D>()
         DIRECTION3D.values().forEach {
             var newPoint = Point3D(x + it.dx, y + it.dy, z + it.dz)
@@ -75,6 +91,8 @@ data class Point3D(val x : Int, val y : Int, val z : Int) {
         }
         return neighbors
     }
+
     override fun toString(): String = "[$x,$y,$z]"
 }
+
 
