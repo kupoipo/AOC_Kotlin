@@ -7,11 +7,11 @@ import util.readFullText
 import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
-class Card(val card : List<Int>, val winningValue : List<Int> ) {
-    fun nbNumberWinning() : Int = card.count { winningValue.contains(it) }
+class Card(card : List<Int>, winningValue : List<Int> ) {
+    var nbWinningCard: Int = card.count { winningValue.contains(it) }
 }
 class Day4(override val input : String) : Day<Long>(input) {
-    val cards = mutableListOf<Card>()
+    private val cards = mutableListOf<Card>()
 
     init {
         input.split("\n").forEachIndexed{ index, line ->
@@ -21,30 +21,24 @@ class Day4(override val input : String) : Day<Long>(input) {
         }
     }
     override fun solve1(): Long = cards.sumOf {
-        val nbWinning = it.nbNumberWinning()
-        if (nbWinning != 0)
-            2.0.pow((it.nbNumberWinning() - 1).toDouble())
+        if (it.nbWinningCard != 0)
+            2.0.pow((it.nbWinningCard - 1).toDouble())
         else
             0.0
     }.toLong()
 
-    fun sumOfCard(i : Int) : Int {
-        var total = 0
-        val card = cards[i]
-        val nbWinning = card.nbNumberWinning()
-        total += nbWinning
+    private fun sumOfCard(i : Int) : Int {
+        val total = cards[i].nbWinningCard
 
-        for (j in i+1..i+total) {
+        return total + (i+1..i+total).sumOf { j ->
             if (j <= cards.size)
-                total += sumOfCard(j)
+                sumOfCard(j)
+            else
+                0
         }
-
-        return total
     }
 
-    override fun solve2(): Long {
-        return cards.indices.sumOf { 1 + sumOfCard(it).toLong() }
-    }
+    override fun solve2(): Long = cards.indices.sumOf { 1 + sumOfCard(it).toLong() }
 }
 
 fun main() {
