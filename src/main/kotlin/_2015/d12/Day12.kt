@@ -1,15 +1,35 @@
 package _2015.d12
 
 import util.Day
+import util.JSON
+import util.JSONParser
 import util.readFullText
 import kotlin.system.measureTimeMillis
-class Day12(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day12(override val input: String) : Day<Long>(input) {
+
+    private fun sommeNumericFromJSON(json: JSON, countRed: Boolean): Long {
+        if (!countRed && json.properties.values.contains("red")) return 0
+
+        return json.properties.values.sumOf {
+            if (it is JSON) return@sumOf sommeNumericFromJSON(it, countRed)
+            if (it is List<*>) return@sumOf sommeNumericFromList(it, countRed)
+            if (it.toString().matches("""-?\d+""".toRegex())) return@sumOf it.toString().toLong()
+            0
+        }
     }
-    override fun solve2(): Long {
-        return -1
+
+
+    private fun sommeNumericFromList(list: List<*>, countRed: Boolean): Long = list.sumOf {
+        if (it is JSON) return@sumOf sommeNumericFromJSON(it, countRed)
+        if (it is List<*>) return@sumOf sommeNumericFromList(it, countRed)
+        if (it.toString().matches("""-?\d+""".toRegex())) return@sumOf it.toString().toLong()
+        0
     }
+
+    override fun solve1(): Long = sommeNumericFromJSON(JSONParser(input).parse(), true)
+    override fun solve2(): Long = sommeNumericFromJSON(JSONParser(input).parse(), false)
+
 }
 
 fun main() {

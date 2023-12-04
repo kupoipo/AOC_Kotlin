@@ -1,10 +1,15 @@
 package _2015.d15
 
 import util.Day
+import util.allInts
 import util.readFullText
 import kotlin.system.measureTimeMillis
+
 class Day15(override val input : String) : Day<Long>(input) {
+    private val cookies = input.split("\n").map { it.allInts() }
+
     override fun solve1(): Long {
+        println(cookies)
         return -1
     }
     override fun solve2(): Long {

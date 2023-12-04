@@ -7,32 +7,36 @@ import util.readFullText
 import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
-class Card(card : List<Int>, winningValue : List<Int> ) {
-    var nbWinningCard: Int = card.count { winningValue.contains(it) }
-}
-class Day4(override val input : String) : Day<Long>(input) {
-    private val cards = mutableListOf<Card>()
+class Day4(override val input: String) : Day<Long>(input) {
+    private val cards = mutableListOf<Int>()
+    private val memory = mutableMapOf<Int, Int>()
 
     init {
-        input.split("\n").forEachIndexed{ index, line ->
+        input.split("\n").forEachIndexed { index, line ->
             val groups = Regex("""(\d+ *)+(\||$)""").listOfMatch(line)
             val tas = groups.map { it.allInts() }
-            cards.add(Card(tas.first(), tas.last()))
+            cards.add(tas.first().count { tas.last().contains(it) })
         }
     }
+
     override fun solve1(): Long = cards.sumOf {
-        if (it.nbWinningCard != 0)
-            2.0.pow((it.nbWinningCard - 1).toDouble())
+        if (it != 0)
+            2.0.pow((it - 1).toDouble())
         else
             0.0
     }.toLong()
 
-    private fun sumOfCard(i : Int) : Int {
-        val total = cards[i].nbWinningCard
+    private fun sumOfCard(i: Int): Int {
+        val total = cards[i]
 
-        return total + (i+1..i+total).sumOf { j ->
+        return total + (i + 1..i + total).sumOf { j ->
             if (j <= cards.size)
-                sumOfCard(j)
+                if (memory.containsKey(j))
+                    memory[j]!!
+                else {
+                    memory[j] = sumOfCard(j)
+                    sumOfCard(j)
+                }
             else
                 0
         }
