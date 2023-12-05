@@ -3,88 +3,97 @@ package _2023.d5
 import util.*
 import kotlin.system.measureTimeMillis
 
-class GardenMap(val range: LongRange, private val start: Long, val length: Long) {
+class Destination(val range: LongRange, private val start: Long, val length: Long) {
     fun newPlace(seed: Long): Long = seed - range.first + start
     fun transform(localRange: LongRange): LongRange {
         return newPlace(localRange.first)..newPlace(localRange.last)
     }
 }
 
+/**
+ * Class that represent the transition between two states such as :
+ *
+ *  fertilizer-to-water map:
+ *  49 53 8
+ *  0 11 42
+ *  42 0 7
+ *  57 7 4
+ */
 class Garden {
-    val map = mutableListOf<GardenMap>()
-    fun nextPlace(seed: Long): Long {
-        for (m in map) {
-            if (m.range.contains(seed)) {
-                return m.newPlace(seed)
-            }
-        }
+    val map = mutableListOf<Destination>()
+    fun nextPlace(seed: Long): Long = map.find { it.range.contains(seed) }?.newPlace(seed) ?: seed
 
-        return seed
-    }
-
+    /**
+     * Return new ranges location of seeds.
+     *
+     * Example :
+     *  if seeds contains `[[40-57]]`, filteRange will respond with :
+     *  [
+     *      [29-42],  Second destination which map [11-53] to [0-42]
+     *      [49-53]   First destination which map [53-61] to [49-57]
+     *  ]
+     */
     fun filterRange(seeds: List<LongRange>): MutableList<LongRange> {
         val res = mutableListOf<LongRange>()
 
-        for (seed in seeds) {
-            var localRange = seed
+        seeds.forEach { seed ->
+            val gardensRange = map.filter { it.range.contains(seed) }
 
-            var add = true
-            for (gardenRange in this.map) {
-
-                if (gardenRange.range.contains(localRange)) {
-                    res.add(gardenRange.transform(localRange))
-                    add = false
-                    break
-                }
-
-                if (gardenRange.range.overlap(localRange)) {
-                    val toTransform = gardenRange.range.getOverlapped(localRange)
-                    res.add(gardenRange.transform(toTransform))
-
-                    localRange = if (localRange.last == toTransform.last) localRange.first..toTransform.first
-                    else toTransform.last..localRange.last
-                }
+            if (gardensRange.isNotEmpty()) {
+                res.add(gardensRange.first().transform(seed))
+            } else {
+                res.add(map.fold(seed) { s, destination ->
+                    destination.range.let {
+                        if (it.isOverlapping(s)) {
+                            res.add(destination.transform(it.overlap(s)))
+                            return@fold s.offCut(it.overlap(s))
+                        }
+                        return@fold s
+                    }
+                })
             }
-
-            if (add) res.add(localRange)
         }
 
         return res
     }
-}
 
+    /**
+     * Companion object represent every static function/attribute from a class.
+     */
+    companion object {
+        fun dataToGarden(input: String): Garden = Garden().apply {
+            input.split("\n").drop(1).forEach {
+                it.allLong().also { data ->
+                    map.add(Destination(data[1]..data[1] + data[2], data.first(), data[2]))
+                }
+            }
+        }
+    }
+}
 
 class Day5(override val input: String) : Day<Long>(input) {
     private val seeds = mutableListOf<LongRange>()
     private val gardens = mutableListOf<Garden>()
 
     init {
-        val data = input.split("\n\n")
+        seeds.chunked(6).map { (a,b,c,d) -> println("$a  $b $c $d") }
 
-        data[0].allLong().let { d ->
-            d.indices.step(2).forEach { i ->
-                seeds.add(d[i]..d[i] + d[i + 1])
+        input.split("\n\n").let { data ->
+            data[0].allLong().let { d ->
+                d.indices.step(2).forEach { i ->
+                    seeds.add(d[i]..d[i] + d[i + 1])
+                }
             }
-        }
 
-        (1..7).forEach { gardens.add(dataToGarden(data[it])) }
-    }
-
-    private fun dataToGarden(input: String): Garden = Garden().apply {
-        input.split("\n").drop(1).forEach {
-            val data = it.allLong()
-            map.add(GardenMap(data[1]..data[1] + data[2], data.first(), data[2]))
+            (data.indices).forEach { gardens.add(Garden.dataToGarden(data[it])) }
         }
     }
 
-
-    override fun solve1(): Long = seeds.map { listOf(it.first, it.last - it.first) }.minOf {
-        it.minOf { seed -> gardens.fold(seed) { acc, garden -> garden.nextPlace(acc) } }
+    override fun solve1(): Long = seeds.map { listOf(it.first, it.last - it.first) }.flatten().minOf { seed ->
+        gardens.fold(seed) { acc, garden -> garden.nextPlace(acc) }
     }
 
-    override fun solve2(): Long =
-        gardens.fold(seeds) { seeds, garden -> garden.filterRange(seeds) }.minOf { it.first }
-
+    override fun solve2(): Long = gardens.fold(seeds) { seeds, garden -> garden.filterRange(seeds) }.minOf { it.first }
 }
 
 fun main() {
