@@ -30,14 +30,12 @@ class Day4(override val input: String) : Day<Long>(input) {
         val total = cards[i]
 
         return total + (i + 1..i + total).sumOf { j ->
-            if (j <= cards.size)
-                if (memory.containsKey(j))
-                    memory[j]!!
-                else {
+            if (j <= cards.size) {
+                if (!memory.containsKey(j))
                     memory[j] = sumOfCard(j)
-                    sumOfCard(j)
-                }
-            else
+
+                memory[j]!!
+            } else
                 0
         }
     }

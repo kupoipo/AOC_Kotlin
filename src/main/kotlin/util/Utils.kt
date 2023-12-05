@@ -24,6 +24,11 @@ fun String.allInts() : List<Int> {
     return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
 }
 
+fun String.allLong() : List<Long> {
+    return """-?\d+""".toRegex().findAll(this).map{ it.value.toLong() }.toList()
+}
+
+
 fun String.allDigits() : List<Int> {
     return Regex("""\d""").listOfMatch(this).map { it.toInt() }
 }
