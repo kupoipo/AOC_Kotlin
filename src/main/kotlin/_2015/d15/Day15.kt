@@ -9,51 +9,52 @@ const val MAX = 100
 
 class Day15(override val input: String) : Day<Long>(input) {
     private val cookies = input.split("\n").map { it.allInts() }
+    private var part2 = false
 
     private val nbCookie = Array(cookies.size) { 0 }
 
-    fun calcul(): Long {
-        val score = MutableList(cookies.size) { 0 }
+    fun calculus(): Long {
+        val score = MutableList(4) { 0 }
+        val calories = cookies.indices.sumOf { cookies[it].last() * nbCookie[it] }
 
         score.indices.forEach { i ->
             score[i] = nbCookie.indices.sumOf { cookies[it][i] * nbCookie[it] }
         }
 
-        return if (score.any { it <= 0 })
+        return if (score.any { it <= 0 } || (part2 && calories != 500))
             0
         else
             score.reduce { i, j -> i * j }.toLong()
     }
 
     private fun maxScore(i: Int): Long {
-        if (nbCookie.sum() == MAX)
-            return calcul()
-
         var max = 0L
 
         for (j in 1..MAX) {
             nbCookie[i] = j
 
-            if (nbCookie.sum() > 100) {
-                nbCookie[i] = 0
-                return max
+            if (nbCookie.sum() == MAX) {
+                calculus().let { maxLocal ->
+                    if (max < maxLocal)  max = maxLocal
+                }
+                break
             }
 
-            val maxLocal = maxScore(i+1)
-
-            if (max < maxLocal) {
-                max = maxLocal
+            if (i != nbCookie.size - 1) {
+                maxScore(i + 1).let {maxLocal ->
+                    if (max < maxLocal) max = maxLocal
+                }
             }
-
-            nbCookie[i] = 0
         }
 
+        nbCookie[i] = 0
         return max
     }
 
     override fun solve1(): Long = maxScore(0)
     override fun solve2(): Long {
-        return -1
+        part2 = true
+        return maxScore(0)
     }
 }
 

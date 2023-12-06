@@ -76,8 +76,6 @@ class Day5(override val input: String) : Day<Long>(input) {
     private val gardens = mutableListOf<Garden>()
 
     init {
-        seeds.chunked(6).map { (a,b,c,d) -> println("$a  $b $c $d") }
-
         input.split("\n\n").let { data ->
             data[0].allLong().let { d ->
                 d.indices.step(2).forEach { i ->
