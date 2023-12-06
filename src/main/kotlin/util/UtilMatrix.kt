@@ -95,3 +95,5 @@ fun showMap(map : List<List<Any>>, from : Int, to : Int) {
         println()
     }
 }
+
+fun <T> Matrix<T>.corners() : List<Point> = listOf(Point(0,0), Point(0, this.size - 1), Point(this[0].size - 1, 0), Point(this[0].size - 1, this.size - 1))

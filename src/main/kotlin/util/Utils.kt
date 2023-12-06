@@ -4,7 +4,7 @@ import java.io.File
 import java.lang.Exception
 
 
-fun charToInt(c : Any) : Int {
+fun charToInt(c: Any): Int {
     return if (c is Char) c.digitToInt() else 0
 }
 
@@ -20,16 +20,16 @@ infix fun IntRange.overlaps(other: IntRange): Boolean =
 
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
 
-fun String.allInts() : List<Int> {
-    return """-?\d+""".toRegex().findAll(this).map{ it.value.toInt() }.toList()
+fun String.allInts(): List<Int> {
+    return """-?\d+""".toRegex().findAll(this).map { it.value.toInt() }.toList()
 }
 
-fun String.allLong() : List<Long> {
-    return """-?\d+""".toRegex().findAll(this).map{ it.value.toLong() }.toList()
+fun String.allLong(): List<Long> {
+    return """-?\d+""".toRegex().findAll(this).map { it.value.toLong() }.toList()
 }
 
 
-fun String.allDigits() : List<Int> {
+fun String.allDigits(): List<Int> {
     return Regex("""\d""").listOfMatch(this).map { it.toInt() }
 }
 
@@ -45,4 +45,17 @@ operator fun String.times(i: Int): String {
     }
 
     return res
+}
+
+fun String.allIndexOf(string: String): MutableList<Int> {
+    val res = mutableListOf<Int>()
+    var index = this.indexOf(string)
+
+    while (index != -1) {
+        res.add(index)
+
+        index = this.indexOf(string, index + 1)
+    }
+
+    return res;
 }

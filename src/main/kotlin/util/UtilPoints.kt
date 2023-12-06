@@ -67,7 +67,7 @@ data class Point(var x: Int, var y: Int) {
         return buildList {
             for (dy in -1..1) {
                 for (dx in -1..1) {
-                    add(Point(this@Point.x + dx, this@Point.y + dy))
+                    if (dx != 0 || dy != 0) add(Point(this@Point.x + dx, this@Point.y + dy))
                 }
             }
         }

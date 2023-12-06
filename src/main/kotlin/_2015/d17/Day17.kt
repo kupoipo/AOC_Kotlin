@@ -5,32 +5,26 @@ import util.readFullText
 import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.system.measureTimeMillis
-class Day17(override val input : String) : Day<Long>(input) {
-    val containers = input.split("\n").map { it.toInt() }
-    val LITER = 150
 
-    override fun solve1(): Long =
-        (0 until 2.0.pow(containers.size).toInt()).count {
-            Integer.toBinaryString(it).padStart(containers.size, '0').let { binaryInt ->
-                return@count binaryInt.mapIndexed { i, binary -> containers[i] * binary.digitToInt() }.sum() == LITER
-            }
-        }.toLong()
+class Day17(override val input: String) : Day<Long>(input) {
+    private val containers = input.split("\n").map { it.toInt() }
+    private var solutions : MutableMap<Int, Int> = (0..containers.size).associateWith { 0 }.toMutableMap()
+    private val LITER = 150
 
-    override fun solve2(): Long {
-        val min = (0 until 2.0.pow(containers.size).toInt()).minOf {
+    init {
+        (0 until 2.0.pow(containers.size).toInt()).forEach {
             Integer.toBinaryString(it).padStart(containers.size, '0').let { binaryInt ->
                 if (binaryInt.mapIndexed { i, binary -> containers[i] * binary.digitToInt() }.sum() == LITER) {
-                    return@minOf binaryInt.count{ it == '1' }
+                    solutions[binaryInt.count { it == '1' }] = solutions[binaryInt.count { it == '1' }]!! + 1
                 }
-                return@minOf containers.size
             }
         }
+    }
 
-        return   (0 until 2.0.pow(containers.size).toInt()).count {
-            Integer.toBinaryString(it).padStart(containers.size, '0').let { binaryInt ->
-                return@count binaryInt.mapIndexed { i, binary -> containers[i] * binary.digitToInt() }.sum() == LITER && binaryInt.count{ it == '1' } == min
-            }
-        }.toLong()
+    override fun solve1(): Long = solutions.values.sum().toLong()
+
+    override fun solve2(): Long = solutions.filter { it.value != 0 }.let {
+        it[it.keys.min()]!!.toLong()
     }
 }
 

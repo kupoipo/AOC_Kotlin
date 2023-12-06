@@ -1,14 +1,56 @@
 package _2015.d18
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureTimeMillis
-class Day18(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day18(override val input: String) : Day<Long>(input) {
+    var map: Matrix<Char> = matrixFromString(input, '#') { it }
+
+    fun reset() {
+        map = matrixFromString(input, '#') { it }
     }
+
+    private fun nbNeighbors(p: Point): Int {
+        return p.adjacent().filter { it.x >= 0 && it.y >= 0 && it.x < map[0].size && it.y < map.size }
+            .count { map[it.y][it.x] == '#' }
+    }
+
+    private fun nextState() {
+        emptyMatrixOf(map.size, map[0].size, '#').apply {
+            map.forEachPoint { p ->
+                nbNeighbors(p).let { nb ->
+                    if (map[p] == '#') {
+                        this[p] = if (nb == 3 || nb == 2) '#' else '.'
+                    } else {
+                        this[p] = if (nb == 3) '#' else '.'
+                    }
+
+                }
+            }
+
+            map = this
+        }
+    }
+
+    override fun solve1(): Long {
+        repeat(100) {
+            nextState()
+        }
+
+        return map.sumOf { it.count { it == '#' } }.toLong()
+    }
+
     override fun solve2(): Long {
-        return -1
+        reset()
+
+        repeat(100) {
+            map.corners().forEach { p -> map[p] = '#' }
+            nextState()
+        }
+
+        map.corners().forEach { p -> map[p] = '#' }
+
+        return map.sumOf { it.count { it == '#' } }.toLong()
     }
 }
 
