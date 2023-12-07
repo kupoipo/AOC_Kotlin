@@ -1,9 +1,9 @@
-package _2023.d13
+package _2023.d25
 
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day13(override val input : String) : Day<Long>(input) {
+class Day25(override val input : String) : Day<Long>(input) {
     override fun solve1(): Long {
         return -1
     }
@@ -13,7 +13,7 @@ class Day13(override val input : String) : Day<Long>(input) {
 }
 
 fun main() {
-    val day = Day13(readFullText("_2023/d13/input"))
+    val day = Day25(readFullText("_2023/d25/input"))
 
     val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }
     println("Temps partie 1 : ${t1/1e9}s")
@@ -24,7 +24,7 @@ fun main() {
     println()
     println()
 
-    val dayTest = Day13(readFullText("_2023/d13/test"))
+    val dayTest = Day25(readFullText("_2023/d25/test"))
     val t1Test = measureNanoTime { println("TEST - Part 1 : " + dayTest.solve1()) }
     println("Temps partie 1 : ${t1Test/1e9}s")
 
