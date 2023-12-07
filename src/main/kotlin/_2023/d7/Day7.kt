@@ -9,21 +9,18 @@ import kotlin.system.measureTimeMillis
 const val CARDS = "23456789TJQKA"
 const val CARDS_JOKER = "J23456789TQKA"
 
-class Hand(val cards: String, val bid: Int, val strength: Double, var joker: Boolean) : Comparable<Hand> {
+class Hand(private val cards: String, val bid: Int, private val strength: Double, private var joker: Boolean) : Comparable<Hand> {
     companion object {
         fun handFromLine(input: String, joker: Boolean = false): Hand {
             input.split(" ").let { (cards, bid) ->
                 val map = CARDS.associateWith { c -> cards.count { it == c }.toDouble() }.toMutableMap()
 
                 if (joker) {
-                    val nbJoker = map['J']
-
-                    if (nbJoker != 0.0) {
-                        map -= 'J'
-                        val maxKey = map.maxByOrNull { it.value }?.key
-                        maxKey?.let { map[it] = map[it]!! + nbJoker!! }
-                    }
+                    val nbJoker = map['J']!!
+                    map -= 'J'
+                    map.maxBy { it.value }.key.let { map[it] = map[it]!! +  nbJoker}
                 }
+
                 return Hand(cards, bid.toInt(), map.values.sumOf { it.pow(2.0) }, joker)
 
             }
@@ -42,8 +39,8 @@ class Hand(val cards: String, val bid: Int, val strength: Double, var joker: Boo
 }
 
 class Day7(override val input: String) : Day<Long>(input) {
-    val hands = mutableListOf<Hand>()
-    val handsJoker = mutableListOf<Hand>()
+    private val hands = mutableListOf<Hand>()
+    private val handsJoker = mutableListOf<Hand>()
 
     init {
         input.split("\n").forEach {
