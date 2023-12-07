@@ -3,51 +3,29 @@ package _2023.d7
 import util.Day
 import util.readFullText
 import java.util.PriorityQueue
+import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 const val CARDS = "23456789TJQKA"
 const val CARDS_JOKER = "J23456789TQKA"
 
-class Hand(val cards: String, val bid: Int, val strength: Int, var joker: Boolean) : Comparable<Hand> {
+class Hand(val cards: String, val bid: Int, val strength: Double, var joker: Boolean) : Comparable<Hand> {
     companion object {
         fun handFromLine(input: String, joker: Boolean = false): Hand {
             input.split(" ").let { (cards, bid) ->
-                var map = CARDS.associateWith { c ->  cards.count { it == c } }
+                val map = CARDS.associateWith { c -> cards.count { it == c }.toDouble() }.toMutableMap()
 
                 if (joker) {
                     val nbJoker = map['J']
 
-                    if (nbJoker != 0) {
-                        map = map.filter { it.key != 'J' }.toMutableMap()
-
-                        val max = map.maxOf { it.value }
-
-                        for (k in map.keys) {
-                            if (map[k] == max) {
-                                map[k] = map[k]!! + nbJoker!!
-                                break
-                            }
-                        }
+                    if (nbJoker != 0.0) {
+                        map -= 'J'
+                        val maxKey = map.maxByOrNull { it.value }?.key
+                        maxKey?.let { map[it] = map[it]!! + nbJoker!! }
                     }
                 }
+                return Hand(cards, bid.toInt(), map.values.sumOf { it.pow(2.0) }, joker)
 
-                when (map.maxOf { it.value }) {
-                    5 -> return Hand(cards, bid.toInt(), 7, joker)
-                    4 -> return Hand(cards, bid.toInt(), 6, joker)
-                    3 -> {
-                        if (map.containsValue(2))
-                            return Hand(cards, bid.toInt(), 5, joker)
-                        return Hand(cards, bid.toInt(), 4, joker)
-                    }
-
-                    2 -> {
-                        if (map.count { it.value == 2 } == 2)
-                            return Hand(cards, bid.toInt(), 3, joker)
-                        return Hand(cards, bid.toInt(), 2, joker)
-                    }
-
-                    else -> return Hand(cards, bid.toInt(), 1, joker)
-                }
             }
         }
     }
@@ -56,19 +34,10 @@ class Hand(val cards: String, val bid: Int, val strength: Int, var joker: Boolea
         val powerCards = if (joker) CARDS_JOKER else CARDS
 
         if (strength != other.strength) return strength.compareTo(other.strength)
-        else {
-            for (i in cards.indices) {
-                if (cards[i] != other.cards[i])
-                    return powerCards.indexOf(cards[i]).compareTo(powerCards.indexOf(other.cards[i]))
 
-            }
+        cards.indices.first { i -> cards[i] != other.cards[i] }.also {
+            return powerCards.indexOf(cards[it]).compareTo(powerCards.indexOf(other.cards[it]))
         }
-
-        return 0
-    }
-
-    override fun toString(): String {
-        return "$cards - $bid - $strength"
     }
 }
 
@@ -85,6 +54,7 @@ class Day7(override val input: String) : Day<Long>(input) {
         hands.sort()
         handsJoker.sort()
     }
+
     override fun solve1(): Long = hands.mapIndexed { index, hand -> (index + 1) * hand.bid }.sum().toLong()
     override fun solve2(): Long = handsJoker.mapIndexed { index, hand -> (index + 1) * hand.bid }.sum().toLong()
 }
