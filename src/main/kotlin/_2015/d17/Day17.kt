@@ -40,10 +40,10 @@ fun main() {
     println()
     println()
 
-    val dayTest = Day17(readFullText("_2015/d17/test"))
+   /* val dayTest = Day17(readFullText("_2015/d17/test"))
     val t1Test = measureTimeMillis { println("TEST - Part 1 : " + dayTest.solve1()) }
     println("Temps partie 1 : {$t1Test}")
 
     val t2Test = measureTimeMillis { println("TEST - Part 2 : " + dayTest.solve2()) }
-    println("Temps partie 2 : {$t2Test}")
+    println("Temps partie 2 : {$t2Test}")*/
 }

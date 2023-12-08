@@ -4,11 +4,29 @@ import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day20(override val input : String) : Day<Long>(input) {
+    val total = 29000000 // 887040
+
+    fun diviseurs(i : Int) : Int = (1..i/2).sumOf { if (i%it == 0) it else 0 }
     override fun solve1(): Long {
-        return -1
+        (887040..887040).first { diviseurs(it) >= total/10 }.toLong()
+
+        var dicho = 100_000
+        var test = dicho
+
+        while (dicho != 1) {
+            test += dicho
+
+            if (diviseurs(test) > total) {
+                test -= dicho
+                dicho /= 10
+            }
+        }
+
+        return (test..test+10).first { diviseurs(it) > total }.toLong()
     }
     override fun solve2(): Long {
-        return -1
+
+        return 0
     }
 }
 

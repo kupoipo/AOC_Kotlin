@@ -30,7 +30,7 @@ class Day19(override val input: String) : Day<Long>(input) {
     fun nextGeneration(molecule: String) : Set<String> {
         val newMolecules = mutableSetOf<String>()
 
-        transitions.forEach { (origin, listTransformation) ->
+        reverse.forEach { (origin, listTransformation) ->
             listTransformation.forEach { transformation ->
                 molecule.allIndexOf(origin).forEach { index ->
                     (molecule.substring(0, index) + transformation + molecule.substring(index + origin.length)).let {
@@ -45,29 +45,14 @@ class Day19(override val input: String) : Day<Long>(input) {
 
     override fun solve1(): Long = nextGeneration(initialMolecule).size.toLong()
 
-
     override fun solve2(): Long {
-        val toTest = mutableListOf<String>()
-        val visited = mutableListOf<String>()
+        val m : Map<String, Int> = transitions.keys.toMutableSet().apply {
+            add("Ar")
+            add("Rn")
+            add("Y")
+        }.associateWith {  initialMolecule.allIndexOf(it).size }
 
-        toTest.add("e")
-
-        while (toTest.isNotEmpty()) {
-            val t = toTest.removeFirst()
-
-            if (t == initialMolecule) {
-                println(t)
-            }
-
-            nextGeneration(t).forEach {
-                if (it.length <= initialMolecule.length && it !in toTest && it !in visited)
-                    toTest.add(it)
-            }
-
-
-        }
-
-        return 0
+        return (m.values.sumOf { it } - m["Ar"]!! - m["Rn"]!! - 2 * m["Y"]!! - 1).toLong()
     }
 }
 
@@ -80,7 +65,7 @@ fun main() {
     val t2 = measureTimeMillis { println("Part 2 : " + day.solve2()) }
     println("Temps partie 2 : {$t2}")
 
-    println()
+  /*  println()
     println()
 
     val dayTest = Day19(readFullText("_2015/d19/test"))
@@ -88,5 +73,5 @@ fun main() {
     println("Temps partie 1 : {$t1Test}")
 
     val t2Test = measureTimeMillis { println("TEST - Part 2 : " + dayTest.solve2()) }
-    println("Temps partie 2 : {$t2Test}")
+    println("Temps partie 2 : {$t2Test}")*/
 }

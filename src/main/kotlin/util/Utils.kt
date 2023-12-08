@@ -1,7 +1,6 @@
 package util
 
 import java.io.File
-import java.lang.Exception
 
 
 fun charToInt(c: Any): Int {
@@ -35,6 +34,29 @@ fun String.allDigits(): List<Int> {
 
 fun Regex.listOfMatch(input: String): List<String> {
     return this.findAll(input).toMutableList().map { it.value }
+}
+
+fun String.findAllMatch(regex: String): List<String> {
+    return Regex(regex).listOfMatch(this)
+}
+
+fun Int.toPrimeFactor(): Map<Long, Int> = this.toLong().toPrimeFactor()
+
+fun Long.toPrimeFactor(): Map<Long, Int> {
+    val factors = mutableListOf<Long>()
+    var divider = 2L
+    var nb = this
+
+    while (nb > 1) {
+        while (nb % divider == 0L) {
+            factors.add(divider)
+            nb /= divider
+        }
+        divider += 1
+    }
+
+    return factors.toSet().associateWith { prime -> factors.count { it == prime } }
+
 }
 
 operator fun String.times(i: Int): String {
