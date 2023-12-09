@@ -2,10 +2,8 @@ package _2023.d7
 
 import util.Day
 import util.readFullText
-import java.util.PriorityQueue
 import kotlin.math.pow
 import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
 
 const val CARDS = "23456789TJQKA"
 const val CARDS_JOKER = "J23456789TQKA"

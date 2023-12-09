@@ -1,15 +1,34 @@
 package _2023.d9
 
 import util.Day
+import util.allInts
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day9(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+    fun historic(sequence: MutableList<Int>): List<MutableList<Int>> {
+        var current = sequence
+        val historic = mutableListOf(sequence)
+
+        do {
+            val next = mutableListOf<Int>()
+
+            for (i in 1 until current.size) {
+                next.add(current[i] - current[i - 1])
+            }
+
+            historic.add(next)
+            current = next
+        } while (!next.all { it == 0 })
+
+        return historic.reversed()
     }
-    override fun solve2(): Long {
-        return -1
-    }
+
+    fun nextValue(sequence: MutableList<Int>): Int = historic(sequence).fold(0) { acc, l -> acc + l.last() }
+    fun previousValue(sequence: MutableList<Int>): Int = historic(sequence).fold(0) { acc, l -> l.first() - acc }
+
+    override fun solve1(): Long  = input.split("\n").sumOf { nextValue(it.allInts()) }.toLong()
+
+    override fun solve2(): Long = input.split("\n").sumOf { previousValue(it.allInts()) }.toLong()
 }
 
 fun main() {
