@@ -77,8 +77,7 @@ class Day10(override val input: String) : Day<Long>(input) {
 
             currentPosition += Direction.LEFT
         }
-
-
+        
         return count % 2 != 0
     }
 

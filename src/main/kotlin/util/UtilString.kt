@@ -7,6 +7,22 @@ fun String.allLong(): MutableList<Long> {
     return """-?\d+""".toRegex().findAll(this).map { it.value.toLong() }.toMutableList()
 }
 
+fun String.rotateCesar(cesar: Int): String {
+    var res = ""
+
+    for (c in this) {
+        if (c.isLowerCase() || c.isUpperCase()) {
+
+            val start = if (c.isLowerCase()) 'a' else 'A'
+            val offset = (c - start + cesar) % 26
+            res += (start + offset)
+        } else {
+            res += c
+        }
+    }
+
+    return res
+}
 
 fun String.allDigits(): MutableList<Int> {
     return Regex("""\d""").listOfMatch(this).map { it.toInt() }.toMutableList()

@@ -4,6 +4,18 @@ enum class Direction(val dx: Int, val dy: Int) {
     LEFT(-1, 0), RIGHT(1, 0), UP(0, -1), DOWN(0, 1), NONE(0, 0);
 
     operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
+
+    companion object {
+        fun fromChar(char: Char): Direction {
+            return when (char) {
+                'U' -> Direction.UP
+                'R' -> Direction.RIGHT
+                'L' -> Direction.LEFT
+                'D' -> Direction.DOWN
+                else -> Direction.NONE
+            }
+        }
+    }
 }
 
 data class Point(var x: Int, var y: Int) {
