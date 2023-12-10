@@ -1,41 +1,31 @@
 package _2015.d21
 
-import util.Day
-import util.allBinaryPossibility
-import util.allInts
-import util.readFullText
+import d7.list
+import util.*
 import java.lang.Exception
+import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.pow
 import kotlin.system.measureNanoTime
 
-enum class Type {
-    ATTACK, DEFENSE, RING
-}
+data class Item(val cost: Int, val damage: Double, val armor: Double)
 
-data class Item(val cost: Int, val damage: Int, val armor: Int, val type: Type)
-
-class Player(var hp: Int = 100, var damage: Int = 0, var armor: Int = 0, var cost: Int = 0) {
-    var items = mutableListOf<Item>()
+class Player(var hp: Double = 100.0, var damage: Double = 0.0, var armor: Double = 0.0, var cost: Int = 0) {
     fun winAgainst(p: Player): Boolean {
-        if (damage == 0) return false
+        if (damage == 0.0) return false
 
-        val hitToKillP = p.hp / (damage - p.armor).let { if (it <= 0) 1 else it }
-        val hitToKillThis = hp / (p.damage - armor).let { if (it <= 0) 1 else it }
+        val hitToKillP = ceil(p.hp / (damage - p.armor).let { if (it <= 0) 1.0 else it })
+        val hitToKillThis = ceil(hp / (p.damage - armor).let { if (it <= 0) 1.0 else it })
 
         return hitToKillP <= hitToKillThis
     }
 
-    override fun toString(): String {
-        return "$hp - $damage - $armor - $cost"
-    }
-
     companion object {
-        fun playerFromItems(ite: Iterable<Item>): Player = Player(100, 0, 0).apply {
+        fun playerFromItems(ite: Iterable<Item>): Player = Player(100.0, 0.0, 0.0).apply {
             for (i in ite) {
                 damage += i.damage
                 armor += i.armor
                 cost += i.cost
-                items.add(i)
             }
         }
     }
@@ -45,88 +35,64 @@ class Day21(override val input: String) : Day<Long>(input) {
     val attacks = mutableListOf<Item>()
     val defense = mutableListOf<Item>()
     val rings = mutableListOf<Item>()
-    val boss = Player(100, 8, 2)
+    val boss = Player(100.0, 8.0, 2.0)
+    var winners = mutableListOf<Player>()
+    var losers = mutableListOf<Player>()
 
     init {
+
         input.split("\n\n").let { data ->
             data[0].split("\n").forEach {
                 it.allInts().let { (cost, damage, armor) ->
-                    attacks.add(Item(cost, damage, armor, Type.ATTACK))
+                    attacks.add(Item(cost, damage.toDouble(), armor.toDouble()))
                 }
             }
 
             data[1].split("\n").forEach {
                 it.allInts().let { (cost, damage, armor) ->
-                    defense.add(Item(cost, damage, armor, Type.DEFENSE))
+                    defense.add(Item(cost, damage.toDouble(), armor.toDouble()))
                 }
             }
 
             data[2].split("\n").forEach {
                 it.allInts().let { (cost, damage, armor) ->
-                    rings.add(Item(cost, damage, armor, Type.RING))
+                    rings.add(Item(cost, damage.toDouble(), armor.toDouble()))
                 }
             }
         }
-    }
 
-    override fun solve1(): Long {
-        var NB=0
         var p: Player
         val items = mutableListOf<Item>()
-        var winners = mutableListOf<Player>()
 
         attacks.forEach { attack ->
-            (2.0.pow(defense.size)).toInt().allBinaryPossibility().forEach { defenseBinary ->
-                for (i1 in -1 until rings.size) {
-                    for (i2 in i1 until rings.size) {
-                        items.clear()
-                        items.add(attack)
-                        items.addAll(defense.filterIndexed { index, _ -> defenseBinary[index] == '1' })
+            defense.allArrangement().forEach { defenseArrangement ->
+                rings.allArrangement(maxElement = 2).forEach { ringsArrangement ->
+                    items.clear()
+                    items.add(attack)
+                    items.addAll(defenseArrangement)
+                    items.addAll(ringsArrangement)
 
-                        if (i1 != -1) {
-                            val r1 = rings[i1]
-                            val r2 = rings[i2]
+                    p = Player.playerFromItems(items)
 
-                            items.add(r1)
-
-                            if (r1 != r2) {
-                                items.add(r2)
-                            }
-                        }
-
-                        NB++
-
-                        p = Player.playerFromItems(items)
-
-                        if (p.winAgainst(boss)) {
-                            winners.add(p)
-                        }
-
-                        if (i1 == -1) break
+                    if (p.winAgainst(boss)) {
+                        winners.add(p)
+                    } else {
+                        losers.add(p)
                     }
                 }
-
             }
         }
 
-        winners.sortWith({ p, p1 -> p.cost.compareTo(p1.cost) })
-
-        for (winner in winners) {
-            println(winner)
-        }
-        println(NB)
-
-        return 0
+        winners.sortWith { p, p1 -> p.cost.compareTo(p1.cost) }
+        losers.sortWith { p, p1 -> p1.cost.compareTo(p.cost) }
     }
 
-    override fun solve2(): Long {
-        return -1
-    }
+    override fun solve1(): Long = winners.first().cost.toLong()
+
+    override fun solve2(): Long = losers.first().cost.toLong()
 }
 
 fun main() {
-    println(32.allBinaryPossibility())
-
     val day = Day21(readFullText("_2015/d21/input"))
 
     val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }

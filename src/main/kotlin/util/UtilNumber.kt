@@ -22,7 +22,7 @@ fun Int.allBinaryPossibility() : List<String> {
     val pad = Integer.toBinaryString(this).length - 1
 
     return buildList {
-        (0..this@allBinaryPossibility).forEach {
+        (0 until this@allBinaryPossibility).forEach {
             this.add(Integer.toBinaryString(it).padStart(pad, '0'))
         }
     }

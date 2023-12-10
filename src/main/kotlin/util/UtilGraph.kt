@@ -9,33 +9,39 @@ import java.util.PriorityQueue
  *    - Add in your own class parameters that are useful, those parameters are used to determine if a state is already used or not
  *    - Override function
  */
-abstract class State(open var parent : State? = null, open var time : Int = 0) {
+abstract class State(open var parent: State? = null, open var time: Int = 0) {
     abstract fun isDeadLock(): Boolean
 
-    abstract fun nextStates() : MutableList<State>
+    abstract fun nextStates(): MutableList<State>
 
-    abstract fun isGoal() : Boolean
+    abstract fun isGoal(): Boolean
 
-    open fun timeToGoal() : Int = time
-    fun rebuildPath() {
-        var current : State? = this
+    open fun timeToGoal(): Int = time
+    fun rebuildPath(print: Boolean): List<State?> {
+        val res = mutableListOf<State?>(this)
+        var current: State? = this
 
         while (current != null) {
-            println(current)
+            if (print)
+                println(current)
+
             current = current.parent
+            res.add(current)
         }
+
+        return res
     }
 
     companion object {
         /**
          * Weight for the WA* algorithm
          */
-        var weight : Int = 1
+        var weight: Int = 1
 
         /**
          * For using this function, no need to override timeToGoal
          */
-        fun allPathTo(from : State) : MutableList<State> {
+        fun allPathTo(from: State): MutableList<State> {
             if (from.isDeadLock())
                 return mutableListOf()
 
@@ -56,7 +62,7 @@ abstract class State(open var parent : State? = null, open var time : Int = 0) {
         /**
          * Need to override timeToGoal in the specific case where this algorithm is used
          */
-        fun shortestPastFrom(from : State) : State? {
+        fun shortestPastFrom(from: State): State? {
             val comparator: Comparator<State> = compareBy { it.timeWeighed() }
             val queue = PriorityQueue(comparator)
             val visited = mutableSetOf<State>()
@@ -66,11 +72,12 @@ abstract class State(open var parent : State? = null, open var time : Int = 0) {
             while (queue.isNotEmpty()) {
                 val current = queue.poll()
 
-                if (current.isGoal()) return current
-
                 visited.add(current)
+
                 current.nextStates().forEach { nextState ->
-                    if (!(nextState in visited || existQueueLessCost(queue, nextState))) {
+                    if (nextState.isGoal()) return nextState
+
+                    if (!(nextState in visited || nextState.isDeadLock())) {
                         queue.add(nextState)
                     }
 
@@ -80,32 +87,23 @@ abstract class State(open var parent : State? = null, open var time : Int = 0) {
             return null
         }
 
-        private fun existQueueLessCost(queue: PriorityQueue<State>, nextState: State): Boolean {
-            queue.forEach {
-                if (nextState == it && it.timeWeighed() < nextState.timeWeighed()) {
-                    return true
-                }
-            }
-
-            return false
-        }
     }
 
-    private fun timeWeighed() : Int {
+    private fun timeWeighed(): Int {
         return this.timeToGoal() * weight
     }
 
 
 }
 
-data class Node<T>(val value : T) {
+data class Node<T>(val value: T) {
     val adjacentNodes = mutableMapOf<Node<T>, Int>()
 
-    fun addNode(node : Node<T>, cost : Int = 1) {
+    fun addNode(node: Node<T>, cost: Int = 1) {
         adjacentNodes[node] = cost
     }
 
-    fun getAdjacentsNodes() : MutableList<Node<T>>{
+    fun getAdjacentsNodes(): MutableList<Node<T>> {
         return adjacentNodes.keys.toMutableList()
     }
 

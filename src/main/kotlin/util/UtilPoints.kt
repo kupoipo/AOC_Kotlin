@@ -72,6 +72,10 @@ data class Point(var x: Int, var y: Int) {
             }
         }
     }
+
+    fun <T> outOfMap(map: Matrix<T>): Boolean {
+        return this.x < 0 || this.y < 0 || this.x >= map[0].size || this.y >= map.size
+    }
 }
 
 enum class DIRECTION3D(val dx: Int, val dy: Int, val dz: Int) {
