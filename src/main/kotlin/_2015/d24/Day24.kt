@@ -7,15 +7,21 @@ import util.readFullText
 import kotlin.system.measureNanoTime
 
 class Day24(override val input: String) : Day<Long>(input) {
-    val packages = input.allInts()
-    val sizeGroup = packages.sum() / 3
+    private val packages = input.allInts().map { it.toLong() }
+    private var sizeGroup: Long = 0
+
+    fun lowestQuantum(): Long =
+        packages.takeLast(15).toMutableList().apply { this.addAll(packages.take(4)); println(this) }
+            .allArrangement { it.sum() == sizeGroup }.minOf { it.reduce { i, j -> i * j } }.toLong()
+
     override fun solve1(): Long {
-        return packages.allArrangement().filter { it.sum() == sizeGroup }.sortedBy { it.size }.first()
-            .reduce { i, j -> i * j }.toLong()
+        sizeGroup = packages.sum() / 3
+        return lowestQuantum()
     }
 
     override fun solve2(): Long {
-        return -1
+        sizeGroup = packages.sum() / 4
+        return lowestQuantum()
     }
 }
 
