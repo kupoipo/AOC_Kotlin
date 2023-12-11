@@ -103,15 +103,15 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int) {
     print("   ")
 
     for (i in 0 until map[0].size) {
-        print("%5d".format(i))
+        print("%2d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%5d".format(index))
+        print("%2d".format(index))
         for (cell in line) {
-            print("%5s".format(cell))
+            print("%2s".format(cell))
         }
         println()
     }
