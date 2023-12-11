@@ -1,10 +1,23 @@
 package util
+
 fun String.allInts(): MutableList<Int> {
     return """-?\d+""".toRegex().findAll(this).map { it.value.toInt() }.toMutableList()
 }
 
 fun String.allLong(): MutableList<Long> {
     return """-?\d+""".toRegex().findAll(this).map { it.value.toLong() }.toMutableList()
+}
+
+fun String.firstInt(index: Int = 0): Int {
+    Regex("""\d+""").find(this, index).let {
+        return it?.value?.toInt() ?: -1
+    }
+}
+
+fun String.lastInt(): Int {
+    Regex("""\d+""").findAll(this).last().let {
+        return it.value.toInt()
+    }
 }
 
 fun String.rotateCesar(cesar: Int): String {

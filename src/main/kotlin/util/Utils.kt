@@ -1,6 +1,8 @@
 package util
 
 import java.io.File
+import java.math.BigInteger
+import java.security.MessageDigest
 import kotlin.math.pow
 
 
@@ -51,6 +53,12 @@ fun <T> List<T>.allArrangement(
     }
 
     return res.sortedBy { it.size }
+}
+
+fun md5(string: String) : String {
+    val md = MessageDigest.getInstance("MD5")
+    val bigInt = BigInteger(1, md.digest(string.toByteArray(Charsets.UTF_8)))
+    return String.format("%032x", bigInt)
 }
 
 fun random(max: Int, min: Int = 0): Int {
