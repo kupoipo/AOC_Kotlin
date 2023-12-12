@@ -1,14 +1,50 @@
 package _2016.d5
 
 import util.Day
+import util.md5
 import util.readFullText
+import java.math.BigInteger
+import java.security.MessageDigest
 import kotlin.system.measureNanoTime
-class Day5(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+class Day5(override val input : String) : Day<String>(input) {
+    override fun solve1(): String {
+        var password = ""
+        var i = 0L
+
+        while (password.length != 8) {
+            md5(input + i.toString()).let { hash ->
+                if (hash.startsWith("00000")) {
+                    password += hash[5]
+                }
+            }
+
+            i++
+        }
+
+        return password
     }
-    override fun solve2(): Long {
-        return -1
+    override fun solve2(): String {
+        val password = MutableList(8) { ' '}
+        var i = 0L
+
+        while (password.any{ it == ' '}) {
+            md5(input + i.toString()).let { hash ->
+                if (hash.startsWith("00000")) {
+                    if (hash[5].isDigit()) {
+                        val i = hash[5].digitToInt()
+
+                        if (i < password.size && password[i] == ' ') {
+                            password[i] = hash[6]
+                            println(password[i])
+                        }
+                    }
+                }
+            }
+
+            i++
+        }
+
+        return password.joinToString("")
     }
 }
 
