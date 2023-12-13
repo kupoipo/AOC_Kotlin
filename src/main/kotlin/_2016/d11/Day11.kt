@@ -8,7 +8,7 @@ import util.readFullText
 import kotlin.math.abs
 import kotlin.system.measureNanoTime
 
-val microshipName = "HLPTCY"
+val microshipName = "HLPTCYBV"
 
 data class StateElevator(
     override var parent: State?,
@@ -28,6 +28,11 @@ data class StateElevator(
             if (generator[indexChip] != chipFloor) {
                 if (generator.any { it == chipFloor })
                     return true
+
+            /*for (indexG in generator.indices) {
+                    if (generator[indexG] == chipFloor && chips[indexG] != chipFloor)
+                        return true
+                }*/
             }
         }
 
@@ -228,6 +233,21 @@ data class StateElevator(
 
         return elevator == other.elevator && pairs == pairs2
     }
+
+    override fun hashCode(): Int {
+
+        val pairs = chips.zip(generator).sortedBy { it.first }
+        var result = 17
+
+        for ((first, second) in pairs) {
+            result = 31 * result + first.hashCode()
+            result = 31 * result + second.hashCode()
+        }
+
+        result = 31 * result + elevator.hashCode()
+
+        return result
+    }
 }
 
 class Day11(override val input: String) : Day<Long>(input) {
@@ -235,17 +255,16 @@ class Day11(override val input: String) : Day<Long>(input) {
 
     init {
         input.split("\n").let { (floor, chips, generator) ->
-            start = StateElevator(null, 4, floor.toInt(), chips.allInts(), generator.allInts(), 1)
+            start = StateElevator(null, 1, floor.toInt(), chips.allInts(), generator.allInts(), 1)
         }
     }
 
     override fun solve1(): Long {
-        return State.shortestPastFrom(start)!!.rebuildPath(true).first()!!.time.toLong()
+        start  = (State.shortestPastFrom(start)!!.rebuildPath(false).first() as StateElevator?)!!
+        return start.time.toLong()
     }
 
-    override fun solve2(): Long {
-        return -1
-    }
+    override fun solve2(): Long = start.time + 24L
 }
 
 fun main() {
