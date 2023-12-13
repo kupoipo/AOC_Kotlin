@@ -35,7 +35,7 @@ class WeatherLine(val line: String, val snowGroups: MutableList<Int>) {
              *      - We must verify that the element at ``currentSnowGroup.first()`` in currentLine isn't a snow or we would have a
              *      ``currentSnowGroup.first()`` + X group instead of a ``currentSnowGroup.first()``
              */
-            if (currentLine.first() in listOf(UNKNOWN, SNOW )
+            if (currentLine.first() in listOf(UNKNOWN, SNOW)
                 && !currentLine.take(currentSnowGroup.first()).contains(NOTHING)
                 && (currentSnowGroup.first() == currentLine.size || currentLine[currentSnowGroup.first()] != SNOW)
             ) {
@@ -75,9 +75,36 @@ class Day12(override val input: String) : Day<Long>(input) {
     }
 
     init {
-        println(lines.mapIndexed { index, it ->
-            index to WeatherLine((("?" + it.line) * 5).drop(1), it.snowGroups * 5).nbArrangements()
-        }.sortedBy { it.first })
+        for (it in lines) {
+            val w = it.nbArrangements()
+            val wAll = WeatherLine((("?" + it.line) * 5).drop(1), it.snowGroups * 5).nbArrangements()
+            val wRight = WeatherLine(("?" + it.line), it.snowGroups).nbArrangements()
+            val wLeft = WeatherLine((it.line + "?"), it.snowGroups).nbArrangements()
+            val wBoth = WeatherLine(("?" + it.line + "?"), it.snowGroups).nbArrangements()
+
+
+            println("+------------------------+--------------------+----------+---------+---------+--------------+----------+----------+----------+---------------+")
+            println("|          LINE          |        GROUP       |  NORMAL  | ? AVANT | ? APRES | ? DEUX COTES |    ²?²   |     ?²   |    ²?    |       x5      |")
+            println("+------------------------+--------------------+----------+---------+---------+--------------+----------+----------+----------+---------------+")
+            println(
+                String.format(
+                    "| %22s | %18s | %8d | %7d | %7d | %12d | %8.0f | %8.0f | %8.0f | %13d |",
+                    it.line,
+                    it.snowGroups,
+                    w,
+                    wLeft,
+                    wRight,
+                    wBoth,
+                    wBoth.toDouble().pow(4) * w,
+                    wLeft.toDouble().pow(4) * w,
+                    wRight.toDouble().pow(4) * w,
+                    wAll
+                )
+            )
+            println("+------------------------+--------------------+----------+---------+---------+--------------+----------+----------+----------+---------------+")
+            println()
+
+        }
     }
 
     override fun solve1(): Long = lines.sumOf { it.nbArrangements() }

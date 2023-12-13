@@ -80,7 +80,6 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                     if (!(nextState in visited || nextState.isDeadLock())) {
                         queue.add(nextState)
                     }
-
                 }
             }
 
@@ -89,7 +88,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
 
     }
 
-    private fun timeWeighed(): Int {
+    open fun timeWeighed(): Int {
         return this.timeToGoal() * weight
     }
 
