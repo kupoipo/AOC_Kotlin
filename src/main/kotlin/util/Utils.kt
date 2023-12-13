@@ -64,3 +64,15 @@ fun md5(string: String) : String {
 fun random(max: Int, min: Int = 0): Int {
     return (Math.random() * (max - min) + min).toInt()
 }
+
+operator fun <E> MutableList<E>.times(t: Int): MutableList<E> {
+    val res = mutableListOf<E>()
+
+    repeat(t) {
+        for (e in this) {
+            res.add(e)
+        }
+    }
+
+    return res
+}
