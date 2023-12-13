@@ -75,11 +75,17 @@ data class Point(var x: Int, var y: Int) {
         return false
     }
 
-    fun adjacent(): List<Point> {
+    fun adjacent(diagonals: Boolean = true): List<Point> {
         return buildList {
             for (dy in -1..1) {
                 for (dx in -1..1) {
-                    if (dx != 0 || dy != 0) add(Point(this@Point.x + dx, this@Point.y + dy))
+                    if (dx != 0 || dy != 0) {
+                        if (!diagonals && dx != 0 && dy != 0) {
+
+                        }else {
+                            add(Point(this@Point.x + dx, this@Point.y + dy))
+                        }
+                    }
                 }
             }
         }
@@ -87,6 +93,10 @@ data class Point(var x: Int, var y: Int) {
 
     fun <T> outOfMap(map: Matrix<T>): Boolean {
         return this.x < 0 || this.y < 0 || this.x >= map[0].size || this.y >= map.size
+    }
+
+    override fun hashCode(): Int {
+        return this.toString().hashCode()
     }
 }
 

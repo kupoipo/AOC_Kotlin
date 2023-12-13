@@ -1,14 +1,59 @@
 package _2016.d12
 
 import util.Day
+import util.isInt
 import util.readFullText
+import java.lang.Exception
 import kotlin.system.measureNanoTime
 class Day12(override val input : String) : Day<Long>(input) {
+    private val register = "abcd".associateWith { 0 }.toMutableMap()
+    private val instructions = input.split("\n")
+
+    private fun run() {
+        var index = 0
+        var nbRun = 0L
+        while (index < instructions.size) {
+            val instruction = instructions[index]
+            instruction.split(" ").also {
+                when (it[0]) {
+                    "cpy" -> {
+                        if (it[1].isInt()) register[it[2].first()] = it[1].toInt()
+                        else register[it[2].first()] = register[it[1].first()]!!
+                        index++
+                    }
+                    "jnz" -> {
+                        val value = if (it[1].isInt()) it[1].toInt() else register[it[1].first()]!!
+                        if (value != 0) {
+                            index += it[2].toInt()
+                        } else {
+                            index++
+                        }
+                    }
+                    "dec" -> {
+                        register[it[1].first()] = register[it[1].first()]!! - 1
+                        index++
+                    }
+                    "inc" -> {
+                        register[it[1].first()] = register[it[1].first()]!! + 1
+                        index++
+                    }
+                    else -> throw Exception("Instruction ${it[0]} unknown.")
+                }
+            }
+            nbRun++
+        }
+
+        println("$nbRun operation were necessary to exit the program.")
+    }
+
     override fun solve1(): Long {
-        return -1
+        run()
+        return register['a']!!.toLong()
     }
     override fun solve2(): Long {
-        return -1
+        register['c'] = 1
+        run()
+        return register['a']!!.toLong()
     }
 }
 

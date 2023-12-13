@@ -1,5 +1,6 @@
 package util
 
+import _2016.d13.MazeCubicleState
 import java.util.PriorityQueue
 
 /**
@@ -17,7 +18,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
     abstract fun isGoal(): Boolean
 
     open fun timeToGoal(): Int = time
-    fun rebuildPath(print: Boolean): List<State?> {
+    fun rebuildPath(print: Boolean = false): List<State?> {
         val res = mutableListOf<State?>(this)
         var current: State? = this
 

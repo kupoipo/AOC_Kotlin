@@ -1,5 +1,7 @@
 package util
 
+import java.lang.Exception
+
 fun String.allInts(): MutableList<Int> {
     return """-?\d+""".toRegex().findAll(this).map { it.value.toInt() }.toMutableList()
 }
@@ -11,6 +13,15 @@ fun String.allLong(): MutableList<Long> {
 fun String.firstInt(index: Int = 0): Int {
     Regex("""\d+""").find(this, index).let {
         return it?.value?.toInt() ?: -1
+    }
+}
+
+fun String.isInt() : Boolean {
+    return try {
+        this.toInt()
+        true
+    } catch (e: Exception) {
+        false
     }
 }
 
