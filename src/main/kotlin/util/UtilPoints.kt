@@ -69,8 +69,7 @@ data class Point(var x: Int, var y: Int) {
 
     override fun equals(other: Any?): Boolean {
         if (other is Point) {
-            val p2 = other as Point
-            return p2.x == this.x && p2.y == this.y
+            return other.x == this.x && other.y == this.y
         }
         return false
     }

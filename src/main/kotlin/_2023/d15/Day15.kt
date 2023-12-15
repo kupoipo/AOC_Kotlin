@@ -1,14 +1,33 @@
 package _2023.d15
 
 import util.Day
+import util.firstInt
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day15(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
-    }
+    val map = mutableMapOf<String, Int>()
+    var box = MutableList(256) { MutableList(0) { "" to 0} }
+    fun strToHash(str: String): Long = str.fold(0) { acc, c -> ( (acc + c.code) * 17 ) % 256 }.toLong()
+    override fun solve1(): Long = input.split(",").sumOf { strToHash(it) }
     override fun solve2(): Long {
-        return -1
+        input.split(",").forEach { str ->
+                val key = str.substring(0, str.indexOfFirst { it in "=-" })
+                val valueMap = str.firstInt()
+                val numBox = strToHash(key).toInt()
+
+                if (valueMap == -1) {
+                    box[numBox].removeIf { pair -> pair.first == key}
+                } else {
+                    val i = box[numBox].indices.firstOrNull { box[numBox][it].first == key}
+
+                    box[numBox].apply {
+                        if (i == null) this.add(key to valueMap)
+                        else this[i] = key to valueMap
+                    }
+                }
+        }
+
+        return box.indices.sumOf { i -> box[i].indices.sumOf { j -> (i+1) * (j+1) * box[i][j].second } }.toLong()
     }
 }
 

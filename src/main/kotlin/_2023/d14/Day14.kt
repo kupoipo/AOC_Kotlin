@@ -1,14 +1,80 @@
 package _2023.d14
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
+
+const val NB_CYCLE = 1_000_000_000
 class Day14(override val input : String) : Day<Long>(input) {
+    val map = matrixFromString(input, '.' ) { it }
+    val rocks = map.points().filter { map[it] == 'O' }.toMutableList()
+    val mapCycle = mutableMapOf<Set<Point>, Int>()
+    val cycle = listOf(::moveNorth, ::moveWest, ::moveSouth, ::moveEast)
+    fun moveNorth() {
+        rocks.sortedBy{ it.y }.forEach { r ->
+            map[r] = '.'
+            (r.y downTo 0).firstOrNull { map[it][r.x] != '.' }.let {
+                if (it == null) r.y = 0
+                else r.y = it + 1
+            }
+            map[r] = 'O'
+        }
+    }
+    fun moveWest() {
+        rocks.sortedBy { it.x  }.forEach { r ->
+            map[r] = '.'
+            (r.x downTo 0).firstOrNull { map[r.y][it] != '.' }.let {
+                if (it == null) r.x = 0
+                else r.x = it + 1
+            }
+            map[r] = 'O'
+        }
+    }
+    fun moveSouth() {
+        rocks.sortedByDescending { it.y  }.forEach { r ->
+            map[r] = '.'
+            (r.y until map.size).firstOrNull { map[it][r.x] != '.' }.let {
+                if (it == null) r.y = map.lastIndex
+                else r.y = it - 1
+            }
+            map[r] = 'O'
+        }
+    }
+    fun moveEast() {
+        rocks.sortedByDescending { it.x  }.forEach { r ->
+            map[r] = '.'
+            (r.x until map[0].size).firstOrNull { map[r.y][it] != '.' }.let {
+                if (it == null) r.x = map[0].lastIndex
+                else r.x = it - 1
+            }
+            map[r] = 'O'
+        }
+    }
+
     override fun solve1(): Long {
-        return -1
+        moveNorth()
+
+        return rocks.sumOf { map.size - it.y }.toLong()
     }
     override fun solve2(): Long {
-        return -1
+        var i = NB_CYCLE
+        rocks.clear()
+        rocks.addAll(map.points().filter { map[it] == 'O' })
+
+        while (i > 0) {
+            cycle.forEach { it() }
+
+            val set = mutableSetOf<Point>().apply { rocks.forEach { this.add(Point(it)) } }
+
+            if (set !in mapCycle.keys) {
+                mapCycle[set] = NB_CYCLE - i
+            } else {
+                val sizeCycle = (NB_CYCLE - i) - mapCycle.entries.first { it.key == set }.value
+                i %= sizeCycle
+            }
+            i--
+        }
+
+        return rocks.sumOf { map.size - it.y }.toLong()
     }
 }
 
