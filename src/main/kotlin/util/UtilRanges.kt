@@ -4,6 +4,7 @@ import java.lang.RuntimeException
 import kotlin.math.max
 import kotlin.math.min
 
+fun IntRange.contains(other: IntRange) : Boolean = this.first <= other.first && this.last >= other.last
 fun LongRange.contains(other: LongRange) : Boolean = this.first <= other.first && this.last >= other.last
 fun LongRange.isOverlapping(other: LongRange) : Boolean {
     if (this.contains(other))

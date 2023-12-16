@@ -1,14 +1,44 @@
 package _2016.d17
 
-import util.Day
-import util.readFullText
+import _2022.d22.position
+import util.*
 import kotlin.system.measureNanoTime
-class Day17(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class StateD17_2016(parent: State?, time: Int, val position: Point, val path: String) : State(parent, time) {
+    val map = emptyMatrixOf(4,4,' ')
+    override fun isDeadLock(): Boolean {
+        return position.outOfMap(map)
     }
-    override fun solve2(): Long {
-        return -1
+
+    override fun nextStates(): MutableList<State> {
+        val md = md5(path).take(4)
+
+        return buildList {
+            if (md[0] in OPEN) this.add(StateD17_2016(this@StateD17_2016, time + 1, position + Direction.UP, path + "U"))
+            if (md[1] in OPEN) this.add(StateD17_2016(this@StateD17_2016, time + 1, position + Direction.DOWN, path + "D"))
+            if (md[2] in OPEN) this.add(StateD17_2016(this@StateD17_2016, time + 1, position + Direction.LEFT, path + "L"))
+            if (md[3] in OPEN) this.add(StateD17_2016(this@StateD17_2016, time + 1, position + Direction.RIGHT, path + "R"))
+        }.toMutableList()
+    }
+
+    override fun isGoal(): Boolean {
+        return position == Point(3,3)
+    }
+
+    companion object {
+        const val OPEN = "bcdef"
+    }
+}
+
+class Day17(override val input : String) : Day<String>(input) {
+    val start = StateD17_2016(null, 0, Point(0,0), input)
+    override fun solve1(): String {
+        val goal = State.shortestPastFrom(start)!!.rebuildPath().first()
+        return (goal as StateD17_2016).path.drop(input.length)
+    }
+    override fun solve2(): String {
+        val goal = State.allPathTo(start)
+        return goal.maxBy { it.time }.time.toString()
     }
 }
 

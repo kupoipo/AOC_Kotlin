@@ -1,6 +1,7 @@
 package util
 
 import _2016.d13.MazeCubicleState
+import _2016.d22.DFState
 import java.util.PriorityQueue
 
 /**
@@ -78,10 +79,11 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                 current.nextStates().forEach { nextState ->
                     if (nextState.isGoal()) return nextState
 
-                    if (!(nextState in visited || nextState.isDeadLock())) {
+                    if (!(nextState in visited || nextState.isDeadLock() || nextState in queue)) {
                         queue.add(nextState)
                     }
                 }
+
             }
 
             return null

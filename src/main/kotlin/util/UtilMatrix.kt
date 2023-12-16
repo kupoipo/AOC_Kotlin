@@ -71,6 +71,21 @@ fun <T> Matrix<T>.rotateRight(): Unit {
     }
 }
 
+fun <T> MutableList<T>.swap(i1: Int, i2 : Int) {
+    var index1 = i1
+    var index2 = i2
+
+    if (i1 > i2) {
+        index1 = i2
+        index2 = i1
+    }
+
+    val o1 = this.removeAt(index1)
+    val o2 = this.removeAt(index2-1)
+
+    this.add(index1, o2)
+    this.add(index2, o1)
+}
 
 fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) { MutableList(columns) { default } }
 
@@ -103,15 +118,15 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int) {
     print("    ")
 
     for (i in 0 until map[0].size) {
-        print("%4d".format(i))
+        print("%8d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%4d".format(index))
+        print("%8d".format(index))
         for (cell in line) {
-            print("%4s".format(cell))
+            print("%8s".format(cell))
         }
         println()
     }

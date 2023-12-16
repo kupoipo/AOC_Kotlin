@@ -16,6 +16,30 @@ fun readFullText(name: String) = File("src/main/kotlin", "$name.txt")
 fun readInput(name: String) = File("src/main/kotlin", "$name.txt")
     .readLines()
 
+fun <T> getPermutations(list: List<T>): List<List<T>> {
+    if (list.size <= 1) {
+        return listOf(list)
+    }
+
+    val result = mutableListOf<List<T>>()
+
+    for (i in list.indices) {
+        val element = list[i]
+        val remainingList = list.subList(0, i) + list.subList(i + 1, list.size)
+        val permutationsOfRemainingList = getPermutations(remainingList)
+
+        for (permutation in permutationsOfRemainingList) {
+            result.add(listOf(element) + permutation)
+        }
+    }
+
+    return result
+}
+
+fun <T> List<T>.allPermutation() : List<List<T>> {
+    return getPermutations(this)
+}
+
 fun <T> List<T>.allArrangement(
     minElement: Int = -1,
     maxElement: Int = -1,

@@ -7,8 +7,11 @@ import kotlin.system.measureNanoTime
 class Day15(override val input : String) : Day<Long>(input) {
     val map = mutableMapOf<String, Int>()
     var box = MutableList(256) { MutableList(0) { "" to 0} }
+
     fun strToHash(str: String): Long = str.fold(0) { acc, c -> ( (acc + c.code) * 17 ) % 256 }.toLong()
+
     override fun solve1(): Long = input.split(",").sumOf { strToHash(it) }
+
     override fun solve2(): Long {
         input.split(",").forEach { str ->
                 val key = str.substring(0, str.indexOfFirst { it in "=-" })
