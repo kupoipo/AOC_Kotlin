@@ -1,14 +1,31 @@
 package _2017.d6
 
 import util.Day
+import util.allInts
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day6(override val input : String) : Day<Long>(input) {
+    val banks = input.allInts()
+    val situationSeen = mutableSetOf<List<Int>>(banks.toMutableList())
+
     override fun solve1(): Long {
-        return -1
+        while (true) {
+            val toDistribute = banks.max()
+            val from = banks.indexOfFirst { it == toDistribute }
+            banks[from] = 0
+
+            repeat(toDistribute) {
+                banks[(from + it + 1)%banks.size]++
+            }
+
+            if (banks in situationSeen)
+                return situationSeen.size.toLong()
+
+            situationSeen.add(banks.toMutableList())
+        }
     }
     override fun solve2(): Long {
-        return -1
+        return situationSeen.size.toLong() - situationSeen.indexOfFirst { it == banks }
     }
 }
 
