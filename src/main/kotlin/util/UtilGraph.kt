@@ -2,6 +2,7 @@ package util
 
 import _2016.d13.MazeCubicleState
 import _2016.d22.DFState
+import _2023.d17.LavaState
 import java.util.PriorityQueue
 
 /**
@@ -67,6 +68,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
         fun shortestPastFrom(from: State): State? {
             val comparator: Comparator<State> = compareBy { it.timeWeighed() }
             val queue = PriorityQueue(comparator)
+            val queueCost = mutableMapOf<State, Int>()
             val visited = mutableSetOf<State>()
 
             queue.add(from)
@@ -79,11 +81,19 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                 current.nextStates().forEach { nextState ->
                     if (nextState.isGoal()) return nextState
 
-                    if (!(nextState in visited || nextState.isDeadLock() || nextState in queue)) {
-                        queue.add(nextState)
+                    if (!(nextState in visited || nextState.isDeadLock())) {
+
+                        if (queueCost[nextState] == null) {
+                            queueCost[nextState] = nextState.timeWeighed()
+                            queue.add(nextState)
+                        } else {
+                            if (queueCost[nextState]!! > nextState.timeWeighed()) {
+                                queueCost[nextState] = nextState.timeWeighed()
+                                queue.add(nextState)
+                            }
+                        }
                     }
                 }
-
             }
 
             return null

@@ -118,15 +118,15 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int) {
     print("    ")
 
     for (i in 0 until map[0].size) {
-        print("%8d".format(i))
+        print("%4d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%8d".format(index))
+        print("%4d".format(index))
         for (cell in line) {
-            print("%8s".format(cell))
+            print("%4s".format(cell))
         }
         println()
     }
