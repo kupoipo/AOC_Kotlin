@@ -47,7 +47,7 @@ class Face(var origin : Point, val isTop : Boolean = false, val isBot : Boolean 
         for (y in origin.y until origin.y + 50) {
             map.add(mutableListOf())
             for (x in origin.x until origin.x + 50) {
-                map.last().add(fullMap[y][x])
+                map.last().add(fullMap[y.toInt()][x.toInt()])
             }
         }
 
@@ -110,10 +110,10 @@ fun nextCase(inst: String): Pair<Point, Face> {
 
     run end@ {
         repeat(if (turn) inst.dropLast(1).toInt() else inst.toInt()) {
-            dx = posTemp.x; dy = posTemp.y; dface = faceTemp; ddirection = direction
+            dx = posTemp.x.toInt(); dy = posTemp.y.toInt(); dface = faceTemp; ddirection = direction
 
-            dx = posTemp.x + direction.vector.x
-            dy = posTemp.y + direction.vector.y
+            dx = (posTemp.x + direction.vector.x).toInt()
+            dy = (posTemp.y + direction.vector.y).toInt()
 
             if (dy > 49) {
                 dface = faceTemp.bottom!!
@@ -170,7 +170,7 @@ fun nextCase(inst: String): Pair<Point, Face> {
             if (dface.map[dy][dx] != WALL) {
                 direction = ddirection
                 faceTemp = dface
-                posTemp.x = dx; posTemp.y = dy;
+                posTemp.x = dx.toLong(); posTemp.y = dy.toLong();
             } else return@end
         }
     }

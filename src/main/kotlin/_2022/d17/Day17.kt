@@ -28,7 +28,7 @@ fun willCollide(nextRock: Rock, dir : Direction): Boolean {
 
     for (y in nextRock.y until nextRock.y + nextRock.getHeight()) {
         for (x in nextRock.x until nextRock.x + nextRock.getWidth()) {
-            if (nextRock.piece[y - nextRock.y][x - nextRock.x] == ROCK && map[y][x] != EMPTY) {
+            if (nextRock.piece[(y - nextRock.y).toInt()][(x - nextRock.x).toInt()] == ROCK && map[y][x] != EMPTY) {
                 nextRock.unmove(dir)
                 return true
             }
@@ -38,6 +38,10 @@ fun willCollide(nextRock: Rock, dir : Direction): Boolean {
     nextRock.unmove(dir)
 
     return false
+}
+
+private operator fun <E> MutableList<E>.get(x: Long): E {
+    return this[x.toInt()]
 }
 
 fun tryAndMove(nextRock: Rock, s: Char) {
@@ -51,8 +55,8 @@ fun addRock(nextRock: Rock) {
 
     for (y in nextRock.y  until  nextRock.y + nextRock.getHeight()) {
         for (x in nextRock.x  until  nextRock.x + nextRock.getWidth()) {
-            if (nextRock.piece[y - nextRock.y][x - nextRock.x] == ROCK)
-                map[y][x] = PLACED_ROCK
+            if (nextRock.piece[(y - nextRock.y).toInt()][(x - nextRock.x).toInt()] == ROCK)
+                map[y.toInt()][x.toInt()] = PLACED_ROCK
         }
     }
 }
@@ -65,6 +69,11 @@ fun removeRock(nextRock: Rock) {
         }
     }
 }
+
+private operator fun <E> MutableList<E>.set(x: Long, value: E) {
+    this[x.toInt()] = value
+}
+
 
 fun part1(content : String) : String {
     var currentMove = 0
@@ -85,9 +94,9 @@ fun part1(content : String) : String {
         }
 
 
-        if (emptyLines > 3 + nextRock.getHeight()) {
-            nextRock.y = emptyLines - 3 - nextRock.getHeight()
-        }
+       /* if (emptyLines > 3 + nextRock.getHeight()) {
+            nextRock.y = (emptyLines - 3 - nextRock.getHeight()).toLong()
+        }*/
         // Found pattern
         // println((RockFactory.next % 5).util.toString()+ " - " + (currentMove%content.length))
 

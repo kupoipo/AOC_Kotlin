@@ -47,17 +47,17 @@ class Day22(override val input : String) : Day<String>(input) {
 
         run repeatBlock@ {
             repeat(if (turn) inst.dropLast(1).toInt() else inst.toInt()) {
-                dx = posTemp.x; dy = posTemp.y
+                dx = posTemp.x.toInt(); dy = posTemp.y.toInt()
                 do {
-                    dx = (dx + direction.vector.x) % width
-                    dy = (dy + direction.vector.y) % height
+                    dx = ((dx + direction.vector.x) % width).toInt()
+                    dy = ((dy + direction.vector.y) % height).toInt()
 
                     if (dx < 0) dx = width - 1
                     if (dy < 0) dy = height - 1
                 } while (map[dy][dx] == VOID);
 
                 if (map[dy][dx] == WALL) return@repeatBlock
-                posTemp.x = dx; posTemp.y = dy
+                posTemp.x = dx.toLong(); posTemp.y = dy.toLong()
             }
         }
 

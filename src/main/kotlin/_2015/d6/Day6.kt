@@ -17,6 +17,8 @@ class Day6(override val input: String) : Day<Long>(input) {
 
         for (lig in origin.x..end.x) {
             for (col in origin.y..end.y) {
+                var lig = lig.toInt()
+                var col = col.toInt()
                 if (line.startsWith("toggle")) {
                     lights[lig][col] += 2
                 } else if (line.startsWith("turn off")) {

@@ -12,7 +12,7 @@ class Day18(override val input: String) : Day<Long>(input) {
 
     private fun nbNeighbors(p: Point): Int {
         return p.adjacent().filter { it.x >= 0 && it.y >= 0 && it.x < map[0].size && it.y < map.size }
-            .count { map[it.y][it.x] == '#' }
+            .count { map[it] == '#' }
     }
 
     private fun nextState() {

@@ -19,10 +19,10 @@ data class Blizzard(var pos : Point, val c : Char = '>') {
 
     fun nextPos() : Blizzard {
         val newPos = pos + dir.times(1)
-        if (newPos.x == map[0].size - 1) newPos.x = 1
-        if (newPos.x == 0) newPos.x = map[0].size - 2
-        if (newPos.y == map.size - 1) newPos.y = 1
-        if (newPos.y == 0) newPos.y = map.size - 2
+        if (newPos.x.toInt() == map[0].size - 1) newPos.x = 1
+        if (newPos.x.toInt() == 0) newPos.x = (map[0].size - 2).toLong()
+        if (newPos.y.toInt() == map.size - 1) newPos.y = 1
+        if (newPos.y.toInt() == 0) newPos.y = (map.size - 2).toLong()
 
         return Blizzard(newPos, c)
     }
@@ -71,7 +71,7 @@ data class State(val pos : Point, val time : Int) {
     }
     fun isOver() = pos == goal
 
-    fun timeToGoal() : Int { return time + pos.manhattan(goal) }
+    fun timeToGoal() : Long { return time + pos.manhattan(goal) }
 }
 
 class Day24(override val input: String) : Day<Int>(input) {

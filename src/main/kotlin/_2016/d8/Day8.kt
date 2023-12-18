@@ -17,6 +17,7 @@ class Day8(override val input: String) : Day<Long>(input) {
 
 
     private fun rotateCol(x: Int, offSet: Int) {
+        val x = x.toLong()
         val pToMove = points.filter { x == it.x }
         points.removeIf { it.x == x }
 
@@ -26,6 +27,7 @@ class Day8(override val input: String) : Day<Long>(input) {
     }
 
     private fun rotateLine(y: Int, offSet: Int) {
+        val y = y.toLong()
         val pToMove = points.filter { y == it.y }
         points.removeIf { it.y == y }
 

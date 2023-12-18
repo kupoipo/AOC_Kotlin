@@ -5,7 +5,7 @@ import util.*
 import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
-class Path(val index: Int, val range: IntRange, val dir: Char, val type: Char) {
+class Path(val index: Long, val range: LongRange, val dir: Char, val type: Char) {
     fun collideWith(p: Path): Point? {
         if (type == p.type) return null
 
@@ -71,9 +71,9 @@ class Day3(override val input: String) : Day<Long>(input) {
 
     override fun solve1(): Long = collisions.minOf { p -> p.manhattan(Point(0, 0)) }.toLong()
 
-    private fun stepTo(goalPoint: Point, paths: List<Path>): Int {
+    private fun stepTo(goalPoint: Point, paths: List<Path>): Long {
         var currentPoint = Point(0, 0)
-        var nbStep = 0
+        var nbStep = 0L
 
         for (p in paths) {
             if (p.type == 'L') {
@@ -106,7 +106,7 @@ class Day3(override val input: String) : Day<Long>(input) {
     }
 
     override fun solve2(): Long {
-        val steps = mutableSetOf<Int>()
+        val steps = mutableSetOf<Long>()
 
         for (collision in collisions) {
             steps.add(stepTo(collision, pathsFirstJourney) + stepTo(collision, pathsSecondJourney))

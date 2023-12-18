@@ -20,7 +20,7 @@ fun getFilledPositionsInRow(lig : Int) : List<IntRange> {
 
             if (ecart < dist) {
                 val dx = dist - ecart
-                res.add(-dx + sensor.x..dx + sensor.x)
+                res.add((-dx + sensor.x).toInt()..(dx + sensor.x).toInt())
             }
         }
     }

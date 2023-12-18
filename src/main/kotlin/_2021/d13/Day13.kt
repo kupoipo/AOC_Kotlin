@@ -18,7 +18,7 @@ class Day13(override val input : String) : Day<Int>(input) {
                 line.allInts().let { points.add(Point(it[0], it[1])) }
             }
         }
-        map = emptyMatrixOf(points.maxOf { it.y } + 1, points.maxOf { it.x } + 1, ' ')
+        map = emptyMatrixOf((points.maxOf { it.y } + 1).toInt(), (points.maxOf { it.x } + 1).toInt(), ' ')
         points.forEach { map[it] = '#' }
     }
 
@@ -46,7 +46,7 @@ class Day13(override val input : String) : Day<Int>(input) {
         points = newPoints
     }
     fun affiche() {
-        map = emptyMatrixOf(points.maxOf { it.y } + 1, points.maxOf { it.x } + 1, ' ')
+        map = emptyMatrixOf((points.maxOf { it.y } + 1).toInt(), (points.maxOf { it.x } + 1).toInt(), ' ')
         points.forEach { map[it] = '#' }
 
         showMap(map)

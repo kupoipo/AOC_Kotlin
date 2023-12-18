@@ -32,7 +32,7 @@ data class StateDay15(val pos: Point) : State() {
     }
 
     override fun timeToGoal(): Int {
-        return time + pos.manhattan(goal)
+        return (time + pos.manhattan(goal)).toInt()
     }
 
     companion object {

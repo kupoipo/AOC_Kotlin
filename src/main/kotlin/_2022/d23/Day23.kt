@@ -50,6 +50,10 @@ data class Elfe(var position : Point, var nextPos : Point? = null) {
     }
 }
 
+private operator fun <E> MutableList<E>.get(l: Long): E {
+    return this[l.toInt()]
+}
+
 val elfes = mutableSetOf<Elfe>()
 val map = matrixOf(MutableList<MutableList<Char>>(SIZE) { MutableList<Char>(SIZE) { '.'} } )
 
@@ -116,6 +120,10 @@ fun part1(content : List<String>) : String {
 
 
     return cpt.toString()
+}
+
+private operator fun <E> MutableList<E>.set(x: Long, value: E) {
+    this[x.toInt()] = value
 }
 
 fun noElfesAround(pos: Point): Boolean {

@@ -27,8 +27,10 @@ enum class Direction(val dx: Int, val dy: Int) {
     }
 }
 
-data class Point(var x: Int, var y: Int) {
+data class Point(var x: Long, var y: Long) {
     constructor(p: Point) : this(p.x, p.y)
+
+    constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
 
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
@@ -90,7 +92,7 @@ data class Point(var x: Int, var y: Int) {
                     if (dx != 0 || dy != 0) {
                         if (!diagonals && dx != 0 && dy != 0) {
 
-                        }else {
+                        } else {
                             add(Point(this@Point.x + dx, this@Point.y + dy))
                         }
                     }
@@ -130,3 +132,18 @@ data class Point3D(val x: Int, val y: Int, val z: Int) {
 }
 
 
+fun calculateGaussianSurface(points: List<Point>): Long {
+    require(points.size >= 3 && points.first() == points.last()) {
+        "Points list must be a closed polygon with at least three points"
+    }
+    var surface = 0.0
+    val n = points.size
+
+    for (i in 0 until n - 1) {
+        surface += (points[i].x * points[i + 1].y - points[i + 1].x * points[i].y)
+    }
+
+    surface += (points[n - 1].x * points[0].y - points[0].x * points[n - 1].y)
+
+    return (kotlin.math.abs(surface) / 2.0).toLong()
+}

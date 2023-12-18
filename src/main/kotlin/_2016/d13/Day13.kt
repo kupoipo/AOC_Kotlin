@@ -31,7 +31,7 @@ data class MazeCubicleState(override var parent: State?, override var time: Int,
     }
 
     override fun timeWeighed(): Int {
-        return time + goal.manhattan(p)
+        return (time + goal.manhattan(p)).toInt()
     }
 
     override fun toString(): String {
@@ -49,7 +49,7 @@ data class MazeCubicleState(override var parent: State?, override var time: Int,
                 goal = Point(point.firstInt(), point.lastInt())
                 map.forEachPoint {
                     val n = it.x * it.x + 3 * it.x + 2 * it.x * it.y + it.y + it.y * it.y + seed.toInt()
-                    val nbBinary = Integer.toBinaryString(n).count { it == '1' }
+                    val nbBinary = Integer.toBinaryString(n.toInt()).count { it == '1' }
 
                     map[it] = if (nbBinary % 2 == 1) '#' else '.'
                 }

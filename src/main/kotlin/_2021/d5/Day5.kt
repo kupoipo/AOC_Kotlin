@@ -19,10 +19,10 @@ class Day5(override val input : String) : Day<Int>(input) {
         Point(x = points[0], y = points[1]) to Point(x = points[2], y = points[3])
     }.toMutableSet() - lines
 
-    private val xMin = lines.minOf { min(it.first.x, it.second.x ) }
-    private val xMax = lines.maxOf { max(it.first.x, it.second.x ) }
-    private val yMin = lines.minOf { min(it.first.y, it.second.y ) }
-    private val yMax = lines.maxOf { max(it.first.y, it.second.y ) }
+    private val xMin = lines.minOf { min(it.first.x, it.second.x ) }.toInt()
+    private val xMax = lines.maxOf { max(it.first.x, it.second.x ) }.toInt()
+    private val yMin = lines.minOf { min(it.first.y, it.second.y ) }.toInt()
+    private val yMax = lines.maxOf { max(it.first.y, it.second.y ) }.toInt()
 
     var map : Matrix<Int> = matrixOf()
 
@@ -30,10 +30,10 @@ class Day5(override val input : String) : Day<Int>(input) {
         map = emptyMatrixOf(yMax+2, xMax+2, 0)
 
         lines.forEach {
-            val x1 = it.first.x
-            val x2 = it.second.x
-            val y1 = it.first.y
-            val y2 = it.second.y
+            val x1 = it.first.x.toInt()
+            val x2 = it.second.x.toInt()
+            val y1 = it.first.y.toInt()
+            val y2 = it.second.y.toInt()
 
             if (x1 != x2) {
                 for (col in min(x1, x2) .. max(x1,x2)) {
@@ -50,10 +50,10 @@ class Day5(override val input : String) : Day<Int>(input) {
     }
     override fun solve2(): Int {
         diag.forEach {
-            var x1 = it.first.x
-            val x2 = it.second.x
-            var y1 = it.first.y
-            val y2 = it.second.y
+            var x1 = it.first.x.toInt()
+            val x2 = it.second.x.toInt()
+            var y1 = it.first.y.toInt()
+            val y2 = it.second.y.toInt()
 
             val dx = if (x2-x1 > 0) 1 else -1
             val dy = if (y2-y1 > 0) 1 else -1

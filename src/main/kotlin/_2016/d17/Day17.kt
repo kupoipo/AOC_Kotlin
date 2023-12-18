@@ -1,6 +1,5 @@
 package _2016.d17
 
-import _2022.d22.position
 import util.*
 import kotlin.system.measureNanoTime
 

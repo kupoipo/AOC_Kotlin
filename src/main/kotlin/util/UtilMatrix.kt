@@ -54,6 +54,13 @@ operator fun <E> Matrix<E>.set(pos: Point, value: E) {
     this[pos.y][pos.x] = value
 }
 
+operator fun <E> MutableList<E>.set(x: Long, value: E) {
+    this[x.toInt()] = value
+}
+operator fun <E> MutableList<E>.get(y: Long): E {
+    return this[y.toInt()]
+}
+
 operator fun <T> Matrix<T>.get(pos: Point) = this[pos.y][pos.x]
 
 fun <T> Matrix<T>.rotateRight(): Unit {
@@ -113,6 +120,7 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
 fun showMap(map: List<List<Any>>) {
     showMap(map, 0, map.size)
 }
+
 
 fun showMap(map: List<List<Any>>, from: Int, to: Int) {
     print("    ")

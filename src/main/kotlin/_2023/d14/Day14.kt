@@ -33,7 +33,7 @@ class Day14(override val input : String) : Day<Long>(input) {
         rocks.sortedByDescending { it.y  }.forEach { r ->
             map[r] = '.'
             (r.y until map.size).firstOrNull { map[it][r.x] != '.' }.let {
-                if (it == null) r.y = map.lastIndex
+                if (it == null) r.y = map.lastIndex.toLong()
                 else r.y = it - 1
             }
             map[r] = 'O'
@@ -43,7 +43,7 @@ class Day14(override val input : String) : Day<Long>(input) {
         rocks.sortedByDescending { it.x  }.forEach { r ->
             map[r] = '.'
             (r.x until map[0].size).firstOrNull { map[r.y][it] != '.' }.let {
-                if (it == null) r.x = map[0].lastIndex
+                if (it == null) r.x = map[0].lastIndex.toLong()
                 else r.x = it - 1
             }
             map[r] = 'O'
