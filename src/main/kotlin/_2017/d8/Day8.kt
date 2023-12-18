@@ -1,14 +1,31 @@
 package _2017.d8
 
+import _2017.register.Register
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day8(override val input : String) : Day<Long>(input) {
+    var max = 0L
     override fun solve1(): Long {
-        return -1
+        input.split("\n").map{ it.split(" ") }.forEach {
+            if (Register.compareTo(it[it.lastIndex - 2], it[it.lastIndex], it[it.lastIndex - 1])) {
+                if (it[1] == "dec") {
+                    Register.dec(it.first(), it[2])
+                } else {
+                    Register.inc(it.first(), it[2])
+                }
+            }
+
+            Register.register.maxOf { localValue -> localValue.value }.let { maxLocal ->
+                if (maxLocal > max) {
+                    max = maxLocal
+                }
+            }
+        }
+        return Register.register.maxOf { it.value }
     }
     override fun solve2(): Long {
-        return -1
+        return max
     }
 }
 
