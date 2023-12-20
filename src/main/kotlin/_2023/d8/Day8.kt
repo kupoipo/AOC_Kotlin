@@ -33,18 +33,6 @@ class Day8(override val input: String) : Day<Long>(input) {
         return step
     }
 
-    private fun PPCM(nb: List<Long>): Long {
-        val m = mutableMapOf<Long, Int>()
-
-        nb.map {
-            it.toPrimeFactor().forEach { (prime, factor) ->
-                m[prime] = m[prime]?.coerceAtMost(factor) ?: factor
-            }
-        }
-
-        return m.map { (k, v) -> k.toDouble().pow(v) }.reduce { i, j -> i * j }.toLong()
-    }
-
     override fun solve1(): Long = nbStepTo("AAA", listOf("ZZZ"))
 
     override fun solve2(): Long = PPCM(graph.keys.filter { it.last() == 'Z' }.let { ends ->

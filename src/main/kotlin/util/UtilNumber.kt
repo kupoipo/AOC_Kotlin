@@ -1,5 +1,7 @@
 package util
 
+import kotlin.math.pow
+
 fun Int.toPrimeFactor(): Map<Long, Int> = this.toLong().toPrimeFactor()
 
 fun Long.toPrimeFactor(): Map<Long, Int> {
@@ -26,4 +28,15 @@ fun Int.allBinaryPossibility() : List<String> {
             this.add(Integer.toBinaryString(it).padStart(pad, '0'))
         }
     }
+}
+fun PPCM(nb: List<Long>): Long {
+    val m = mutableMapOf<Long, Int>()
+
+    nb.map {
+        it.toPrimeFactor().forEach { (prime, factor) ->
+            m[prime] = m[prime]?.coerceAtMost(factor) ?: factor
+        }
+    }
+
+    return m.map { (k, v) -> k.toDouble().pow(v) }.reduce { i, j -> i * j }.toLong()
 }
