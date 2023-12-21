@@ -1,5 +1,7 @@
 package util
 
+import java.lang.Exception
+
 typealias Matrix<T> = MutableList<MutableList<T>>
 
 fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T): Matrix<T> {
@@ -9,7 +11,11 @@ fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T):
     lines.forEachIndexed { y, line ->
         line.forEachIndexed { x, case ->
             run {
-                res[y][x] = function(lines[y][x])
+                try {
+                    res[y][x] = function(lines[y][x])
+                } catch (e: Exception) {
+
+                }
             }
         }
     }

@@ -20,6 +20,7 @@ class Day18(override val input : String) : Day<Long>(input) {
             reg.next()
             reg2.next()
         }
+
         return reg2.nbValueSent.toLong()
     }
 }
