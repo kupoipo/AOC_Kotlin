@@ -1,5 +1,6 @@
 package _2023.d21
 
+import _2023.d21.StepCounterState.Companion.map
 import util.*
 import kotlin.system.measureNanoTime
 
@@ -9,18 +10,19 @@ class StepCounterState(override var parent: State?, override var time: Int, val 
         return buildList {
             position.adjacent(false).forEach {
                 if (it !in reachable)
-                        add(StepCounterState(this@StepCounterState, time + 1, it))
+                    add(StepCounterState(this@StepCounterState, time + 1, it))
             }
         }.toMutableList()
     }
 
     override fun isGoal(): Boolean {
-        return time == 64
+        return time == nbStep
     }
 
     companion object {
         lateinit var map: Matrix<Char>
         var reachable = mutableSetOf<Point>()
+        var nbStep = 1
     }
 
     override fun toString(): String {
@@ -30,14 +32,16 @@ class StepCounterState(override var parent: State?, override var time: Int, val 
 
 class Day21(override val input: String) : Day<Long>(input) {
     init {
-        StepCounterState.map = matrixFromString(input, '.') { it }
-        StepCounterState.reachable = mutableSetOf()
+        map = matrixFromString(input, '.') { it }
     }
 
-    override fun solve1(): Long {
-        val queue = mutableListOf(StepCounterState(null, 0, StepCounterState.map.pointOfFirst { it == 'S' }))
+    fun getNbPositionReachable(i: Int): Long {
+        StepCounterState.nbStep = i
+        StepCounterState.reachable = mutableSetOf()
 
-        while(queue.isNotEmpty()) {
+        val queue = mutableListOf(StepCounterState(null, 0, map.pointOfFirst { it == 'S' }))
+
+        while (queue.isNotEmpty()) {
             val current = queue.removeAt(0)
 
             if (current.isDeadLock())
@@ -46,7 +50,7 @@ class Day21(override val input: String) : Day<Long>(input) {
             if (!current.isGoal())
                 queue.addAll(current.nextStates() as List<StepCounterState>)
 
-            if (current.time % 2 == 0)
+            if (i % 2 == current.time % 2)
                 StepCounterState.reachable.add(current.position)
 
         }
@@ -55,10 +59,41 @@ class Day21(override val input: String) : Day<Long>(input) {
         return StepCounterState.reachable.size.toLong()
     }
 
+    override fun solve1(): Long = getNbPositionReachable(64)
+
     override fun solve2(): Long {
-        return -1
+        map.setCenter('.')
+        map = map.tile(31, 31, '.')
+        map.setCenter('S')
+
+        var list = buildList {
+            for (i in 65 .. (65 + 131 * 2) step 131) {
+                add(getNbPositionReachable(i))
+            }
+        }
+
+        var count = list.last()
+
+        list = buildList {
+            for (i in 1..2) {
+                add(list[i] - list[i - 1])
+            }
+        }
+
+        val sizeStep = list.last() - list.first()
+        var step = list.last() + sizeStep
+        var start = 65L + 262L
+
+        while (start < 26501365L) {
+            start += 131L
+            count += step
+            step += sizeStep
+
+        }
+        return count
     }
 }
+
 
 fun main() {
     val day = Day21(readFullText("_2023/d21/input"))
@@ -72,10 +107,4 @@ fun main() {
     println()
     println()
 
-    val dayTest = Day21(readFullText("_2023/d21/test"))
-    val t1Test = measureNanoTime { println("TEST - Part 1 : " + dayTest.solve1()) }
-    println("Temps partie 1 : ${t1Test / 1e9}s")
-
-    val t2Test = measureNanoTime { println("TEST - Part 2 : " + dayTest.solve2()) }
-    println("Temps partie 2 : ${t2Test / 1e9}s")
 }

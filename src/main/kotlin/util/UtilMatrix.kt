@@ -142,3 +142,25 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int) {
 
 fun <T> Matrix<T>.corners(): List<Point> =
     listOf(Point(0, 0), Point(0, this.size - 1), Point(this[0].size - 1, 0), Point(this[0].size - 1, this.size - 1))
+
+fun <E> Matrix<E>.tile(nbRow: Int, nbCol: Int, default: E): Matrix<E> {
+    val res = emptyMatrixOf(this.size * nbRow, this[0].size * nbCol, default)
+
+    this.points().forEach { p ->
+        repeat(nbRow) { r ->
+            val row = p.y + r * this.size
+            repeat(nbCol) { c ->
+                val col = p.x + c * this[p.y].size
+
+                res[row][col] = this[p]
+            }
+        }
+    }
+
+    return res
+}
+
+
+fun <E> Matrix<E>.setCenter(el: E) {
+    this[this.size/2][this[0].size/2] = el
+}
