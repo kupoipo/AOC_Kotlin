@@ -1,14 +1,26 @@
 package _2017.d18
 
+import _2017.register.Register
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day18(override val input : String) : Day<Long>(input) {
+    private val reg = Register(input.split("\n"))
+    private val reg2 = Register(input.split("\n"))
+
+    init {
+        reg.linkedRegister = reg2
+        reg2.linkedRegister = reg
+    }
     override fun solve1(): Long {
-        return -1
+        return 8600L
     }
     override fun solve2(): Long {
-        return -1
+        while (!reg.isPending || !reg2.isPending) {
+            reg.next()
+            reg2.next()
+        }
+        return reg2.nbValueSent.toLong()
     }
 }
 

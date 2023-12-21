@@ -1,14 +1,64 @@
 package _2017.d16
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
-class Day16(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+class Day16(override val input : String) : Day<String>(input) {
+    var word = "abcdefghijklmnop".toMutableList()
+    val instructions = input.split(",")
+    val listWord = mutableListOf<String>()
+
+    fun apply(instruction: String) {
+        if (instruction.matches(Regex("""x\d+/\d+"""))) {
+            instruction.allInts().let { (i1, i2) -> word.swap(i1, i2) }
+        }
+
+        if (instruction.matches(Regex("""p\w/\w"""))) {
+            val l1 = instruction[1]
+            val l2 = instruction.last()
+            word.swap(word.indexOf(l1), word.indexOf(l2))
+        }
+
+        if (instruction.matches(Regex("""s\d+"""))) {
+            val i = instruction.firstInt()
+            val before = word.takeLast(i)
+            val after = word.dropLast(i)
+            word = (before + after).toMutableList()
+
+        }
     }
-    override fun solve2(): Long {
-        return -1
+
+    fun solve(wordToTest: String): String {
+        word = wordToTest.toMutableList()
+        for (i in instructions) {
+            apply(i)
+        }
+        return word.joinToString("")
+    }
+
+    override fun solve1(): String {
+        return solve("abcdefghijklmnop")
+    }
+    override fun solve2(): String {
+        var i = 1
+        var currentWord = word.joinToString("")
+        listWord.add(currentWord)
+
+        var max = 1_000_000_000
+
+        while (i < max) {
+            currentWord = solve(currentWord)
+
+            if (currentWord in listWord) {
+                val j = listWord.size - listWord.indexOfFirst { it == currentWord }
+
+                i %= j
+                max %= j
+            }
+            listWord.add(currentWord)
+            i++
+        }
+
+        return currentWord
     }
 }
 

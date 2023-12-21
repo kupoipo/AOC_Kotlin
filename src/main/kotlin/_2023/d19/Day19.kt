@@ -8,6 +8,8 @@ import util.allLong
 import util.readFullText
 import kotlin.system.measureNanoTime
 
+val reg = Register(listOf())
+
 class Condition(val left: String, val operand: String, val right: String, val goal: String) {
     override fun toString(): String {
         return "$left$operand$right : $goal"
@@ -19,7 +21,7 @@ class Rule(val final: String) {
 
     fun next(): String {
         for (condition in conditions) {
-            if (Register.compareTo(condition.left, condition.right, condition.operand)) {
+            if (reg.compareTo(condition.left, condition.right, condition.operand)) {
                 return condition.goal
             }
         }
@@ -63,10 +65,10 @@ class Day19(override val input: String) : Day<Long>(input) {
 
     private fun acceptRating(line: String): Boolean {
         line.allLong().let { (x, m, a, s) ->
-            Register.register["x"] = x
-            Register.register["m"] = m
-            Register.register["a"] = a
-            Register.register["s"] = s
+            reg.register["x"] = x
+            reg.register["m"] = m
+            reg.register["a"] = a
+            reg.register["s"] = s
         }
 
         var instruction = "in"

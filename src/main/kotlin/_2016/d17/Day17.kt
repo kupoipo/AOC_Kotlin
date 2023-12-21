@@ -36,7 +36,7 @@ class Day17(override val input : String) : Day<String>(input) {
         return (goal as StateD17_2016).path.drop(input.length)
     }
     override fun solve2(): String {
-        val goal = State.allPathTo(start)
+        val goal = State.allPathFrom(start)
         return goal.maxBy { it.time }.time.toString()
     }
 }

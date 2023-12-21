@@ -1,8 +1,6 @@
 package util
 
-import _2016.d13.MazeCubicleState
-import _2016.d22.DFState
-import _2023.d17.LavaState
+import _2023.d21.StepCounterState
 import java.util.PriorityQueue
 
 /**
@@ -44,7 +42,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
         /**
          * For using this function, no need to override timeToGoal
          */
-        fun allPathTo(from: State): MutableList<State> {
+        fun allPathFrom(from: State): MutableList<State> {
             if (from.isDeadLock())
                 return mutableListOf()
 
@@ -54,9 +52,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             val paths = mutableListOf<State>()
 
             from.nextStates().forEach {
-                val currentPaths = allPathTo(it)
-                if (currentPaths.isNotEmpty())
-                    paths.addAll(currentPaths)
+                paths.addAll(allPathFrom(it))
             }
 
             return paths

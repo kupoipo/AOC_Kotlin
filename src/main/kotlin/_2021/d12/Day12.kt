@@ -80,7 +80,7 @@ class Day12(override val input : String) : Day<Long>(input) {
     }
 
     override fun solve1(): Long {
-        return State.allPathTo(Day12State(nodes["start"]!!)).size.toLong()
+        return State.allPathFrom(Day12State(nodes["start"]!!)).size.toLong()
     }
     override fun solve2(): Long {
         return -1
