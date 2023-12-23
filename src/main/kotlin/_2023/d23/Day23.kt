@@ -1,96 +1,135 @@
 package _2023.d23
 
+import _2022.d22.direction
+import d7.list
 import kotlin.system.measureNanoTime
 import util.*
 
-class D23State(override var parent: State?, override var time: Int,  val p: Point, val visited: Set<Point>) : State(parent, time) {
-    override fun hashCode(): Int {
-        return time.hashCode()
-    }
+class D23Node(val parent: D23Node?, val position: Point, val step: Int, val d: Direction) {
+    val children = mutableMapOf<D23Node, Int>()
+    val id = name++
 
-    override fun isDeadLock(): Boolean {
-        return p.outOfMap(map) || map[p] == '#'
-    }
-
-    override fun nextStates(): MutableList<State> {
-        return buildList {
-            when (map[p]) {
-                '.' -> {
-                    for (position in p.adjacent(false)) {
-                        if (position !in visited) {
-                            add(D23State(this@D23State, time + 1, position, visited.toMutableSet().apply { add(position) }))
-                        }
-                    }
-                }
-                '>' -> {
-                    if (p+ Direction.RIGHT !in visited) {
-                        add(D23State(this@D23State, time + 1, p + Direction.RIGHT, visited.toMutableSet().apply { add(p+Direction.RIGHT) }))
-                    }
-                }
-                '<' ->  {
-                    if (p+ Direction.LEFT !in visited) {
-                        add(D23State(this@D23State, time + 1, p + Direction.LEFT, visited.toMutableSet().apply { add(p+Direction.LEFT) }))
-                    }
-                }
-                '^' -> {
-                    if (p+ Direction.UP !in visited) {
-                        add(D23State(this@D23State, time + 1, p + Direction.UP, visited.toMutableSet().apply { add(p+Direction.UP) }))
-                    }
-                }
-                else ->  {
-                    if (p+ Direction.DOWN !in visited) {
-                        add(D23State(this@D23State, time + 1, p + Direction.DOWN, visited.toMutableSet().apply { add(p+Direction.DOWN) }))
-                    }
-                }
-            }
-        }.toMutableList()
-    }
-
-    override fun isGoal(): Boolean {
-        return p == Point(map[0].lastIndex - 1, map.lastIndex)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is D23State)
-            return false
-        return other.p == p
+    override fun toString(): String {
+        return "$id : [${position.y}, ${position.x}]"
     }
 
     companion object {
-        lateinit var map : Matrix<Char>
+        var name = 1
     }
 }
 
-class Day23(override val input : String) : Day<Long>(input) {
-    init {
-        D23State.map = matrixFromString(input, '.') { it }
-    }
+/**
+ * 2182 - 6670
+ */
+class Day23(override val input: String) : Day<Long>(input) {
+    val map = matrixFromString(input, '.') { it }
+    val goal = Point(map[0].lastIndex - 1, map.lastIndex)
+
     override fun solve1(): Long {
-        val start = D23State(null, 0, Point(1,0), setOf(Point(1,0)))
-        val paths = State.longestPathFrom(start)!!.rebuildPath().size
-        return paths.toLong()
+        return 0
     }
+
+    fun longestPathFrom(root: D23Node, size: Long, path: Set<D23Node>): Long {
+        if (root.id == D23Node.name - 1) {
+            return size
+        }
+
+        var maxSize = 0L
+
+        for ((c, s) in root.children) {
+            if (c in path)
+                continue
+
+            val currentSize = longestPathFrom(c, size +s, path.toMutableSet().apply { add(c) })
+
+            if (currentSize > maxSize)
+                maxSize = currentSize
+        }
+
+        return maxSize
+    }
+
     override fun solve2(): Long {
-        return -1
+        val graph = mutableMapOf<Point, D23Node>()
+        val root = D23Node(null, Point(1, 0), 0, Direction.DOWN)
+        val queue = mutableListOf(Point(1, 0) to Direction.DOWN)
+        graph[Point(1, 0)] = root
+
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            val currentNode = graph[current.first]
+            var position = current.first
+            var nextDir = current.second
+            var nbStep = 1
+
+            position += nextDir
+
+            while (position != goal
+                && position.adjacent(false).count { map[it] in "^<>v" } < 2
+            ) {
+                while (map[position] != '#' && position != goal
+                    && position.adjacent(false).count { map[it] in "^<>v" } < 2
+                ) {
+                    position += nextDir
+                    nbStep++
+                }
+
+                if (map[position] == '#') {
+                    nbStep--
+                    position += nextDir.opposite()
+                    for (dir in Direction.values()) {
+                        if (nextDir == dir.opposite() || dir == Direction.NONE)
+                            continue
+
+                        if (map[position + dir] != '#') {
+                            nextDir = dir
+                            break
+                        }
+                    }
+                }
+            }
+
+            if (position == goal) {
+                val node = graph.getOrPut(position) { D23Node(currentNode, position, 0, nextDir) }
+                currentNode!!.children[node] = nbStep
+            } else {
+                if (graph[position] == null) {
+                    val node = graph.getOrPut(position) { D23Node(currentNode, position, 0, nextDir) }
+                    currentNode!!.children[node] = nbStep
+
+                    for (dir in Direction.values()) {
+                        if ((nextDir == dir.opposite() && position.adjacent(false).count { map[it] in "^<>v" } != 4) || dir == Direction.NONE || map[position + dir] == '#')
+                            continue
+
+                        queue.add(position to dir)
+                    }
+                } else {
+                    val node = graph[position]!!
+                    currentNode!!.children[node] = nbStep
+                }
+            }
+        }
+
+        return longestPathFrom(root, 0, setOf(root))
     }
 }
 
 fun main() {
     val day = Day23(readFullText("_2023/d23/input"))
 
-  /*  val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }
+    val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }
     println("Temps partie 1 : ${t1/1e9}s")
 
     val t2 = measureNanoTime { println("Part 2 : " + day.solve2()) }
-    println("Temps partie 2 : ${t2/1e9}s")*/
+    println("Temps partie 2 : ${t2/1e9}s")
 
     println()
     println()
 
     val dayTest = Day23(readFullText("_2023/d23/test"))
     val t1Test = measureNanoTime { println("TEST - Part 1 : " + dayTest.solve1()) }
-    println("Temps partie 1 : ${t1Test/1e9}s")
+    println("Temps partie 1 : ${t1Test / 1e9}s")
 
     val t2Test = measureNanoTime { println("TEST - Part 2 : " + dayTest.solve2()) }
-    println("Temps partie 2 : ${t2Test/1e9}s")
+    println("Temps partie 2 : ${t2Test / 1e9}s")
 }

@@ -1,7 +1,8 @@
 package util
 
-enum class Direction(val dx: Int, val dy: Int) {
-    LEFT(-1, 0), RIGHT(1, 0), UP(0, -1), DOWN(0, 1), NONE(0, 0);
+enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
+
+    LEFT(-1, 0, '<'), RIGHT(1, 0, '>'), UP(0, -1, '^'), DOWN(0, 1, 'v'), NONE(0, 0,' ');
 
     operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
     fun opposite(): Direction {

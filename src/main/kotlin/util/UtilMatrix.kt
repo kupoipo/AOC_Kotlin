@@ -1,6 +1,7 @@
 package util
 
 import java.lang.Exception
+import java.util.Objects
 
 typealias Matrix<T> = MutableList<MutableList<T>>
 
@@ -63,6 +64,7 @@ operator fun <E> Matrix<E>.set(pos: Point, value: E) {
 operator fun <E> MutableList<E>.set(x: Long, value: E) {
     this[x.toInt()] = value
 }
+
 operator fun <E> MutableList<E>.get(y: Long): E {
     return this[y.toInt()]
 }
@@ -84,7 +86,7 @@ fun <T> Matrix<T>.rotateRight(): Unit {
     }
 }
 
-fun <T> MutableList<T>.swap(i1: Int, i2 : Int) {
+fun <T> MutableList<T>.swap(i1: Int, i2: Int) {
     var index1 = i1
     var index2 = i2
 
@@ -94,7 +96,7 @@ fun <T> MutableList<T>.swap(i1: Int, i2 : Int) {
     }
 
     val o1 = this.removeAt(index1)
-    val o2 = this.removeAt(index2-1)
+    val o2 = this.removeAt(index2 - 1)
 
     this.add(index1, o2)
     this.add(index2, o1)
@@ -118,9 +120,19 @@ fun <T> Matrix<T>.clone(): Matrix<T> {
     return res
 }
 
+fun <T> Matrix<T>.flip() {
+    for (i in this.indices) {
+        for (j in 0..if (this[0].size % 2 == 0) (this.size / 2 - 1) else this.size/2) {
+            val temp = this[i][j]
+
+            this[i][j] = this[i][this[i].lastIndex - j]
+            this[i][this[i].lastIndex - j] = temp
+        }
+    }
+}
 
 fun Matrix<Char>.addFirstLine(element: Char?) {
-    this.add(0, MutableList<Char>(this[0].size) { element?.let { element } ?: ' ' })
+    this.add(0, MutableList(this[0].size) { element?.let { element } ?: ' ' })
 }
 
 fun showMap(map: List<List<Any>>) {
@@ -168,5 +180,5 @@ fun <E> Matrix<E>.tile(nbRow: Int, nbCol: Int, default: E): Matrix<E> {
 
 
 fun <E> Matrix<E>.setCenter(el: E) {
-    this[this.size/2][this[0].size/2] = el
+    this[this.size / 2][this[0].size / 2] = el
 }
