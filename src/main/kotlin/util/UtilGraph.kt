@@ -95,6 +95,40 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             return null
         }
 
+        fun longestPathFrom(from: State): State? {
+            val comparator: Comparator<State> = compareBy { -it.timeWeighed() }
+            val queue = PriorityQueue(comparator)
+            val queueCost = mutableMapOf<State, Int>()
+            val visited = mutableSetOf<State>()
+
+            queue.add(from)
+
+            while (queue.isNotEmpty()) {
+                val current = queue.peek()
+
+                visited.add(current)
+
+                current.nextStates().forEach { nextState ->
+                    if (nextState.isGoal()) return nextState
+
+                    if (!(nextState in visited || nextState.isDeadLock())) {
+
+                        if (queueCost[nextState] == null) {
+                            queueCost[nextState] = nextState.timeWeighed()
+                            queue.add(nextState)
+                        } else {
+                            if (queueCost[nextState]!! < nextState.timeWeighed()) {
+                                queueCost[nextState] = nextState.timeWeighed()
+                                queue.add(nextState)
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null
+        }
+
     }
 
     open fun timeWeighed(): Int {
