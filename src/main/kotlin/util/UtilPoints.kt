@@ -1,5 +1,7 @@
 package util
 
+import java.math.BigDecimal
+
 enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
 
     LEFT(-1, 0, '<'), RIGHT(1, 0, '>'), UP(0, -1, '^'), DOWN(0, 1, 'v'), NONE(0, 0,' ');
@@ -132,6 +134,39 @@ data class Point3D(val x: Int, val y: Int, val z: Int) {
     override fun toString(): String = "[$x,$y,$z]"
 }
 
+data class Point3DLong(val x: Long, val y: Long, val z: Long) {
+    operator fun plus(other: Point3DLong) = Point3DLong(other.x + x, other.y + y, other.z + z)
+    operator fun minus(other: Point3DLong) = Point3DLong(other.x - x, other.y - y, other.z - z)
+    operator fun times(n: Int) = Point3DLong(x * n, y * n, z * n)
+
+    fun getNeighbors(): List<Point3DLong> {
+        val neighbors = mutableListOf<Point3DLong>()
+        DIRECTION3D.values().forEach {
+            var newPoint = Point3DLong(x + it.dx, y + it.dy, z + it.dz)
+            neighbors.add(newPoint)
+        }
+        return neighbors
+    }
+
+    override fun toString(): String = "[$x,$y,$z]"
+}
+
+data class Point3DBigDecimal(val x: BigDecimal, val y: BigDecimal, val z: BigDecimal) {
+    operator fun plus(other: Point3DBigDecimal) = Point3DBigDecimal(other.x + x, other.y + y, other.z + z)
+    operator fun minus(other: Point3DBigDecimal) = Point3DBigDecimal(other.x - x, other.y - y, other.z - z)
+    operator fun times(n: BigDecimal) = Point3DBigDecimal(x * n, y * n, z * n)
+
+    fun getNeighbors(): List<Point3DBigDecimal> {
+        val neighbors = mutableListOf<Point3DBigDecimal>()
+        DIRECTION3D.values().forEach {
+            var newPoint = Point3DBigDecimal(x + BigDecimal(it.dx), y + BigDecimal(it.dy), z + BigDecimal(it.dz))
+            neighbors.add(newPoint)
+        }
+        return neighbors
+    }
+
+    override fun toString(): String = "[$x,$y,$z]"
+}
 
 fun calculateGaussianSurface(points: List<Point>): Long {
     require(points.size >= 3 && points.first() == points.last()) {

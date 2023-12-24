@@ -64,9 +64,15 @@ class Day23(override val input: String) : Day<Long>(input) {
 
             position += nextDir
 
+            /**
+             * Moving toward the next intersection of the maze
+             */
             while (position != goal
                 && position.adjacent(false).count { map[it] in "^<>v" } < 2
             ) {
+                /**
+                 *
+                 */
                 while (map[position] != '#' && position != goal
                     && position.adjacent(false).count { map[it] in "^<>v" } < 2
                 ) {

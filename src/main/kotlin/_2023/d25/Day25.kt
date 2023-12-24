@@ -1,10 +1,29 @@
 package _2023.d25
 
 import util.Day
+import util.random
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day25(override val input : String) : Day<Long>(input) {
+
+
     override fun solve1(): Long {
+        val choixJeremy = MutableList(1000) { random(3, 0) }.groupingBy { it }.eachCount()
+        var f = 0
+        var t = 0
+
+        repeat(1000) {
+            val porte = random(3, 0)
+
+            if (porte == choixJeremy[it]) {
+                f++
+            } else {
+                t++
+            }
+        }
+
+
+
         return -1
     }
     override fun solve2(): Long {

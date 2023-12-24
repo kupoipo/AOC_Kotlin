@@ -4,11 +4,8 @@ import util.*
 import kotlin.system.measureNanoTime
 
 class Day21(override val input: String) : Day<Long>(input) {
-    var map : Matrix<Char> = mutableListOf(".#.".toMutableList(), "..#".toMutableList(), "###".toMutableList())
-
-    //var map: Matrix<Char> = mutableListOf("#..#".toMutableList(), "....".toMutableList(), "....".toMutableList(), "#..#".toMutableList())
-
-    var rules = input.split("\n").map {
+    var map: Matrix<Char> = mutableListOf(".#.".toMutableList(), "..#".toMutableList(), "###".toMutableList())
+    private val rules = input.split("\n").map {
         it.split(" => ")
             .let { (a, b) ->
                 matrixFromString(
@@ -20,7 +17,7 @@ class Day21(override val input: String) : Day<Long>(input) {
             }
     }
 
-    fun enhancementRule(tile: Matrix<Char>): Matrix<Char> {
+    private fun enhancementRule(tile: Matrix<Char>): Matrix<Char> {
         for (r in rules) {
             repeat(2) {
                 repeat(4) {
@@ -35,8 +32,8 @@ class Day21(override val input: String) : Day<Long>(input) {
         throw Exception("No rule found for $tile.")
     }
 
-    fun nextState() {
-        val size = if (map.size % 3 == 0) 3 else 2
+    private fun nextState() {
+        val size = if (map.size % 2 == 0) 2 else 3
 
         val mapTemp = map.windowed(size, size).map { pairs ->
             buildList {
@@ -50,16 +47,25 @@ class Day21(override val input: String) : Day<Long>(input) {
             }
         }.flatten()
 
-        println(mapTemp.map { enhancementRule(it.toMutableList()) })
+        val nbFusion = if (map.size % 2 == 0) map.size / 2 else map.size / 3
+        val res = emptyMatrixOf(0, 0, '.')
 
-        map = mapTemp.map { enhancementRule(it.toMutableList()) }.flatten().toMutableList()
+        mapTemp.map { enhancementRule(it.toMutableList()) }.windowed(nbFusion, nbFusion).forEach {
+            for (i in it[0].indices) {
+                val line = mutableListOf<Char>()
+                for (matrix in it) {
+                    line.addAll(matrix[i])
+                }
+                res.add(line)
+            }
+        }
+
+        map = res
     }
 
     override fun solve1(): Long {
-        repeat(5) {
+        repeat(18) {
             nextState()
-            println(map)
-            println( map.sumOf { it.count { c -> c == '#' } }.toLong())
         }
         return map.sumOf { it.count { c -> c == '#' } }.toLong()
     }
