@@ -1,7 +1,5 @@
 package _2023.d23
 
-import _2022.d22.direction
-import d7.list
 import kotlin.system.measureNanoTime
 import util.*
 
@@ -40,7 +38,7 @@ class Day23(override val input: String) : Day<Long>(input) {
             if (c in path)
                 continue
 
-            val currentSize = longestPathFrom(c, size +s, path.toMutableSet().apply { add(c) })
+            val currentSize = longestPathFrom(c, size + s, path.toMutableSet().apply { add(c) })
 
             if (currentSize > maxSize)
                 maxSize = currentSize
@@ -98,7 +96,9 @@ class Day23(override val input: String) : Day<Long>(input) {
                     currentNode!!.children[node] = nbStep
 
                     for (dir in Direction.values()) {
-                        if ((nextDir == dir.opposite() && position.adjacent(false).count { map[it] in "^<>v" } != 4) || dir == Direction.NONE || map[position + dir] == '#')
+                        if ((nextDir == dir.opposite() && position.adjacent(false)
+                                .count { map[it] in "^<>v" } != 4) || dir == Direction.NONE || map[position + dir] == '#'
+                        )
                             continue
 
                         queue.add(position to dir)
@@ -118,10 +118,10 @@ fun main() {
     val day = Day23(readFullText("_2023/d23/input"))
 
     val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }
-    println("Temps partie 1 : ${t1/1e9}s")
+    println("Temps partie 1 : ${t1 / 1e9}s")
 
     val t2 = measureNanoTime { println("Part 2 : " + day.solve2()) }
-    println("Temps partie 2 : ${t2/1e9}s")
+    println("Temps partie 2 : ${t2 / 1e9}s")
 
     println()
     println()
