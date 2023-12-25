@@ -14,7 +14,13 @@ class Day20(override val input: String) : Day<Long>(input) {
     }
 
     override fun solve1(): Long {
-        return particles.indexOf(particles.minBy { it.acceleration.manhattanLength }).toLong()
+        val min = particles.minOf { it.acceleration.manhattanLength }
+        for(v in particles.filter { it.acceleration.manhattanLength == min }) {
+            println(v)
+            println(particles.indexOf(v))
+        }
+        return particles.indexOf(particles.filter { it.acceleration.manhattanLength == min }.minBy { it.position.manhattanLength })
+            .toLong()
     }
 
     override fun solve2(): Long {
@@ -49,10 +55,9 @@ class Day20(override val input: String) : Day<Long>(input) {
     }
 
 
-
     data class Vector(val x: Long, val y: Long, val z: Long) {
 
-        val manhattanLength get() = setOf(x, y, z).map(::abs).sum()
+        val manhattanLength get() = listOf(x, y, z).map(::abs).sum()
         infix fun distanceTo(other: Vector) = (this - other).manhattanLength
 
         operator fun plus(other: Vector) = Vector(this.x + other.x, this.y + other.y, this.z + other.z)
@@ -74,6 +79,10 @@ class Day20(override val input: String) : Day<Long>(input) {
         }
 
         infix fun distanceTo(other: Particle) = this.position distanceTo other.position
+
+        override fun toString(): String {
+            return "$acceleration $position $velocity"
+        }
     }
 }
 

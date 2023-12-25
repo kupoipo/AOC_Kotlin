@@ -1,15 +1,41 @@
 package _2023.d25
 
 import util.Day
+import util.findAllMatch
+import util.random
 import util.readFullText
 import kotlin.system.measureNanoTime
+import org.jgrapht.alg.StoerWagnerMinimumCut
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.DefaultUndirectedGraph
+
+/**
+ * Thanks to https://github.com/eagely/adventofcode for the library.
+ */
 class Day25(override val input : String) : Day<Long>(input) {
+    val graph = DefaultUndirectedGraph<String, DefaultEdge>(DefaultEdge::class.java)
+    init {
+        input.split("\n").map { it.findAllMatch("""\w+""") }.forEach {
+            val origin = it.first()
+            graph.addVertex(origin)
+
+            for (linked in it.drop(1)) {
+                graph.addVertex(linked)
+                graph.addEdge(origin, linked)
+            }
+        }
+    }
+
     override fun solve1(): Long {
-        return -1
+        val minCut = StoerWagnerMinimumCut(graph).minCut()
+        println(minCut)
+        graph.removeAllVertices(minCut)
+        return (graph.vertexSet().size * minCut.size).toLong()
     }
     override fun solve2(): Long {
         return -1
     }
+
 }
 
 fun main() {
