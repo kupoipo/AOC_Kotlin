@@ -1,16 +1,30 @@
 package _2023.d24
 
+import _2022.d22.position
 import util.*
+import java.lang.Math.abs
 import java.math.BigDecimal
 import kotlin.system.measureNanoTime
 
 typealias Position = Pair<BigDecimal, BigDecimal>
+
+data class VectorStone(
+    val direction: Point3DBigDecimal,
+    val hailstoneDestroyed: MutableSet<HailStone>,
+    var position: Point3DBigDecimal = Point3DBigDecimal(
+        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO
+    )
+)
 
 data class HailStone(val position: Point3DBigDecimal, val velocity: Point3DBigDecimal) {
     private val positionT1 = position + velocity
     val num = ID++
     private fun det(x: Position, y: Position): BigDecimal {
         return x.first * y.second - x.second * y.first
+    }
+
+    fun posAtTime(time: Int): Point3DBigDecimal {
+        return position + velocity * BigDecimal(time)
     }
 
     fun intersectAtTime(other: HailStone): Position {
@@ -80,11 +94,62 @@ class Day24(override val input: String) : Day<Long>(input) {
         }
     }.toLong()
 
+
     override fun solve2(): Long {
-        /*for ((k, v) in nbCollide) {
-            println("$k = $v")
-        }*/
-        return -1
+        val h1 = hailstones[0]
+        val h2 = hailstones[1]
+
+        for (x in -300L..300L) {
+            for (y in -300L..300L) {
+                for (z in -300L..300L) {
+                    val dx = BigDecimal(x)
+                    val dy = BigDecimal(y)
+                    val dz = BigDecimal(z)
+
+                    if (dx * dy * dz == BigDecimal.ZERO)
+                        continue
+
+                    val a = h1.velocity.x - dx
+                    val b = h1.velocity.y - dy
+                    val c = h2.velocity.x - dx
+                    val d = h2.velocity.y - dy
+
+                    if (c == BigDecimal.ZERO || (a * d) - (b * c) == BigDecimal.ZERO) {
+                        continue;
+                    }
+
+                    /**
+                     * Interception time
+                     */
+                    val t =
+                        (d * (h2.position.x - h1.position.x) - c * (h2.position.y - h1.position.y)) / ((a * d) - (b * c));
+
+                    val startPosition = Point3DBigDecimal(
+                        h1.position.x + h1.velocity.x * t - dx * t,
+                        h1.position.y + h1.velocity.y * t - dy * t,
+                        h1.position.z + h1.velocity.z * t - dz * t
+                    )
+
+                    /**
+                     * Check if every hailstone is on the current vector
+                     */
+                    if (!hailstones.any { h ->
+                            val u = if (h.velocity.x != dx) {
+                                (startPosition.x - h.position.x) / (h.velocity.x - dx);
+                            } else if (h.velocity.y != dy) {
+                                (startPosition.y - h.position.y) / (h.velocity.y - dy);
+                            } else {
+                                (startPosition.z - h.position.z) / (h.velocity.z - dz);
+                            }
+
+                            (startPosition.x + u * dx != h.position.x + u * h.velocity.x) || (startPosition.y + u * dy != h.position.y + u * h.velocity.y) || (startPosition.z + u * dz != h.position.z + u * h.velocity.z)
+                        }) {
+                        return (startPosition.x + startPosition.y + startPosition.z).toLong()
+                    }
+                }
+            }
+        }
+        return 0L
     }
 }
 

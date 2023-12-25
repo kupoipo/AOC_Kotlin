@@ -155,6 +155,7 @@ data class Point3DBigDecimal(val x: BigDecimal, val y: BigDecimal, val z: BigDec
     operator fun plus(other: Point3DBigDecimal) = Point3DBigDecimal(other.x + x, other.y + y, other.z + z)
     operator fun minus(other: Point3DBigDecimal) = Point3DBigDecimal(other.x - x, other.y - y, other.z - z)
     operator fun times(n: BigDecimal) = Point3DBigDecimal(x * n, y * n, z * n)
+    operator fun div(n: BigDecimal) = Point3DBigDecimal(x / n, y / n, z / n)
 
     fun getNeighbors(): List<Point3DBigDecimal> {
         val neighbors = mutableListOf<Point3DBigDecimal>()
@@ -163,6 +164,12 @@ data class Point3DBigDecimal(val x: BigDecimal, val y: BigDecimal, val z: BigDec
             neighbors.add(newPoint)
         }
         return neighbors
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Point3DBigDecimal)
+            return false
+        return x == other.x && y == other.y && z == other.z
     }
 
     override fun toString(): String = "[$x,$y,$z]"
