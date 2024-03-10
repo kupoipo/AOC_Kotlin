@@ -1,10 +1,8 @@
 package _2017.register
 
-import util.isInt
-import java.lang.Exception
-
 class Register(val instructions: List<String>) {
     val register = mutableMapOf<String, Long>()
+    val nbInstructions = mutableMapOf<String, Long>()
     private var valuesSent = mutableListOf<Long>()
     private var registersWaiting = mutableListOf<String>()
     var linkedRegister: Register? = null
@@ -16,15 +14,19 @@ class Register(val instructions: List<String>) {
         register["p"] = numRegister++
     }
 
-    fun jgz(key: String, value: String): Long {
+    private fun jgz(key: String, value: String): Long {
         if (getValue(key) > 0)
             return getValue(value)
 
         return 1
     }
 
-    fun set(key: String, value: String) {
+    operator fun set(key: String, value: String) {
         register[key] = getValue(value)
+    }
+
+    operator fun set(key: String, value: Long) {
+        register[key] = value
     }
 
     private fun pop() {
@@ -36,18 +38,18 @@ class Register(val instructions: List<String>) {
         }
     }
 
-    fun rcv(key: String) {
+    private fun rcv(key: String) {
         registersWaiting.add(key)
         pop()
     }
 
-    fun snd(key: String) {
+    private fun snd(key: String) {
         valuesSent.add(getValue(key))
         linkedRegister!!.msgSend()
         nbValueSent++
     }
 
-    fun msgSend() {
+    private fun msgSend() {
         if (isPending) {
             pop()
         }
@@ -71,16 +73,21 @@ class Register(val instructions: List<String>) {
         }
     }
 
-    fun execute(instruction: String) {
+    private fun instructionImpactIndex(first: String): Boolean {
+        return listOf("jgz", "jnz").contains(first)
+    }
+
+    private fun execute(instruction: String) {
         val data = instruction.split(" ")
 
         assert(data.size in 2..3)
 
-        if (data.first() != "jgz") skip()
+        nbInstructions[data.first()] = nbInstructions.getOrPut(data.first()) { 0 } + 1
+        if (!instructionImpactIndex(data.first())) skip()
 
         when (data.first()) {
             "add", "inc" -> inc(data[1], data.last())
-            "dec" -> dec(data[1], data.last())
+            "dec", "sub" -> dec(data[1], data.last())
             "mul" -> mul(data[1], data.last())
             "mod" -> mod(data[1], data.last())
             "snd" -> snd(data.last())
@@ -89,6 +96,7 @@ class Register(val instructions: List<String>) {
             "jgz" -> {
                 index += jgz(data[1], data.last())
             }
+            "jnz" -> jnz(data[1], data.last())
 
             else -> throw Exception("${data.first()} unknown.")
         }
@@ -103,27 +111,41 @@ class Register(val instructions: List<String>) {
         execute(instructions[index.toInt()])
     }
 
-    fun skip() {
+    private fun skip() {
         index += 1
     }
 
+    /**
+     * Add on day 23, jumps with an offset of value if the key is != 0
+     */
+    private fun jnz(key: String, value: String) {
+        index += if (getValue(key) == 0L) 1 else getValue(value)
+    }
     fun inc(key: String, value: String) {
-        register[key] = register.getOrPut(key) { 0 } + getValue(value)
+        register[key] = getValue(key) + getValue(value)
     }
 
     fun dec(key: String, value: String) {
-        register[key] = register.getOrPut(key) { 0 } - getValue(value)
+        register[key] = getValue(key) - getValue(value)
     }
 
-    fun mul(key: String, value: String) {
-        register[key] = register.getOrPut(key) { 0 } * getValue(value)
+    private fun mul(key: String, value: String) {
+        register[key] = getValue(key) * getValue(value)
     }
 
-    fun mod(key: String, value: String) {
-        register[key] = register.getOrPut(key) { 0 } % getValue(value)
+    private fun mod(key: String, value: String) {
+        register[key] = getValue(key) % getValue(value)
     }
 
     companion object {
         var numRegister = 0L
+    }
+
+    override fun toString(): String {
+        return register.toString()
+    }
+
+    operator fun get(s: String): Long {
+        return getValue(s)
     }
 }

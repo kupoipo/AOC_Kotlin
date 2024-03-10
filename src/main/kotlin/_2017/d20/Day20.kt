@@ -13,13 +13,12 @@ class Day20(override val input: String) : Day<Long>(input) {
             .let { Particle(Vector(it[0], it[1], it[2]), Vector(it[3], it[4], it[5]), Vector(it[6], it[7], it[8])) }
     }
 
+    /**
+     * If you have two particle with the same acceleration AND same velocity, you have to check their position, but that's kinda impossible
+     */
     override fun solve1(): Long {
         val min = particles.minOf { it.acceleration.manhattanLength }
-        for(v in particles.filter { it.acceleration.manhattanLength == min }) {
-            println(v)
-            println(particles.indexOf(v))
-        }
-        return particles.indexOf(particles.filter { it.acceleration.manhattanLength == min }.minBy { it.position.manhattanLength })
+        return particles.indexOf(particles.filter { it.acceleration.manhattanLength == min }.maxBy { it.velocity.manhattanLength })
             .toLong()
     }
 

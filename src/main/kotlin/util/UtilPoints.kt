@@ -17,6 +17,24 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
         }
     }
 
+    fun right() : Direction{
+        return when (this) {
+            LEFT -> UP
+            UP -> RIGHT
+            RIGHT -> DOWN
+            else -> LEFT
+        }
+    }
+
+    fun left() : Direction {
+        return when (this) {
+            LEFT -> DOWN
+            DOWN -> RIGHT
+            RIGHT -> UP
+            else -> LEFT
+        }
+    }
+
     companion object {
         fun fromChar(char: Char): Direction {
             return when (char) {
