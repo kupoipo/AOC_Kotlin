@@ -17,6 +17,7 @@ fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T):
                 } catch (e: Exception) {
 
                 }
+
             }
         }
     }
@@ -136,12 +137,12 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
     this.add(0, MutableList(this[0].size) { element?.let { element } ?: ' ' })
 }
 
-fun showMap(map: List<List<Any>>) {
-    showMap(map, 0, map.size)
+fun showMap(map: List<List<Any>>, transformation: (Any) -> (String) = { it.toString() }) {
+    showMap(map, 0, map.size, transformation)
 }
 
 
-fun showMap(map: List<List<Any>>, from: Int, to: Int) {
+fun showMap(map: List<List<Any>>, from: Int, to: Int, transformation: (Any) -> (String)) {
     print("    ")
 
     for (i in 0 until map[0].size) {
@@ -153,7 +154,7 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int) {
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
         print("%4d".format(index))
         for (cell in line) {
-            print("%4s".format(cell))
+            print("%4s".format(transformation(cell)))
         }
         println()
     }

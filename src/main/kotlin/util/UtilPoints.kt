@@ -49,6 +49,7 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
 }
 
 data class Point(var x: Long, var y: Long) {
+    var id = ID++
     constructor(p: Point) : this(p.x, p.y)
 
     constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
@@ -128,6 +129,10 @@ data class Point(var x: Long, var y: Long) {
 
     override fun hashCode(): Int {
         return this.toString().hashCode()
+    }
+
+    companion object {
+        var ID = 1
     }
 }
 
