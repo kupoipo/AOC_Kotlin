@@ -52,6 +52,16 @@ fun <T> List<T>.allPermutation(): List<List<T>> {
     return getPermutations(this)
 }
 
+fun <T> List<T>.combination(): List<Pair<T, T>> {
+    return buildList {
+        for (i in this@combination.indices) {
+            for (j in i+1..this@combination.lastIndex) {
+                add(this@combination[i] to this@combination[j])
+            }
+        }
+    }
+}
+
 fun <T> List<T>.allArrangement(
     minElement: Int = -1,
     maxElement: Int = -1,
