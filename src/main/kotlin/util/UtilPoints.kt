@@ -48,7 +48,7 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
     }
 }
 
-data class Point(var x: Long, var y: Long) {
+data class Point(var x: Long, var y: Long) : Comparable<Point> {
     var id = ID++
     constructor(p: Point) : this(p.x, p.y)
 
@@ -100,6 +100,11 @@ data class Point(var x: Long, var y: Long) {
         return true
     }
 
+    override fun compareTo(other: Point): Int {
+        if (other.y != y) return y.compareTo(other.y)
+        return x.compareTo(other.x)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other is Point) {
             return other.x == this.x && other.y == this.y
@@ -107,7 +112,7 @@ data class Point(var x: Long, var y: Long) {
         return false
     }
 
-    fun adjacent(diagonals: Boolean = true): List<Point> {
+    fun adjacent(diagonals: Boolean = true, includeItself: Boolean = false): List<Point> {
         return buildList {
             for (dy in -1..1) {
                 for (dx in -1..1) {
@@ -120,6 +125,9 @@ data class Point(var x: Long, var y: Long) {
                     }
                 }
             }
+
+            if (includeItself)
+                add(this@Point)
         }
     }
 

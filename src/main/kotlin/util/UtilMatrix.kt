@@ -6,16 +6,20 @@ import java.util.Objects
 typealias Matrix<T> = MutableList<MutableList<T>>
 
 fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T): Matrix<T> {
+    return matrixFromStringIndexed(input, emptyDefault)  { char, _, _ -> function(char) }
+}
+
+fun <T> matrixFromStringIndexed(input: String, emptyDefault: T, function: (Char, Int, Int) -> T): Matrix<T> {
     val lines = input.split("\n")
-    val res = emptyMatrixOf(lines.size, lines[0].length, emptyDefault)
+    val res = emptyMatrixOf(lines.size, lines.maxOf { it.length }, emptyDefault)
 
     lines.forEachIndexed { y, line ->
         line.forEachIndexed { x, case ->
             run {
                 try {
-                    res[y][x] = function(lines[y][x])
+                    res[y][x] = function(lines[y][x], y, x)
                 } catch (e: Exception) {
-
+                    e.printStackTrace()
                 }
 
             }
@@ -146,15 +150,15 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int, transformation: (Any) -> (
     print("    ")
 
     for (i in 0 until map[0].size) {
-        print("%4d".format(i))
+        print("%1d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%4d".format(index))
+        print("%1d".format(index))
         for (cell in line) {
-            print("%4s".format(transformation(cell)))
+            print("%1s".format(transformation(cell)))
         }
         println()
     }

@@ -8,7 +8,8 @@ class Day6(override val input: String) : Day<Long>(input) {
     private val bottomRight = Point(points.maxOf { it.x } + 1, points.maxOf { it.y } + 1)
     private val shared = mutableSetOf<Point>()
     private val infinite = mutableSetOf<Int>()
-    private var map: Matrix<Pair<Int, Int>>
+    private val map: Matrix<Pair<Int, Int>>
+    private val mapManhattan: Matrix<Long>
 
     init {
         val topLeft = Point(points.minOf { it.x }, points.minOf { it.y })
@@ -21,11 +22,17 @@ class Day6(override val input: String) : Day<Long>(input) {
         bottomRight.x = bottomRight.x - topLeft.x + 1
         bottomRight.y = bottomRight.y - topLeft.y + 1
 
-        map  = emptyMatrixOf((bottomRight.y + 1).toInt(), (bottomRight.x + 1).toInt(), Int.MAX_VALUE to -1)
+        map = emptyMatrixOf((bottomRight.y + 1).toInt(), (bottomRight.x + 1).toInt(), Int.MAX_VALUE to -1)
+        mapManhattan = emptyMatrixOf((bottomRight.y).toInt(), (bottomRight.x).toInt(), 0)
 
-        points.forEach { map[it] = 0 to it.id }
+        map.forEachPoint { p ->
+            if (p.inMap(mapManhattan))
+                mapManhattan[p] = points.sumOf { it.manhattan(p) }
+        }
 
+        points.forEach { p -> map[p] = 0 to p.id }
         points.forEach { expandPoint(it) }
+
         shared.forEach { map[it] = 0 to 0 }
 
         for (i in 0 until map.size) {
@@ -37,10 +44,9 @@ class Day6(override val input: String) : Day<Long>(input) {
             infinite.add(map[0][i].second)
             infinite.add(map[map[i].lastIndex][i].second)
         }
-
     }
 
-    fun expandPoint(p: Point) {
+    private fun expandPoint(p: Point) {
         val explored = mutableSetOf<Point>()
         val queue = mutableListOf(0 to p)
 
@@ -72,7 +78,14 @@ class Day6(override val input: String) : Day<Long>(input) {
     }
 
     override fun solve2(): Long {
-        return -1
+        var sum = 0L
+
+
+        mapManhattan.forEachPoint {
+            sum += if (mapManhattan[it] < 10_000) 1 else 0
+        }
+
+        return sum
     }
 }
 

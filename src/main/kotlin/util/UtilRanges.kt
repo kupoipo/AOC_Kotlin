@@ -1,6 +1,8 @@
 package util
 
 import java.lang.RuntimeException
+import java.util.*
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -32,6 +34,19 @@ fun LongRange.overlap(other: LongRange) : LongRange {
     return max(this.first, other.first).. min(this.last, other.last)
 }
 
+fun <T> LinkedList<T>.circle(count: Int) {
+    if (count < 0) {
+        repeat(abs(count)) {
+            val el = this.removeFirst()
+            this.add(el)
+        }
+    } else {
+        repeat(count) {
+            val el = this.removeLast()
+            this.add(0, el)
+        }
+    }
+}
 
 infix fun IntRange.overlaps(other: IntRange): Boolean =
     first in other || last in other || other.first in this || other.last in this
