@@ -141,24 +141,24 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
     this.add(0, MutableList(this[0].size) { element?.let { element } ?: ' ' })
 }
 
-fun showMap(map: List<List<Any>>, transformation: (Any) -> (String) = { it.toString() }) {
-    showMap(map, 0, map.size, transformation)
+fun showMap(map: List<List<Any>>, nbChar: Int = 4, transformation: (Any) -> (String) = { it.toString() }) {
+    showMap(map, 0, map.size, nbChar, transformation)
 }
 
 
-fun showMap(map: List<List<Any>>, from: Int, to: Int, transformation: (Any) -> (String)) {
+fun showMap(map: List<List<Any>>, from: Int, to: Int, nbChar: Int, transformation: (Any) -> (String)) {
     print("    ")
 
     for (i in 0 until map[0].size) {
-        print("%1d".format(i))
+        print("%${nbChar}d".format(i))
     }
 
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%1d".format(index))
+        print("%${nbChar}d".format(index))
         for (cell in line) {
-            print("%1s".format(transformation(cell)))
+            print("%${nbChar}s".format(transformation(cell)))
         }
         println()
     }
