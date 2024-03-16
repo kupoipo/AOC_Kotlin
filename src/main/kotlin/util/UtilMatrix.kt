@@ -147,7 +147,7 @@ fun showMap(map: List<List<Any>>, nbChar: Int = 4, transformation: (Any) -> (Str
 
 
 fun showMap(map: List<List<Any>>, from: Int, to: Int, nbChar: Int, transformation: (Any) -> (String)) {
-    print("    ")
+    print("%${nbChar}s".format(""))
 
     for (i in 0 until map[0].size) {
         print("%${nbChar}d".format(i))
@@ -156,7 +156,7 @@ fun showMap(map: List<List<Any>>, from: Int, to: Int, nbChar: Int, transformatio
     println()
 
     for ((index, line) in map.drop(from).take(to - from).withIndex()) {
-        print("%${nbChar}d".format(index))
+        print("%4d".format(index))
         for (cell in line) {
             print("%${nbChar}s".format(transformation(cell)))
         }
