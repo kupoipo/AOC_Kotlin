@@ -147,7 +147,8 @@ fun showMap(map: List<List<Any>>, nbChar: Int = 4, transformation: (Any) -> (Str
 
 
 fun showMap(map: List<List<Any>>, from: Int, to: Int, nbChar: Int, transformation: (Any) -> (String)) {
-    print("%${nbChar}s".format(""))
+
+    print("%${nbChar*2}s".format("."))
 
     for (i in 0 until map[0].size) {
         print("%${nbChar}d".format(i))

@@ -45,13 +45,13 @@ class Day17(override val input: String) : Day<Long>(input) {
             minY = min(minY, y1)
             maxY = max(maxY, y2)
 
+
             for (y in y1..y2) {
                 for (x in x1..x2) {
                     tempMap[y][x] = '#'
                 }
             }
         }
-
         columns = maxX - minX
 
         waterFall.x -= minX - 1
@@ -65,75 +65,40 @@ class Day17(override val input: String) : Day<Long>(input) {
 
         map[0][waterFall.x] = '+'
 
-        map = map.take(100).toMutableList()
-        maxY = 100
     }
 
-    private fun expand(from: Point, direction: Direction): Pair<Point, Boolean> {
-        var expand = from + direction
-
-        if (expand.outOfMap(map)) return expand to true
-
-        while (map[expand] in ".~" && (expand + Direction.DOWN).inMap(map) && map[expand + Direction.DOWN] != '.') {
-            map[expand] = '~'
-            expand += direction
-            if (expand.outOfMap(map)) return expand to true
+    private tailrec fun fall(from: Point, dir: Direction): Point? {
+        if (map[from] == '.') {
+            map[from] = '|'
         }
 
-        return if (map[expand] != '.') {
-            expand to true
+        if (from.y.toInt() == map.size - 1) return null
+        if (map[from] == '#') return from
+
+        if (map[from + Direction.DOWN] == '.') fall(from + Direction.DOWN, Direction.DOWN)
+        if (map[from + Direction.DOWN] in "~#") {
+            if (dir != Direction.DOWN)
+                return fall(from + dir, dir)
+
+            val left = fall(from + Direction.LEFT, Direction.LEFT)
+            val right = fall(from + Direction.RIGHT, Direction.RIGHT)
+
+            if (map[left!!] == '#' && map[right!!] == '#')
+                for (x in left.x + 1 until right.x)
+                    map[left.y][x] = '~'
+
         } else {
-            expand to false
+            return from
         }
+
+        return null
     }
 
-    private fun fall(from: Point) {
-        if (from.outOfMap(map)) return
-
-        if (map[from] == '~') return
-        map[from] = '~'
-            println("fall from $from")
-            showMap(map, 1)
-            println(countWater())
-        var nextWaterfallPos = from + Direction.DOWN
-        var stop = false
-
-
-        while (nextWaterfallPos.inMap(map) && map[nextWaterfallPos] == '.') {
-            map[nextWaterfallPos] = '~'
-            nextWaterfallPos += Direction.DOWN
-        }
-
-
-        nextWaterfallPos += Direction.UP
-
-        while (!stop && nextWaterfallPos.inMap(map)) {
-            map[nextWaterfallPos] = '~'
-            val left: Pair<Point, Boolean> = expand(nextWaterfallPos, Direction.LEFT)
-            val right: Pair<Point, Boolean> = expand(nextWaterfallPos, Direction.RIGHT)
-
-            if (left.second && right.second) {
-                nextWaterfallPos += Direction.UP
-
-            } else {
-                if (!left.second && (left.first + Direction.DOWN).inMap(map)) {
-                    fall(left.first)
-                }
-
-                if (!right.second && (right.first + Direction.DOWN).inMap(map)) {
-                    fall(right.first)
-                }
-                stop = true
-
-            }
-        }
-    }
-
-    fun countWater() : Long {
+    fun count(toCount: Char): Long {
         var nbWater = 0L
         for (y in minY..map.lastIndex) {
             for (x in 0..map[0].lastIndex) {
-                if (map[y][x] == '~') nbWater++
+                if (map[y][x] == toCount) nbWater++
             }
         }
 
@@ -141,22 +106,22 @@ class Day17(override val input: String) : Day<Long>(input) {
     }
 
     override fun solve1(): Long {
-        fall(waterFall)
+        fall(waterFall, Direction.DOWN)
 
-        showMap(map, 1)
-        return countWater()
+        return count('~')
     }
 
     override fun solve2(): Long {
-        return -1
+        return count('|')
     }
+
 }
 
-fun main() {
+fun main(args: Array<String>) {
     val day = Day17(readFullText("_2018/d17/input"))
 
-    val t1 = measureNanoTime { println("Part 1 : " + day.solve1()) }
-    println("Temps partie 1 : ${t1 / 1e9}s")
+    val t1 = measureNanoTime { println("Part 2 : " + day.solve1()) }
+    println("Temps partie 2 : ${t1 / 1e9}s")
 
     val t2 = measureNanoTime { println("Part 2 : " + day.solve2()) }
     println("Temps partie 2 : ${t2 / 1e9}s")
