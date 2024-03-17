@@ -1,5 +1,6 @@
 package _2018.d16
 
+import _2018.register.Register2018
 import util.Day
 import util.allInts
 import util.readFullText
@@ -8,26 +9,26 @@ import kotlin.system.measureNanoTime
 class Day16(override val input: String) : Day<Long>(input) {
     private val instructions: List<List<String>>
     private val test: List<List<String>>
-    private val register = mutableMapOf<String, Int>()
     private val hmCodeToFunction = mutableMapOf<Int, (String, String, String) -> Unit>()
     private val hmFunctionToCode = mutableMapOf<(String, String, String) -> Unit, MutableSet<Int>>()
+    private val register = Register2018()
     private val opcodes = listOf(
-        ::addr,
-        ::addi,
-        ::mulr,
-        ::muli,
-        ::banr,
-        ::bani,
-        ::borr,
-        ::bori,
-        ::setr,
-        ::seti,
-        ::gtir,
-        ::gtri,
-        ::gtrr,
-        ::eqir,
-        ::eqri,
-        ::eqrr
+        register::addr,
+        register::addi,
+        register::mulr,
+        register::muli,
+        register::banr,
+        register::bani,
+        register::borr,
+        register::bori,
+        register::setr,
+        register::seti,
+        register::gtir,
+        register::gtri,
+        register::gtrr,
+        register::eqir,
+        register::eqri,
+        register::eqrr
     )
 
     init {
@@ -35,73 +36,6 @@ class Day16(override val input: String) : Day<Long>(input) {
         instructions = data.first().let { it + "\n" }.split("\n").chunked(4).map { it.dropLast(1) }
         test = data.last().split("\n").map { it.split(" ") }
     }
-
-    private fun addr(a: String, b: String, c: String) {
-        register[c] = get(a) + get(b)
-    }
-
-    private fun addi(a: String, b: String, c: String) {
-        register[c] = get(a) + b.toInt()
-    }
-
-    private fun mulr(a: String, b: String, c: String) {
-        register[c] = get(a) * get(b)
-    }
-
-    private fun muli(a: String, b: String, c: String) {
-        register[c] = get(a) * b.toInt()
-    }
-
-    private fun banr(a: String, b: String, c: String) {
-        register[c] = get(a) and get(b)
-    }
-
-    private fun bani(a: String, b: String, c: String) {
-        register[c] = get(a) and b.toInt()
-    }
-
-    private fun borr(a: String, b: String, c: String) {
-        register[c] = get(a) or get(b)
-    }
-
-    private fun bori(a: String, b: String, c: String) {
-        register[c] = get(a) or b.toInt()
-    }
-
-    private fun setr(a: String, b: String, c: String) {
-        register[c] = get(a)
-    }
-
-    private fun seti(a: String, b: String, c: String) {
-        register[c] = a.toInt()
-    }
-
-    private fun gtir(a: String, b: String, c: String) {
-        register[c] = if (a.toInt() > get(b)) 1 else 0
-    }
-
-    private fun gtri(a: String, b: String, c: String) {
-        register[c] = if (get(a) > b.toInt()) 1 else 0
-    }
-
-    private fun gtrr(a: String, b: String, c: String) {
-        register[c] = if (get(a) > get(b)) 1 else 0
-    }
-
-    private fun eqir(a: String, b: String, c: String) {
-        register[c] = if (a.toInt() == get(b)) 1 else 0
-    }
-
-    private fun eqri(a: String, b: String, c: String) {
-        register[c] = if (get(a) == b.toInt()) 1 else 0
-    }
-
-    private fun eqrr(a: String, b: String, c: String) {
-        register[c] = if (get(a) == get(b)) 1 else 0
-    }
-
-    fun get(x: String) = register.getOrPut(x) { 0 }
-
     private fun getPossibleInstructions(instruction: List<String>): List<(String, String, String) -> (Unit)> {
         val resOperation = mutableListOf<(String, String, String) -> (Unit)>()
         val after = mutableMapOf<String, Int>()
@@ -115,7 +49,7 @@ class Day16(override val input: String) : Day<Long>(input) {
                 operation(abcd[1], abcd[2], abcd[3])
             }
 
-            if (after == register) {
+            if (after == register.register) {
                 hmFunctionToCode.getOrPut(operation) { mutableSetOf() }.add(opCode)
                 resOperation.add(operation)
             }

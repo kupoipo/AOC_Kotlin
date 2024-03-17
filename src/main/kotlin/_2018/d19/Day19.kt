@@ -1,14 +1,48 @@
 package _2018.d19
 
+import _2018.register.Register2018
+import _2023.d19.reg
 import util.Day
+import util.allInts
 import util.readFullText
+import kotlin.math.sqrt
 import kotlin.system.measureNanoTime
 class Day19(override val input : String) : Day<Long>(input) {
+    private val register = Register2018()
+    private var pointer : Int
+    private val pointerBindTo : String
+    private val instructions : List<String>
+
+    init {
+        input.split("\n").let {
+            pointer = 0
+            pointerBindTo = it.first().allInts().first().toString()
+            instructions = it.drop(1)
+        }
+    }
     override fun solve1(): Long {
-        return -1
+        while (pointer < instructions.size) {
+            register[pointerBindTo] = pointer
+            val data = instructions[pointer].split(" ")
+            val function = register.getFunction(data.first())
+            function(data[1], data[2], data.last())
+            pointer = register[pointerBindTo]
+            pointer++
+        }
+        return register["0"].toLong()
     }
     override fun solve2(): Long {
-        return -1
+        /**
+         * Change 977 with the value of your r3 after some instructions
+         */
+        val r5 = 977 + 10550400
+        var res = 0
+
+        for (i in 1..sqrt(r5.toDouble()).toInt()) {
+            if (r5%i == 0)
+                res += i + (r5/i)
+        }
+        return res.toLong()
     }
 }
 

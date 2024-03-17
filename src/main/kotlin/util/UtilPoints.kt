@@ -38,11 +38,11 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
     companion object {
         fun fromChar(char: Char): Direction {
             return when (char) {
-                'U' -> Direction.UP
-                'R' -> Direction.RIGHT
-                'L' -> Direction.LEFT
-                'D' -> Direction.DOWN
-                else -> Direction.NONE
+                'U', 'N' -> Direction.UP
+                'R', 'E' -> Direction.RIGHT
+                'L', 'W' -> Direction.LEFT
+                'D', 'S' -> Direction.DOWN
+                else -> throw Exception("No direction found for $char")
             }
         }
     }
