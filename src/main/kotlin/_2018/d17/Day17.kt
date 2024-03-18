@@ -12,7 +12,6 @@ class Day17(override val input: String) : Day<Long>(input) {
     private var minY: Int = Int.MAX_VALUE
     private var maxY: Int = Int.MIN_VALUE
     private var columns: Int = 0
-    private var lines: Int = 0
     private var waterFall = Point(500, 0)
 
     init {
@@ -67,7 +66,7 @@ class Day17(override val input: String) : Day<Long>(input) {
 
     }
 
-    private tailrec fun fall(from: Point, dir: Direction): Point? {
+    private fun fall(from: Point, dir: Direction): Point? {
         if (map[from] == '.') {
             map[from] = '|'
         }
@@ -94,11 +93,11 @@ class Day17(override val input: String) : Day<Long>(input) {
         return null
     }
 
-    fun count(toCount: Char): Long {
+    fun count(toCount: String): Long {
         var nbWater = 0L
-        for (y in minY..map.lastIndex) {
+        for (y in 0..map.lastIndex) {
             for (x in 0..map[0].lastIndex) {
-                if (map[y][x] == toCount) nbWater++
+                if (map[y][x] in toCount) nbWater++
             }
         }
 
@@ -108,31 +107,36 @@ class Day17(override val input: String) : Day<Long>(input) {
     override fun solve1(): Long {
         fall(waterFall, Direction.DOWN)
 
-        return count('~')
+        return count("~|")
     }
 
     override fun solve2(): Long {
-        return count('|')
+        return count("~")
     }
-
 }
 
-fun main(args: Array<String>) {
-    val day = Day17(readFullText("_2018/d17/input"))
+/**
+ * Due to an excess amount of recursive call and tailrec not being useful, be sure to create a custom configuration with parameter -Xss > 2m
+ */
+object Day17Exec {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val day = Day17(readFullText("_2018/d17/input"))
 
-    val t1 = measureNanoTime { println("Part 2 : " + day.solve1()) }
-    println("Temps partie 2 : ${t1 / 1e9}s")
+        val t1 = measureNanoTime { println("Part 4 : " + day.solve1()) }
+        println("Temps partie 2 : ${t1 / 1e9}s")
 
-    val t2 = measureNanoTime { println("Part 2 : " + day.solve2()) }
-    println("Temps partie 2 : ${t2 / 1e9}s")
+        val t2 = measureNanoTime { println("Part 2 : " + day.solve2()) }
+        println("Temps partie 2 : ${t2 / 1e9}s")
 
-    println()
-    println()
+        println()
+        println()
 
-    val dayTest = Day17(readFullText("_2018/d17/test"))
-    val t1Test = measureNanoTime { println("TEST - Part 1 : " + dayTest.solve1()) }
-    println("Temps partie 1 : ${t1Test / 1e9}s")
+        val dayTest = Day17(readFullText("_2018/d17/test"))
+        val t1Test = measureNanoTime { println("TEST - Part 1 : " + dayTest.solve1()) }
+        println("Temps partie 1 : ${t1Test / 1e9}s")
 
-    val t2Test = measureNanoTime { println("TEST - Part 2 : " + dayTest.solve2()) }
-    println("Temps partie 2 : ${t2Test / 1e9}s")
+        val t2Test = measureNanoTime { println("TEST - Part 2 : " + dayTest.solve2()) }
+        println("Temps partie 2 : ${t2Test / 1e9}s")
+    }
 }
