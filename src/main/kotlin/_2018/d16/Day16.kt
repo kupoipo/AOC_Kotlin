@@ -95,7 +95,7 @@ class Day16(override val input: String) : Day<Long>(input) {
             hmCodeToFunction[opCode]!!(instruction[1], instruction[2], instruction[3])
         }
 
-        return register["0"]!!.toLong()
+        return register["0"].toLong()
     }
 }
 
