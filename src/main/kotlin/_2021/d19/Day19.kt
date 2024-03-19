@@ -1,21 +1,18 @@
 package _2021.d19
 
-import util.Day
-import util.Point3D
-import util.allInts
-import util.readFullText
+import util.*
 import kotlin.system.measureTimeMillis
 
-class Scanner(var pos : Point3D, val beacons : List<Point3D>) {
+class Scanner(var pos : Point3DLong, val beacons : List<Point3DLong>) {
     var paired : Scanner? = null
 
     companion object {
         fun createScanner(lines : List<String>) : Scanner {
-            val points = mutableListOf<Point3D>()
+            val points = mutableListOf<Point3DLong>()
 
-            lines.forEach { line -> points.add(line.allInts().let { Point3D(it[0],it[1],it[2]) } ) }
+            lines.forEach { line -> points.add(line.allLong().let { Point3DLong(it[0],it[1],it[2]) } ) }
 
-            return Scanner(Point3D(0,0,0), points)
+            return Scanner(Point3DLong(0,0,0), points)
         }
     }
 }
@@ -23,8 +20,8 @@ class Scanner(var pos : Point3D, val beacons : List<Point3D>) {
 class Day19(override val input : String) : Day<Long>(input) {
     val scanners = buildList{ input.split("\n\n").forEach { add(Scanner.createScanner(it.split("\n").drop(1))) } }
 
-    fun relativePosTo(sc1 : Scanner, sc2 : Scanner) : Point3D {
-        return Point3D(1,1,1);
+    fun relativePosTo(sc1 : Scanner, sc2 : Scanner) : Point3DLong {
+        return Point3DLong(1,1,1);
     }
 
     override fun solve1(): Long {

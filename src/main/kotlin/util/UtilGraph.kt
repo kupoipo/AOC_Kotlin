@@ -72,6 +72,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             while (queue.isNotEmpty()) {
                 val current = queue.poll()
 
+
                 visited.add(current)
 
                 current.nextStates().forEach { nextState ->

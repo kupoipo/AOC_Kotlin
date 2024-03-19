@@ -1,25 +1,24 @@
 package _2022.d18
 
 import util.readInput
-import util.Point3D
+import util.Point3DLong
+import util.allLong
+
 const val MAP_SIZE = 25
 
 /**
  * Set des points étant une roche, un set empêche la duplicité des éléments en lui
  */
-val setRock = mutableSetOf<Point3D>()
-fun Point3D.getNbNeighbors() = getNeighbors().filter { it in setRock }.size
-fun inMap(p : Point3D): Boolean {
+val setRock = mutableSetOf<Point3DLong>()
+fun Point3DLong.getNbNeighbors() = getNeighbors().filter { it in setRock }.size
+fun inMap(p : Point3DLong): Boolean {
     return p.x >= -1 && p.y >= -1 && p.z >=-1 && p.x < MAP_SIZE && p.y < MAP_SIZE && p.z < MAP_SIZE
 }
 fun part1(content : List<String>) : Int {
     var numberSizeExposed = 0
 
     for (line in content) {
-        /**
-         * Regex qui premet de récupérer les 3 entiers par ligne de l'input et de les transformer en un point
-         */
-        var p = """-?\d+""".toRegex().findAll(line).map{ it.value.toInt() }.toList().let { Point3D(it[0], it[1], it[2]) }
+        var p = line.allLong().let { Point3DLong(it[0], it[1], it[2]) }
 
         setRock.add(p)
         numberSizeExposed += 6
@@ -34,9 +33,9 @@ fun part1(content : List<String>) : Int {
 }
 
 fun part2(content : List<String>) : Int {
-    var queue = mutableListOf(Point3D(-1,-1,-1))
-    var lavaVisited = mutableSetOf<Point3D>()
-    var side3D     = mutableSetOf<Point3D>()
+    var queue = mutableListOf(Point3DLong(-1,-1,-1))
+    var lavaVisited = mutableSetOf<Point3DLong>()
+    var side3D     = mutableSetOf<Point3DLong>()
 
     /**
      * Récursivité, on commence en un point initial [-1,-1,-1]

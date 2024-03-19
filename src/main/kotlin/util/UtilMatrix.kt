@@ -109,6 +109,7 @@ fun <T> MutableList<T>.swap(i1: Int, i2: Int) {
 }
 
 fun <T> emptyMatrixOf(rows: Int, columns: Int, default: T) = MutableList(rows) { MutableList(columns) { default } }
+fun <T> emptyMatrixOf(rows: Long, columns: Long, default: T) = emptyMatrixOf(rows.toInt(), columns.toInt(), default)
 
 fun <T> Matrix<T>.clone(): Matrix<T> {
     var res = emptyMatrixOf(this.size, this[0].size, this[0][0])
@@ -141,12 +142,12 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
     this.add(0, MutableList(this[0].size) { element?.let { element } ?: ' ' })
 }
 
-fun showMap(map: List<List<Any>>, nbChar: Int = 4, transformation: (Any) -> (String) = { it.toString() }) {
+fun <T> showMap(map: List<List<T>>, nbChar: Int = 4, transformation: (T) -> (String) = { it.toString() }) {
     showMap(map, 0, map.size, nbChar, transformation)
 }
 
 
-fun showMap(map: List<List<Any>>, from: Int, to: Int, nbChar: Int, transformation: (Any) -> (String)) {
+fun <T> showMap(map: List<List<T>>, from: Int, to: Int, nbChar: Int, transformation: (T) -> (String)) {
 
     print("%${nbChar*2}s".format("."))
 

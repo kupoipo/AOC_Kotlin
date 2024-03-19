@@ -1,14 +1,11 @@
 package _2023.d22
 
-import util.Day
-import util.Point3D
-import util.allInts
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
 
 var map3D = MutableList(500) { MutableList(500) { MutableList(500) { -1 } } }
 
-class Brick(var points: List<Point3D>, val id: Int, val from: String) {
+class Brick(var points: List<Point3DLong>, val id: Int, val from: String) {
     fun carriedBy(): Set<Int> {
         return buildSet {
             points.filter { it.z > 0 }.forEach { p ->
@@ -25,7 +22,7 @@ class Brick(var points: List<Point3D>, val id: Int, val from: String) {
                 points.forEach {
                     map3D[it.x][it.y][it.z] = -1
                     map3D[it.x][it.y][it.z - 1] = id
-                    this.add(it + Point3D(0, 0, -1))
+                    this.add(it + Point3DLong(0, 0, -1))
                 }
             }
         }
@@ -68,12 +65,12 @@ class Day22(override val input: String) : Day<Long>(input) {
     }
 
     val bricks = input.split("\n").mapIndexed { index, line ->
-        val b = mutableListOf<Point3D>()
-        line.allInts().let { axes ->
+        val b = mutableListOf<Point3DLong>()
+        line.allLong().let { axes ->
             for (x in axes[0]..axes[3]) {
                 for (y in axes[1]..axes[4]) {
                     for (z in axes[2]..axes[5]) {
-                        b.add(Point3D(x, y, z))
+                        b.add(Point3DLong(x, y, z))
                         map3D[x][y][z] = index
                     }
                 }

@@ -1,14 +1,25 @@
 package _2018.d23
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
+
+class NanoBot(val p: Point3DLong, val range: Long)
+
 class Day23(override val input : String) : Day<Long>(input) {
+     val robots = input.split("\n").map { line -> line.allLong().let { NanoBot(Point3DLong(it[0], it[1], it[2]), it[3]) } }
+
+    fun nbRobotInRange(robot: NanoBot): Long {
+        return robots.filter { robot.p.manhattan(it.p) <= robot.range }.size.toLong()
+    }
+
     override fun solve1(): Long {
-        return -1
+        val max = robots.maxBy { it.range }
+        return nbRobotInRange(max)
     }
     override fun solve2(): Long {
-        return -1
+        println(robots.combination().maxOf { (a, b) -> a.p.manhattan(b.p) })
+        val max = robots.maxBy { nbRobotInRange(it) }
+        return max.p.manhattan(Point3DLong(0L,0L,0L))
     }
 }
 
