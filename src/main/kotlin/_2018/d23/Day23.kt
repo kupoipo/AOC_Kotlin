@@ -1,6 +1,8 @@
 package _2018.d23
 
 import util.*
+import java.util.PriorityQueue
+import kotlin.math.max
 import kotlin.system.measureNanoTime
 
 class NanoBot(val p: Point3DLong, val range: Long)
@@ -17,9 +19,30 @@ class Day23(override val input : String) : Day<Long>(input) {
         return nbRobotInRange(max)
     }
     override fun solve2(): Long {
-        println(robots.combination().maxOf { (a, b) -> a.p.manhattan(b.p) })
-        val max = robots.maxBy { nbRobotInRange(it) }
-        return max.p.manhattan(Point3DLong(0L,0L,0L))
+        val queue = PriorityQueue<Pair<Long, Int>> { p1, p2 ->
+            p1.first.compareTo(p2.first)
+        }
+        for (robot in robots) {
+            val distance = robot.p.manhattan(Point3DLong(0,0,0))
+            queue.add(max(0, distance - robot.range) to 1)
+            queue.add( distance + robot.range + 1 to -1)
+        }
+
+        var count = 0L
+        var max = 0L
+        var result = 0L
+
+        while (queue.isNotEmpty()) {
+            val data = queue.poll()
+            count += data.second
+
+            if (count > max) {
+                result = data.first
+                max = count
+            }
+        }
+
+        return result
     }
 }
 
