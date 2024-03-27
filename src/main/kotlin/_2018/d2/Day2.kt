@@ -14,9 +14,9 @@ class Day2(override val input : String) : Day<Long>(input) {
 
     override fun solve2(): Long {
         lines.combination().forEach { combination ->
-            difference(combination.first, combination.second).let {
+            difference(combination.first(), combination.last()).let {
                 if (it != -1) {
-                    println(combination.first.removeRange(it..it))
+                    println(combination.first().removeRange(it..it))
                 }
             }
         }

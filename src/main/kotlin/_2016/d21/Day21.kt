@@ -65,7 +65,7 @@ class Day21(override val input: String) : Day<String>(input) {
 
     override fun solve1(): String = solve("abcdefgh")
     override fun solve2(): String {
-        "abcdefgh".toMutableList().allPermutation().forEach {
+        "abcdefgh".toMutableList().permutation().forEach {
             if (solve(it.joinToString("")) == "fbgdceah")
                 return it.joinToString("")
         }

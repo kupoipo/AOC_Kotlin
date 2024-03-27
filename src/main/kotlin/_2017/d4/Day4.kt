@@ -1,8 +1,6 @@
 package _2017.d4
 
 import util.Day
-import util.allArrangement
-import util.allPermutation
 import util.readFullText
 import kotlin.system.measureNanoTime
 

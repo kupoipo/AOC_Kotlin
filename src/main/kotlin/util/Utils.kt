@@ -48,18 +48,22 @@ fun <E> List<E>.pairs(): MutableList<Pair<E, E>> {
     return res
 }
 
-fun <T> List<T>.allPermutation(): List<List<T>> {
+fun <T> List<T>.permutation(): List<List<T>> {
     return getPermutations(this)
 }
 
-fun <T> List<T>.combination(): List<Pair<T, T>> {
-    return buildList {
-        for (i in this@combination.indices) {
-            for (j in i+1..this@combination.lastIndex) {
-                add(this@combination[i] to this@combination[j])
-            }
-        }
+fun <T> combination(from: List<T>, current: List<T>, nbPermutation: Int) : List<List<T>> {
+    if (current.size >= nbPermutation) return listOf(current)
+    val res = mutableListOf<List<T>>()
+
+    for (index in from.indices) {
+        res.addAll(combination(from.drop(index+1), current.toMutableList().apply { add(from[index]) }, nbPermutation))
     }
+
+    return res
+}
+fun <T> List<T>.combination(nbPermutation: Int = 2): List<List<T>> {
+    return combination(this, listOf(), nbPermutation)
 }
 
 fun <T> List<T>.allArrangement(
