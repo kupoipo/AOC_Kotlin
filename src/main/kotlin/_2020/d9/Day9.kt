@@ -1,15 +1,36 @@
-
 package _2020.d9
 
 import util.Day
+import util.combination
 import util.readFullText
+import java.util.Collections.max
+import java.util.Collections.min
 import kotlin.system.measureNanoTime
-class Day9(override val input : String, val preamble: Int) : Day<Long>(input) {
-    val numbers = input.split("\n").map(String::toInt)
-    override fun solve1(): Long {
-        return -1
-    }
+
+class Day9(override val input: String, private val preamble: Int) : Day<Long>(input) {
+    private var partOne: Long = 0L
+    private val numbers = input.split("\n").map(String::toLong)
+    override fun solve1(): Long = (preamble..numbers.lastIndex).first { i ->
+        numbers.subList(i - preamble, i).combination(2).all { it.sum() != numbers[i] }
+    }.let { partOne = numbers[it]; numbers[it] }
+
+
     override fun solve2(): Long {
+        for (i in numbers.indices) {
+            var sum = 0L
+
+            for (j in i..numbers.lastIndex) {
+                sum += numbers[j]
+
+                if (sum == partOne) {
+                    return (numbers.subList(i, j)).let {
+                        min(it) + max(it)
+                    }
+                }
+                if (sum > partOne) break
+            }
+        }
+
         return -1
     }
 }

@@ -20,7 +20,6 @@ class Day5(override val input : String) : Day<Long>(input) {
                 }
 
                 "04" -> {
-
                     return (tab[tab[i+1]]).toLong()
                 }
 
