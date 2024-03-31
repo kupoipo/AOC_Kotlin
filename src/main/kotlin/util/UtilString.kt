@@ -11,7 +11,7 @@ fun String.allLong(): MutableList<Long> {
 }
 
 fun String.firstInt(index: Int = 0): Int {
-    Regex("""\d+""").find(this, index).let {
+    Regex("""-?\d+""").find(this, index).let {
         return it?.value?.toInt() ?: -1
     }
 }

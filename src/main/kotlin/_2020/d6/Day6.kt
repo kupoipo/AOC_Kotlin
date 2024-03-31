@@ -1,15 +1,20 @@
-
 package _2020.d6
 
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day6(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day6(override val input: String) : Day<Long>(input) {
+    private val questions = input.split("\n\n").map { line ->
+        line.groupingBy { it }.eachCount()
     }
-    override fun solve2(): Long {
-        return -1
+
+    override fun solve1(): Long = questions.sumOf { it.size - (if (it.keys.contains('\n')) 1 else 0) }.toLong()
+
+    override fun solve2(): Long = questions.sumOf { group ->
+        group.count {
+            it.value == (group['\n'] ?: 0) + 1
+        }.toLong()
     }
 }
 
