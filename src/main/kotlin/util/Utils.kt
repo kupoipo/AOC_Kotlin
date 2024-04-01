@@ -126,3 +126,23 @@ operator fun <E> MutableList<E>.times(t: Int): MutableList<E> {
 
     return res
 }
+
+fun Long.isPrime(): Boolean {
+    if (this <= 1) {
+        return false
+    }
+    if (this <= 3) {
+        return true
+    }
+    if (this % 2 == 0L || this % 3 == 0L) {
+        return false
+    }
+    var i = 5L
+    while (i * i <= this) {
+        if (this % i == 0L || this % (i + 2) == 0L) {
+            return false
+        }
+        i += 6
+    }
+    return true
+}

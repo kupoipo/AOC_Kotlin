@@ -55,6 +55,18 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     fun right(): Point = this + Direction.RIGHT
     fun left(): Point = this + Direction.LEFT
 
+    fun rotateRight() {
+        val temp = x
+        this.x = -y
+        this.y = temp
+    }
+
+    fun rotateLeft() {
+        val temp = x
+        this.x = y
+        this.y = -temp
+    }
+
     var id = ID++
     constructor(p: Point) : this(p.x, p.y)
 
@@ -63,7 +75,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
     operator fun times(n: Int) = Point(x * n, y * n)
-    fun manhattan(other: Point) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
+    fun manhattan(other: Point = Point(0,0)) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
 
     fun moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
         'N', 'U' -> this + (Direction.UP * step)
@@ -72,6 +84,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
         'E', 'R' -> this + (Direction.RIGHT * step)
         else -> throw IllegalArgumentException("$direction is not a valid direction")
     }
+
 
     fun forEachNeighbors(function: (Point) -> Unit) {
         Direction.values().dropLast(1).forEach {
@@ -168,7 +181,7 @@ data class Point3DLong(val x: Long, val y: Long, val z: Long) {
         return neighbors
     }
 
-    fun manhattan(other: Point3DLong) : Long {
+    fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
         return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
     }
 
