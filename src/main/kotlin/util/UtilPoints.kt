@@ -178,15 +178,56 @@ data class Point3DLong(val x: Long, val y: Long, val z: Long) {
             var newPoint = Point3DLong(x + it.dx, y + it.dy, z + it.dz)
             neighbors.add(newPoint)
         }
+
+
         return neighbors
     }
 
+    fun all26Neighbors() : List<Point3DLong> {
+        val neighbors = mutableListOf<Point3DLong>()
+
+        for (z in -1..1)
+            for (y in -1..1)
+                for (x in -1..1)
+                    if (z != 0 || y != 0 || x != 0)
+                        neighbors.add(Point3DLong(this.x + x, this.y +y, this.z + z))
+
+
+        return neighbors
+    }
     fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
         return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
     }
 
     override fun toString(): String = "[$x,$y,$z]"
 }
+
+data class Point4DLong(val x: Long, val y: Long, val z: Long, val w: Long) {
+    //operator fun plus(other: Point3DLong) = Point3DLong(other.x + x, other.y + y, other.z + z)
+    //operator fun minus(other: Point3DLong) = Point3DLong(other.x - x, other.y - y, other.z - z)
+    //operator fun times(n: Int) = Point3DLong(x * n, y * n, z * n)
+
+
+    fun allNeighbors() : List<Point4DLong> {
+        val neighbors = mutableListOf<Point4DLong>()
+
+        for (w in -1..1)
+            for (z in -1..1)
+                for (y in -1..1)
+                    for (x in -1..1)
+                        if (z != 0 || y != 0 || x != 0 || w != 0)
+                            neighbors.add(Point4DLong(this.x + x, this.y +y, this.z + z, this.w + w))
+
+
+        return neighbors
+    }
+   /* fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
+        return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
+    }*/
+
+    override fun toString(): String = "[$x,$y,$z,$w]"
+}
+
 
 data class Point3DBigDecimal(val x: BigDecimal, val y: BigDecimal, val z: BigDecimal) {
     operator fun plus(other: Point3DBigDecimal) = Point3DBigDecimal(other.x + x, other.y + y, other.z + z)
