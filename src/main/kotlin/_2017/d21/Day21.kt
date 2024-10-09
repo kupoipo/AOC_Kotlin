@@ -25,7 +25,7 @@ class Day21(override val input: String) : Day<Long>(input) {
 
                     if (tile == r.first) return r.second.clone()
                 }
-                tile.flip()
+                tile.flipX()
             }
         }
 

@@ -1,7 +1,6 @@
 package util
 
 import java.lang.Exception
-import java.util.Objects
 
 typealias Matrix<T> = MutableList<MutableList<T>>
 
@@ -76,6 +75,13 @@ operator fun <E> MutableList<E>.get(y: Long): E {
 
 operator fun <T> Matrix<T>.get(pos: Point) = this[pos.y][pos.x]
 
+fun <T> Matrix<T>.rotateLeft(): Unit {
+    repeat(3) {
+        rotateRight()
+    }
+}
+
+
 fun <T> Matrix<T>.rotateRight(): Unit {
     var temp = matrixOf(this)
     this.removeAll { true }
@@ -127,16 +133,28 @@ fun <T> Matrix<T>.clone(): Matrix<T> {
     return res
 }
 
-fun <T> Matrix<T>.flip() {
-    for (i in this.indices) {
-        for (j in 0..if (this[0].size % 2 == 0) (this.size / 2 - 1) else this.size/2) {
-            val temp = this[i][j]
 
+fun <T> Matrix<T>.flipY() {
+    for (i in 0 until this.size / 2) { // Itérer jusqu'à la moitié des lignes
+        for (j in this[i].indices) { // Itérer sur toutes les colonnes
+            val temp = this[i][j]
+            this[i][j] = this[this.size - 1 - i][j] // Échange avec la ligne opposée
+            this[this.size - 1 - i][j] = temp
+        }
+    }
+}
+
+
+fun <T> Matrix<T>.flipX() {
+    for (i in 0 until this.size) {
+        for (j in 0 until this[i].size / 2) { // Itérer jusqu'à la moitié de la ligne
+            val temp = this[i][j]
             this[i][j] = this[i][this[i].lastIndex - j]
             this[i][this[i].lastIndex - j] = temp
         }
     }
 }
+
 
 fun Matrix<Char>.addFirstLine(element: Char?) {
     this.add(0, MutableList(this[0].size) { element?.let { element } ?: ' ' })
@@ -145,11 +163,9 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
 fun <T> showMap(map: List<List<T>>, nbChar: Int = 4, transformation: (T) -> (String) = { it.toString() }) {
     showMap(map, 0, map.size, nbChar, transformation)
 }
-
-
 fun <T> showMap(map: List<List<T>>, from: Int, to: Int, nbChar: Int, transformation: (T) -> (String)) {
 
-    print("%${nbChar*2}s".format("."))
+    print("%${nbChar}s".format(""))
 
     for (i in 0 until map[0].size) {
         print("%${nbChar}d".format(i))
@@ -164,6 +180,18 @@ fun <T> showMap(map: List<List<T>>, from: Int, to: Int, nbChar: Int, transformat
         }
         println()
     }
+}
+
+fun <T> Matrix<T>.withoutSides() : Matrix<T> {
+    val res : Matrix<T> = emptyMatrixOf(this.size - 2, this[0].size - 2, this[0][0])
+
+    for (lig in 1..this.size-2) {
+        for (col in 1..this[0].size-2) {
+            res[lig-1][col-1] = this[lig][col]
+        }
+    }
+
+    return res
 }
 
 fun <T> Matrix<T>.corners(): List<Point> =
