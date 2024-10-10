@@ -1,15 +1,84 @@
-
 package _2020.d22
 
 import util.Day
+import util.allInts
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day22(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day22(override val input: String) : Day<Long>(input) {
+    enum class State {
+        PLAYER_LOSE, PLAYER_WON, PLAYER_WON_GAME
     }
+
+
+    private val decks = input.split("\n\n").map { it.allInts().drop(1).toMutableList() }
+
+    private fun round(playersCards: MutableList<Int>, crabsCards: MutableList<Int>, playersCard: Int, crabsCard: Int) {
+        if (playersCard > crabsCard) {
+            playersCards.add(playersCard)
+            playersCards.add(crabsCard)
+        } else {
+            crabsCards.add(crabsCard)
+            crabsCards.add(playersCard)
+        }
+    }
+
+    private fun playRecursive(playersCards: MutableList<Int>, crabsCards: MutableList<Int>, subGame: Boolean): State {
+        val previousRound = mutableSetOf<String>()
+
+        while (playersCards.isNotEmpty() && crabsCards.isNotEmpty()) {
+            val snapShot = "$playersCards $crabsCards"
+
+            val playersCard = playersCards.removeFirst()
+            val crabsCard = crabsCards.removeFirst()
+
+            if (snapShot in previousRound) {
+                return State.PLAYER_WON
+            }
+            previousRound.add(snapShot)
+
+            if (playersCards.size >= playersCard && crabsCards.size >= crabsCard) {
+                when (playRecursive(
+                    playersCards.take(playersCard).toMutableList(),
+                    crabsCards.take(crabsCard).toMutableList(),
+                    true
+                )) {
+                    State.PLAYER_WON_GAME -> {
+                        return State.PLAYER_WON_GAME
+                    }
+
+                    State.PLAYER_WON -> {
+                        playersCards.add(playersCard)
+                        playersCards.add(crabsCard)
+                    }
+
+                    else -> {
+                        crabsCards.add(crabsCard)
+                        crabsCards.add(playersCard)
+                    }
+                }
+            } else {
+                round(playersCards, crabsCards, playersCard, crabsCard)
+            }
+        }
+
+        return if (playersCards.size > 0) State.PLAYER_WON else State.PLAYER_LOSE
+    }
+
+    override fun solve1(): Long {
+        val decks = decks.map { it.toMutableList() }
+        while (decks.all { it.size > 0 }) {
+            round(decks.first(), decks.last(), decks.first().removeFirst(), decks.last().removeFirst())
+        }
+
+        return decks.first { it.size > 0 }.reversed().mapIndexed { index, i -> (index + 1) * i }.sum().toLong()
+    }
+
     override fun solve2(): Long {
-        return -1
+        println(decks)
+        playRecursive(decks.first(), decks.last(), false)
+        println(decks)
+        return decks.first { it.size > 0 }.reversed().mapIndexed { index, i -> (index + 1) * i }.sum().toLong()
     }
 }
 

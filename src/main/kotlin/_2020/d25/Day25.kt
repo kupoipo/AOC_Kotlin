@@ -1,13 +1,38 @@
-
 package _2020.d25
 
 import util.Day
 import util.readFullText
+import java.lang.Math.pow
 import kotlin.system.measureNanoTime
-class Day25(override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day25(override val input: String) : Day<Long>(input) {
+    private var doorPublicKey: Long = 0
+    private var cardPublicKey: Long = 0
+
+    init {
+        input.split("\n").let {
+            doorPublicKey = it.last().toLong()
+            cardPublicKey = it.first().toLong()
+        }
     }
+
+    override fun solve1(): Long {
+        var value = 1L
+        var loopSize = 0L
+
+        while (value != cardPublicKey) {
+            value = (value * 7) % 20201227
+            loopSize++
+        }
+
+        value = 1L
+        repeat(loopSize.toInt()) {
+            value = (value*doorPublicKey)%20201227
+        }
+
+        return value
+    }
+
     override fun solve2(): Long {
         return -1
     }
