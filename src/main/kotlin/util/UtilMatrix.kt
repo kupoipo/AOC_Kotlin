@@ -8,6 +8,11 @@ fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T):
     return matrixFromStringIndexed(input, emptyDefault)  { char, _, _ -> function(char) }
 }
 
+val <E> Matrix<E>.nbColumns: Int
+    get() {
+        return this.first().size
+    }
+
 fun <T> matrixFromStringIndexed(input: String, emptyDefault: T, function: (Char, Int, Int) -> T): Matrix<T> {
     val lines = input.split("\n")
     val res = emptyMatrixOf(lines.size, lines.maxOf { it.length }, emptyDefault)

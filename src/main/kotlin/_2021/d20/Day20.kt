@@ -1,29 +1,67 @@
 package _2021.d20
 
-import util.Day
-import util.readFullText
-import kotlin.system.measureTimeMillis
-class Day20(override val input : String) : Day<Long>(input) {
-    val pointures = input.split("\n").map { it.split(" ") }
+import _2021.d18.split
+import _2022.d20.li
+import util.*
+import kotlin.system.measureNanoTime
+
+
+class Day20(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private var transform: String = input.split("\n\n").first().replace("\n", "")
+    private var outside = '.'
+    private var lightPixel = matrixFromString(input.split("\n\n").last(), '.') { it }
+
+    private fun getBinary(pos: Point) = buildString {
+        pos.forEachEveryNeighbors(true) {
+            if (it.inMap(lightPixel)) append(lightPixel[it])
+            else append(outside)
+        }
+    }.replace(".", "0").replace("#", "1")
+
+    fun turn() {
+        lightPixel.forEach {
+            it.add(0, outside)
+            it.add(outside)
+        }
+        lightPixel.add(0, MutableList(lightPixel.nbColumns) { outside })
+        lightPixel.add(MutableList(lightPixel.nbColumns) { outside })
+
+        val nextMatrix = emptyMatrixOf(lightPixel.size, lightPixel.nbColumns, '.')
+
+        lightPixel.forEachPoint {
+            val binaryString = getBinary(it)
+            val binary = binaryString.toInt(2)
+            nextMatrix[it] = transform[binary]
+        }
+
+        lightPixel = nextMatrix
+        if (!isTest)
+            outside = if (outside == '.') '#' else '.'
+    }
 
     override fun solve1(): Long {
-        pointures[0].indices.forEach {
-            println("INSERT INTO SHOE_SIZE (SIZE_CM, SIZE_FR, SIZE_UK, SIZE_US, SIZE_IT) VALUES (${pointures[0][it].replace(",", ".")},${pointures[1][it].replace(",", ".")},${pointures[2][it].replace(",", ".")},${pointures[3][it].replace(",", ".")},${pointures[4][it].replace(",", ".")});")
+        repeat(2) {
+            turn()
         }
-        return 0L
+        return lightPixel.sumOf { it.count { it == '#' } }.toLong()
     }
+
     override fun solve2(): Long {
-        return -1
+        repeat(48) {
+            turn()
+        }
+        return lightPixel.sumOf { it.count { it == '#' } }.toLong()
     }
 }
 
 fun main() {
-    //var day = Day20(readFullText("_2021/d20/test"))
-    var day = Day20(readFullText("_2021/d20/input"))
+    val day = Day20(false, readFullText("_2021/d20/input"))
+    println("Temps partie 1 : ${measureNanoTime { println("Part 1 : " + day.solve1()) } / 1e9}s")
+    println("Temps partie 2 : ${measureNanoTime { println("Part 2 : " + day.solve2()) } / 1e9}s")
 
-    val t1 = measureTimeMillis { println("Part 1 : " + day.solve1()) }
-    println("Temps partie 1 : {$t1}")
+    println()
 
-    val t2 = measureTimeMillis { println("Part 2 : " + day.solve2()) }
-    println("Temps partie 2 : {$t2}")
+    val dayTest = Day20(true, readFullText("_2021/d20/test"))
+    println("Temps partie 1 : ${measureNanoTime { println("Part 1 : " + dayTest.solve1()) } / 1e9}s")
+    println("Temps partie 2 : ${measureNanoTime { println("Part 2 : " + dayTest.solve2()) } / 1e9}s")
 }

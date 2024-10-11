@@ -92,14 +92,15 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
         }
     }
 
-    fun forEachEveryNeighbors(function: (Point) -> Unit) {
-        Direction.values().dropLast(1).forEach {
-            function(this + it)
-        }
-
+    fun forEachEveryNeighbors(withPoint: Boolean = false, function: (Point) -> Unit) {
         function(this + Point(-1, -1))
-        function(this + Point(-1, 1))
+        function(this + Direction.UP)
         function(this + Point(1, -1))
+        function(this + Direction.LEFT)
+        if (withPoint) function(this)
+        function(this + Direction.RIGHT)
+        function(this + Point(-1, 1))
+        function(this + Direction.DOWN)
         function(this + Point(1, 1))
     }
 

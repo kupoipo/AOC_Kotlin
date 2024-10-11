@@ -22,6 +22,17 @@ fun LongRange.offCut(other: LongRange) : LongRange{
     return if (this.last == other.last) this.first..other.first
     else other.last..this.last
 
+
+}
+
+fun LongRange.minus(other: LongRange): List<LongRange> {
+    val overlap = overlap(other) ?: return listOf(this)
+    val result = mutableListOf<LongRange>()
+
+    if (start < overlap.first) result.add(LongRange(start, overlap.first - 1))
+    if (overlap.last < last) result.add(LongRange(overlap.last + 1, last))
+
+    return result
 }
 
 fun LongRange.overlap(other: LongRange) : LongRange {
