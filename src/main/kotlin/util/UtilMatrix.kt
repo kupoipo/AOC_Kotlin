@@ -32,6 +32,8 @@ fun <T> matrixFromStringIndexed(input: String, emptyDefault: T, function: (Char,
     return res
 }
 
+fun <E> Matrix<E>.numberOf(el : E) = this.sumOf { it.count { it == el} }
+
 fun <E> Matrix<E>.pointOfFirst(function: (E) -> Boolean): Point {
     for (lig in this.indices) {
         for (col in this[lig].indices) {
@@ -77,6 +79,8 @@ operator fun <E> MutableList<E>.set(x: Long, value: E) {
 operator fun <E> MutableList<E>.get(y: Long): E {
     return this[y.toInt()]
 }
+
+
 
 operator fun <T> Matrix<T>.get(pos: Point) = this[pos.y][pos.x]
 

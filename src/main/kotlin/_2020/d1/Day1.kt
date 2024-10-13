@@ -2,7 +2,6 @@ package _2020.d1
 
 import util.Day
 import util.combination
-import util.getPermutations
 import util.readFullText
 import kotlin.system.measureNanoTime
 

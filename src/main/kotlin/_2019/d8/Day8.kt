@@ -1,14 +1,39 @@
-
 package _2019.d8
 
-import util.Day
-import util.readFullText
+import util.*
+import javax.swing.JLayeredPane.getLayer
 import kotlin.system.measureNanoTime
-class Day8(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
-    }
+
+class Day8(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    val layers =  if (isTest) getLayers(3, 2) else getLayers(25, 6)
+
+    private fun getLayers(col: Int, row: Int): List<Matrix<Int>> =
+        input.chunked(col * row).map { it.chunked(col).joinToString("\n") }
+            .map { matrixFromString(it, 0) { it.digitToInt() } }
+
+    override fun solve1(): Long = layers.minBy { it.numberOf(0) }.let {
+        it.numberOf(1) * it.numberOf(2)
+    }.toLong()
+
     override fun solve2(): Long {
+        val image = emptyMatrixOf(layers.first().size, layers.first().nbColumns, 0)
+
+        image.forEachPoint { p ->
+            var layer = 0
+
+            while (layers[layer][p] == 2) {
+                layer++
+            }
+
+            image[p] = layers[layer][p]
+        }
+
+        showMap(image, 2, transformation = {
+            if (it == 0) {
+                ""
+            } else it.toString()
+        })
+
         return -1
     }
 }

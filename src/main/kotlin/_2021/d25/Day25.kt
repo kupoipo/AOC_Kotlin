@@ -31,13 +31,7 @@ class Day25(private val isTest: Boolean, override val input : String) : Day<Long
         return res
     }
 
-    override fun solve1(): Long {
-        var cpt = 0L
-        while( move() ) {
-            cpt++
-        }
-        return cpt
-    }
+    override fun solve1(): Long = generateSequence { if (move()) 1L else null }.sum()
     override fun solve2(): Long {
         return -1
     }

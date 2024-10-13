@@ -1,29 +1,15 @@
 package _2019.d2
 
+import _2019.IntCode
 import util.Day
 import util.readFullText
 import kotlin.system.measureTimeMillis
 class Day2(override val input : String) : Day<Int>(input) {
+    val intCode = IntCode(input)
     override fun solve1(): Int {
-        val tab = input.split(",").map { s -> s.toInt() }.toMutableList()
+        while(!intCode.executeOneInstruction());
 
-        for (i in 0..tab.size step 4) {
-            when (tab[i]) {
-                1 -> {
-                    tab[tab[i+3]] = tab[tab[i+1]] + tab[tab[i+2]]
-                }
-
-                2 -> {
-                    tab[tab[i+3]] = tab[tab[i+1]] * tab[tab[i+2]]
-                }
-
-                99 -> {
-                    break
-                }
-            }
-        }
-
-        return tab[0]
+        return intCode.data[0].toInt()
     }
     override fun solve2(): Int {
         val tab_init = input.split(",").map { s -> s.toInt() }.toMutableList()
