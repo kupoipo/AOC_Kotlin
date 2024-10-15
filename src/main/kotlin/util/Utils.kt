@@ -28,6 +28,22 @@ fun PGCD(a: Int, b: Int): Int {
     return x
 }
 
+fun gcd(a: Long, b: Long): Long {
+    return if (b == 0L) a else gcd(b, a % b)
+}
+
+fun lcm(a: Long, b: Long): Long {
+    return (a * b) / gcd(a, b)
+}
+
+fun lcmOf(vararg numbers: Long): Long {
+    return numbers.reduce { acc, num -> lcm(acc, num) }
+}
+
+fun lcmOf(numbers: List<Long>): Long {
+    return numbers.reduce { acc, num -> lcm(acc, num) }
+}
+
 
 fun <T> permutations(list: List<T>): List<List<T>> {
     if (list.size <= 1) {

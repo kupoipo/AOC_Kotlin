@@ -1,14 +1,44 @@
-
 package _2019.d11
 
-import util.Day
-import util.readFullText
+import _2019.IntCode
+import util.*
 import kotlin.system.measureNanoTime
-class Day11(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day11(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    val painted = mutableSetOf<Point>()
+    val currentPainted = mutableSetOf<Point>()
+    var position = Point(0, 0)
+    var direction = Direction.UP
+    val intCode = IntCode(input, 1, 1)
+
+    fun runOnce() {
+        repeat(2) {
+            if (intCode.executeUntilOutput() == 1L) {
+                painted.add(position)
+                currentPainted.add(position)
+            } else {
+                currentPainted.remove(position)
+            }
+
+            direction = if (intCode.executeUntilOutput() == 1L) direction.right() else direction.left()
+
+            position += direction
+            intCode.inputInt = if (position in currentPainted) 1L else 0L
+        }
     }
+
+    override fun solve1(): Long {
+        while (!intCode.halted) {
+            runOnce()
+        }
+        return painted.size.toLong()
+    }
+
     override fun solve2(): Long {
+        val map = emptyMatrixOf(currentPainted.maxOf { it.y + 1 },currentPainted.maxOf { it.x + 1 }, ' ')
+
+        currentPainted.forEach { map[it] = 'X'}
+        showMap(map)
         return -1
     }
 }

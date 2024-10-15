@@ -203,7 +203,7 @@ enum class DIRECTION3D(val dx: Int, val dy: Int, val dz: Int) {
     X1(1, 0, 0), X_MINUS_1(-1, 0, 0), Y1(0, -1, 0), Y_MINUS_1(-0, 1, 0), Z1(0, 0, -1), Z_MINUS_1(-0, 0, 1)
 }
 
-data class Point3DLong(val x: Long, val y: Long, val z: Long) {
+data class Point3DLong(var x: Long, var y: Long, var z: Long) {
     operator fun plus(other: Point3DLong) = Point3DLong(other.x + x, other.y + y, other.z + z)
     operator fun minus(other: Point3DLong) = Point3DLong(other.x - x, other.y - y, other.z - z)
     operator fun times(n: Int) = Point3DLong(x * n, y * n, z * n)
