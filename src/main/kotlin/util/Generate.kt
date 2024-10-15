@@ -18,7 +18,7 @@ fun main() {
 
     for (i in startDay..endDay) {
         Files.createDirectory(Paths.get("./src/main/kotlin/_$year/d$i"))
-        Files.createFile(Paths.get("./src/main/kotlin/_$year/d$i/test.txt"))
+        Files.createFile(Paths.get("./src/main/kotlin/_$year/d$i/test1.txt"))
         Files.createFile(Paths.get("./src/main/kotlin/_$year/d$i/input.txt"))
         var f = Files.createFile(Paths.get("./src/main/kotlin/_$year/d$i/Day$i.kt"))
 

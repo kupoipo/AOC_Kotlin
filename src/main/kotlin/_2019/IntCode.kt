@@ -15,7 +15,13 @@ enum class OPCode(val value: Int, val jump: Int, val autoJump: Boolean = true) {
     }
 }
 
-class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = setting) {
+class IntCode(
+    input: String,
+    val setting: Long = 0L,
+    var inputInt: Long = setting,
+    val freeInputMode: Boolean = false,
+    val beforeInput: () -> Unit = {}
+) {
     val data = input.split(",").map { it.toLong() }.toMutableList().let { list ->
         repeat(2000) {
             list.add(0L)
@@ -57,9 +63,16 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
                     }
 
                     OPCode.INPUT -> {
-                        setParam(number[2], 1, if (settingMode) setting else inputInt)
-                        if (settingMode) {
-                            settingMode = false
+                        if (freeInputMode) {
+                            beforeInput()
+                            println("Input : ")
+                            setParam(number[2], 1, readln().toLong())
+                        } else {
+                            beforeInput()
+                            setParam(number[2], 1, if (settingMode) setting else inputInt)
+                            if (settingMode) {
+                                settingMode = false
+                            }
                         }
                     }
 
@@ -110,5 +123,7 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
             while (!executeOneInstruction());
         return output.last()
     }
+
+    fun running(): Boolean = !halted
 }
 
