@@ -16,7 +16,12 @@ enum class OPCode(val value: Int, val jump: Int, val autoJump: Boolean = true) {
 }
 
 class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = setting) {
-    val data = input.split(",").map { it.toLong() }.toMutableList()
+    val data = input.split(",").map { it.toLong() }.toMutableList().let { list ->
+        repeat(2000) {
+            list.add(0L)
+        }
+        list
+    }
     private var address = 0L
     var output = mutableListOf<Long>()
     private var settingMode = true
@@ -30,11 +35,10 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
         val number = data[address].toString().let { it.padStart(5, '0') }
         val opCode = OPCode.from(number.takeLast(2).toInt())
 
-        println(number)
-        println(output)
 
         val param1 = getParam(number[2], 1)
         val param2 = getParam(number[1], 2)
+
 
         when (opCode) {
             OPCode.STOP -> {
@@ -44,8 +48,8 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
 
             else -> {
                 when (opCode) {
-                    OPCode.ADD -> data[data[address + 3]] = param1 + param2
-                    OPCode.MULTIPLY -> data[data[address + 3]] = param1 * param2
+                    OPCode.ADD -> setParam(number[0], 3, param1 + param2)
+                    OPCode.MULTIPLY -> setParam(number[0], 3, param1 * param2)
                     OPCode.OUTPUT -> {
                         output.add(param1)
                         address = (address + opCode.jump) % data.size
@@ -53,7 +57,7 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
                     }
 
                     OPCode.INPUT -> {
-                        data[data[address + 1]] = if (settingMode) setting else inputInt
+                        setParam(number[2], 1, if (settingMode) setting else inputInt)
                         if (settingMode) {
                             settingMode = false
                         }
@@ -61,8 +65,8 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
 
                     OPCode.JUMP_IF_TRUE -> address = if (param1 != 0L) param2 else address + 3
                     OPCode.JUMP_IF_FALSE -> address = if (param1 == 0L) param2 else address + 3
-                    OPCode.LOWER_THAN -> data[data[address + 3]] = if (param1 < param2) 1 else 0
-                    OPCode.EQUALS -> data[data[address + 3]] = if (param1 == param2) 1 else 0
+                    OPCode.LOWER_THAN -> setParam(number[0], 3, if (param1 < param2) 1 else 0)
+                    OPCode.EQUALS -> setParam(number[0], 3, if (param1 == param2) 1 else 0)
                     OPCode.ADJUST_RELATIVE -> relativeIndex += param1
                     else -> {
                         throw IllegalArgumentException("Unknown opcode $opCode")
@@ -85,6 +89,14 @@ class IntCode(input: String, val setting: Long = 0L, var inputInt: Long = settin
         }
     } catch (e: Exception) {
         0L
+    }
+
+    private fun setParam(mode: Char, offset: Int, value: Long) {
+        when (mode) {
+            '0' -> data[data[address + offset]] = value
+            '2' -> data[data[address + offset] + relativeIndex] = value
+            else -> throw IllegalArgumentException("Unknown mode $mode")
+        }
     }
 
     fun executeUntilOutput(): Long {

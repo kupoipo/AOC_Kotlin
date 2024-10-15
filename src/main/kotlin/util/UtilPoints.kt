@@ -1,11 +1,12 @@
 package util
 
-import java.lang.Math.abs
 import java.math.BigDecimal
+import kotlin.math.abs
+import kotlin.math.atan2
 
 enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
 
-    LEFT(-1, 0, '<'), RIGHT(1, 0, '>'), UP(0, -1, '^'), DOWN(0, 1, 'v'), NONE(0, 0,' ');
+    LEFT(-1, 0, '<'), RIGHT(1, 0, '>'), UP(0, -1, '^'), DOWN(0, 1, 'v'), NONE(0, 0, ' ');
 
     operator fun times(step: Int): Point = Point(this.dx * step, this.dy * step)
     fun opposite(): Direction {
@@ -18,7 +19,7 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
         }
     }
 
-    fun right() : Direction{
+    fun right(): Direction {
         return when (this) {
             LEFT -> UP
             UP -> RIGHT
@@ -27,7 +28,7 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
         }
     }
 
-    fun left() : Direction {
+    fun left(): Direction {
         return when (this) {
             LEFT -> DOWN
             DOWN -> RIGHT
@@ -55,6 +56,38 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     fun right(): Point = this + Direction.RIGHT
     fun left(): Point = this + Direction.LEFT
 
+    fun angleWith(other: Point) : Double{
+        val dx = other.x - x
+        val dy = other.y - y
+
+        return atan2(dy.toDouble(), dx.toDouble())
+    }
+
+    fun sameDirection(v: Point) = x * v.x + y * v.y > 0
+
+    fun collinear(v: Point) = x * v.y - y * v.x == 0L
+
+    fun reduceToSmallestVector() : Point{
+        val res = this.copy()
+
+
+        if ((res.y != 0L || res.x != 0L)) {
+            val pgcd = PGCD(res.x.toInt(), res.y.toInt())
+            res.x /= abs(pgcd)
+            res.y /= abs(pgcd)
+        }
+
+        if (res.y == 0L) {
+            res.x = if (res.x > 0) 1 else -1
+        }
+
+        if (res.x == 0L) {
+            res.y = if (res.y > 0) 1 else -1
+        }
+
+        return res
+    }
+
     fun rotateRight() {
         val temp = x
         this.x = -y
@@ -68,6 +101,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     }
 
     var id = ID++
+
     constructor(p: Point) : this(p.x, p.y)
 
     constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
@@ -75,7 +109,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)
     operator fun times(n: Int) = Point(x * n, y * n)
-    fun manhattan(other: Point = Point(0,0)) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
+    fun manhattan(other: Point = Point(0, 0)) = StrictMath.abs(other.x - x) + StrictMath.abs(other.y - y)
 
     fun moveInDirection(direction: Char, step: Int = 1): Point = when (direction) {
         'N', 'U' -> this + (Direction.UP * step)
@@ -159,6 +193,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
         return this.toString().hashCode()
     }
 
+
     companion object {
         var ID = 1
     }
@@ -184,19 +219,20 @@ data class Point3DLong(val x: Long, val y: Long, val z: Long) {
         return neighbors
     }
 
-    fun all26Neighbors() : List<Point3DLong> {
+    fun all26Neighbors(): List<Point3DLong> {
         val neighbors = mutableListOf<Point3DLong>()
 
         for (z in -1..1)
             for (y in -1..1)
                 for (x in -1..1)
                     if (z != 0 || y != 0 || x != 0)
-                        neighbors.add(Point3DLong(this.x + x, this.y +y, this.z + z))
+                        neighbors.add(Point3DLong(this.x + x, this.y + y, this.z + z))
 
 
         return neighbors
     }
-    fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
+
+    fun manhattan(other: Point3DLong = Point3DLong(0, 0, 0)): Long {
         return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
     }
 
@@ -209,7 +245,7 @@ data class Point4DLong(val x: Long, val y: Long, val z: Long, val w: Long) {
     //operator fun times(n: Int) = Point3DLong(x * n, y * n, z * n)
 
 
-    fun allNeighbors() : List<Point4DLong> {
+    fun allNeighbors(): List<Point4DLong> {
         val neighbors = mutableListOf<Point4DLong>()
 
         for (w in -1..1)
@@ -217,14 +253,14 @@ data class Point4DLong(val x: Long, val y: Long, val z: Long, val w: Long) {
                 for (y in -1..1)
                     for (x in -1..1)
                         if (z != 0 || y != 0 || x != 0 || w != 0)
-                            neighbors.add(Point4DLong(this.x + x, this.y +y, this.z + z, this.w + w))
+                            neighbors.add(Point4DLong(this.x + x, this.y + y, this.z + z, this.w + w))
 
 
         return neighbors
     }
-   /* fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
-        return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
-    }*/
+    /* fun manhattan(other: Point3DLong  = Point3DLong(0,0,0)) : Long {
+         return kotlin.math.abs(x - other.x) + kotlin.math.abs(y - other.y) + kotlin.math.abs(z - other.z)
+     }*/
 
     override fun toString(): String = "[$x,$y,$z,$w]"
 }

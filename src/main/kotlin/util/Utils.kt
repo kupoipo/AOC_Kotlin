@@ -16,6 +16,19 @@ fun readFullText(name: String) = File("src/main/kotlin", "$name.txt")
 fun readInput(name: String) = File("src/main/kotlin", "$name.txt")
     .readLines()
 
+fun PGCD(a: Int, b: Int): Int {
+    var x = a
+    var y = b
+
+    while (y != 0) {
+        val temp = y
+        y = x % y
+        x = temp
+    }
+    return x
+}
+
+
 fun <T> permutations(list: List<T>): List<List<T>> {
     if (list.size <= 1) {
         return listOf(list)
