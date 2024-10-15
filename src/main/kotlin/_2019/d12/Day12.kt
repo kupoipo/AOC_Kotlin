@@ -7,61 +7,36 @@ import kotlin.math.abs
 import kotlin.system.measureNanoTime
 
 class Day12(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
-    class Moon(var position: Point3DLong) {
-        var velocity: Point3DLong = Point3DLong(0, 0, 0)
-
+    class Moon(var position: MutableList<Long>) {
+        var velocity: MutableList<Long> = mutableListOf(0, 0, 0)
         fun updateVelocity(other: Moon) {
-            if (other.position.x != position.x) {
-                if (other.position.x > position.x) {
-                    other.velocity.x--
-                    velocity.x++
-                } else {
-                    other.velocity.x++
-                    velocity.x--
-                }
-            }
-
-            if (other.position.y != position.y) {
-                if (other.position.y > position.y) {
-                    other.velocity.y--
-                    velocity.y++
-                } else {
-                    other.velocity.y++
-                    velocity.y--
-                }
-            }
-
-            if (other.position.z != position.z) {
-                if (other.position.z > position.z) {
-                    other.velocity.z--
-                    velocity.z++
-                } else {
-                    other.velocity.z++
-                    velocity.z--
+            repeat(3) {
+                if (other.position[it] != position[it]) {
+                    if (other.position[it] > position[it]) {
+                        other.velocity[it]--
+                        velocity[it]++
+                    } else {
+                        other.velocity[it]++
+                        velocity[it]--
+                    }
                 }
             }
         }
 
         fun move() {
-            position += velocity
+            position = position.mapIndexed { index, i -> i + velocity[index] }.toMutableList()
         }
 
-        fun pot(): Long {
-            return abs(position.x) + abs(position.y) + abs(position.z)
-        }
+        fun pot(): Long = position.sumOf { abs(it) }.toLong()
 
-        fun kin(): Long {
-            return abs(velocity.x) + abs(velocity.y) + abs(velocity.z)
-
-        }
+        fun kin(): Long = velocity.sumOf { abs(it) }.toLong()
 
         override fun toString(): String {
             return "pos=$position vel=$velocity"
         }
     }
 
-    private var moons =
-        input.split("\n").map { line -> line.allLong().let { Moon(Point3DLong(it.first(), it[1], it[2])) } }
+    private var moons = input.split("\n").map { line -> Moon(line.allLong()) }
 
     fun step() {
         moons.pairs().forEach { (m1, m2) ->
@@ -70,49 +45,32 @@ class Day12(private val isTest: Boolean, override val input: String) : Day<Long>
         moons.forEach { m -> m.move() }
     }
 
-
     override fun solve1(): Long =
         repeat(1000) { step() }.let { moons.sumOf { it.kin() * it.pot() } }
 
     data class StateAxis(val pos: List<Long>, val velocity: List<Long>)
 
-    fun snapShot(axis: Int): StateAxis = when (axis) {
-        0 -> StateAxis(moons.map { it.position.x }, moons.map { it.velocity.x })
-        1 -> StateAxis(moons.map { it.position.y }, moons.map { it.velocity.y })
-        else -> StateAxis(moons.map { it.position.z }, moons.map { it.velocity.z })
-    }
+    private fun snapShot(axis: Int): StateAxis = StateAxis(moons.map { it.position[axis] }, moons.map { it.velocity[axis] })
 
     override fun solve2(): Long {
-        moons = input.split("\n").map { line -> line.allLong().let { Moon(Point3DLong(it.first(), it[1], it[2])) } }
-        val x = mutableSetOf(snapShot(0))
-        val y = mutableSetOf(snapShot(1))
-        val z = mutableSetOf(snapShot(2))
+        moons = input.split("\n").map { line -> Moon(line.allLong()) }
 
-        var cycleX = 0L
-        var cycleY = 0L
-        var cycleZ = 0L
+        val axis = List(3) { mutableSetOf<StateAxis>() }
+        val cycles = MutableList(3) { 0L }
+        var index = 0L
 
-        repeat(1000000) {
+        while (cycles.any { it == 0L }) {
             step()
 
-            val xS = snapShot(0)
-            val yS = snapShot(1)
-            val zS = snapShot(2)
-
-            if (xS in x && cycleX == 0L) cycleX = it.toLong()
-            if (yS in y && cycleY == 0L) cycleY = it.toLong()
-            if (zS in z && cycleZ == 0L) cycleZ = it.toLong()
-
-            x.add(xS)
-            y.add(yS)
-            z.add(zS)
+            repeat(3) {
+                val snap = snapShot(it)
+                if (snap in axis[it] && cycles[it] == 0L) cycles[it] = index
+                axis[it].add(snap)
+            }
+            index++
         }
 
-        println(cycleZ)
-        println(cycleY)
-        println(cycleX)
-
-        return lcmOf(cycleZ, cycleX, cycleY)
+        return lcmOf(cycles)
     }
 }
 
