@@ -12,6 +12,7 @@ val test = "..#..........\n" +
         "..#...#...#..\n" +
         "..#####...^.."
 
+
 class Day17(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
     var intCode = if (isTest) null else IntCode(input)
     var map: Matrix<Char> = matrixFromString(
@@ -28,7 +29,7 @@ class Day17(private val isTest: Boolean, override val input: String) : Day<Long>
     override fun solve2(): Long {
         intCode = IntCode("2${input.drop(1)}",  freeInputMode = true )
         intCode!!.execute(true) {
-            it.toInt().toChar().toString()
+            "$it\n"
         }
         return -1
     }

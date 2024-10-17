@@ -23,8 +23,7 @@ class Day16(private val isTest: Boolean, override val input: String) : Day<Long>
             }
         }
 
-
-        val removeFirst = coeff.removeFirst()
+        coeff.removeFirst()
 
         return abs(coeff.mapIndexed { index, c -> from[index] * c }.sum())
     }
@@ -35,15 +34,32 @@ class Day16(private val isTest: Boolean, override val input: String) : Day<Long>
         var res = input.map { it.digitToInt() }
         for (i in 1..gen) {
             res = nextGen(res)
-            println("gen $i : $res")
         }
         return res
     }
 
-    override fun solve1(): Long = getGeneration(300).joinToString("").take(8).toLong()
+    override fun solve1(): Long = getGeneration(10).joinToString("").take(8).toLong()
 
     override fun solve2(): Long {
-        return -1
+        val offset = input.take(7).toLong()
+        val modulo = abs((input.length * 10_000 - offset) % input.length)
+        val quotient = abs((input.length * 10_000 - offset) / input.length)
+        val res = input.takeLast(modulo.toInt()).map { it.digitToInt() }.toMutableList()
+        repeat(quotient.toInt()) {
+            res.addAll(input.map { it.digitToInt() })
+        }
+
+        repeat(100) {
+            var sum = res.sum()
+
+            for (i in res.indices) {
+                val temp = abs(sum) % 10
+                sum -= res[i]
+                res[i] = temp
+            }
+        }
+
+        return res.take(8).joinToString("").toLong()
     }
 }
 
