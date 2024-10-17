@@ -1,14 +1,35 @@
-
 package _2019.d17
 
-import util.Day
-import util.readFullText
+import _2019.IntCode
+import util.*
 import kotlin.system.measureNanoTime
-class Day17(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+val test = "..#..........\n" +
+        "..#..........\n" +
+        "#######...###\n" +
+        "#.#...#...#.#\n" +
+        "#############\n" +
+        "..#...#...#..\n" +
+        "..#####...^.."
+
+class Day17(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    var intCode = if (isTest) null else IntCode(input)
+    var map: Matrix<Char> = matrixFromString(
+        if (isTest) test else intCode!!.execute().let { intCode!!.output.map { it.toInt().toChar() } }.joinToString(""),
+        '.'
+    ) { it }
+
+    private val intersections = map.points().filter { p ->
+        Direction.values().all { (p + it).let { it.inMap(map) && map[it] == '#' } }
     }
+
+    override fun solve1(): Long = intersections.map { it.y * it.x }.sum()
+
     override fun solve2(): Long {
+        intCode = IntCode("2${input.drop(1)}",  freeInputMode = true )
+        intCode!!.execute(true) {
+            it.toInt().toChar().toString()
+        }
         return -1
     }
 }

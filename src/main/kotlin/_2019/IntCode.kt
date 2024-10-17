@@ -23,7 +23,7 @@ class IntCode(
     val beforeInput: () -> Unit = {}
 ) {
     val data = input.split(",").map { it.toLong() }.toMutableList().let { list ->
-        repeat(2000) {
+        repeat(4000) {
             list.add(0L)
         }
         list
@@ -66,7 +66,7 @@ class IntCode(
                         if (freeInputMode) {
                             beforeInput()
                             println("Input : ")
-                            setParam(number[2], 1, readln().toLong())
+                            setParam(number[2], 1, readln().let { if (it.isEmpty()) 10 else it.first().code.toLong() })
                         } else {
                             beforeInput()
                             setParam(number[2], 1, if (settingMode) setting else inputInt)
@@ -118,9 +118,11 @@ class IntCode(
         return output.last()
     }
 
-    fun execute(): Long {
-        while (!halted)
-            while (!executeOneInstruction());
+    fun execute(withOutput: Boolean = false, transform: (Long) -> String = { "" }): Long {
+        while (!halted) {
+            val v = executeUntilOutput()
+            if (withOutput) print(transform(v))
+        }
         return output.last()
     }
 
