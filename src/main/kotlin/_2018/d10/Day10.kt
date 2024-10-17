@@ -1,7 +1,6 @@
 package _2018.d10
 
 import util.*
-import kotlin.math.max
 import kotlin.system.measureNanoTime
 
 class Bird(val position: Point, val velocity: Point) {

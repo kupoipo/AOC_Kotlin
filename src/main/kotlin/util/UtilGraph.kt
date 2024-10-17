@@ -70,13 +70,17 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             queue.add(from)
 
             while (queue.isNotEmpty()) {
+                println(visited.size)
                 val current = queue.poll()
 
 
+                if (current.isGoal()) {
+                    return current
+                }
                 visited.add(current)
 
                 current.nextStates().forEach { nextState ->
-                    if (nextState.isGoal()) return nextState
+
 
                     if (!(nextState in visited || nextState.isDeadLock())) {
 
@@ -93,6 +97,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                 }
             }
 
+            println(visited.size)
             return null
         }
 

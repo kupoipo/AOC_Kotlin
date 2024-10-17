@@ -1,10 +1,8 @@
 package _2019.d15
 
 import _2019.IntCode
-import _2022.d18.inMap
 import util.*
 import java.lang.Exception
-import java.lang.Thread.sleep
 import kotlin.system.measureNanoTime
 
 const val WALL = 1

@@ -1,7 +1,6 @@
 package _2019.d8
 
 import util.*
-import javax.swing.JLayeredPane.getLayer
 import kotlin.system.measureNanoTime
 
 class Day8(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
