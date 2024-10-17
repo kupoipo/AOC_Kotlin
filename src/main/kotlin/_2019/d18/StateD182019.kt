@@ -21,7 +21,7 @@ data class StateD182019(
         StateD182019(
             level,
             path.goal.copy(),
-            keys.toMutableSet().also { it.add(level.map[path.goal.y.toInt()][path.goal.x.toInt()]) },
+            keys.toMutableSet().also { it.remove(level.map[path.goal.y.toInt()][path.goal.x.toInt()]) },
             destroyedDoors.toMutableSet()
                 .also { it.add(level.map[path.goal.y.toInt()][path.goal.x.toInt()].uppercase().first()) },
             time + path.length,
@@ -29,7 +29,11 @@ data class StateD182019(
         )
     }.toMutableList()
 
-    override fun isGoal(): Boolean = keys.size == level.keys.size
+    override fun timeToGoal(): Int {
+        return  keys.size * 20 +  time
+    }
+
+    override fun isGoal(): Boolean = keys.isEmpty() // keys.size == level.keys.size
 
     override fun hashCode(): Int {
         return "$player $keys".hashCode()

@@ -67,6 +67,19 @@ fun <E> Matrix<E>.points(): List<Point> {
 fun <T> matrixOf(vararg rows: MutableList<T>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
 fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
 fun <T> Matrix<T>.toString(): String = this.joinToString("\n") { it.joinToString(", ") }
+fun <T> Matrix<T>.subMap(fromX: Int, fromY: Int, width: Int, height: Int): Matrix<T> {
+    val res = emptyMatrixOf(height, width, this[0][0])
+
+    repeat(height) { y ->
+        repeat(width) { x ->
+            res[y][x] = this[fromY+y][fromX+x]
+        }
+    }
+
+    return res
+}
+
+fun <T> Matrix<T>.toFlatString() = this.joinToString("\n") { it.joinToString("") }
 
 operator fun <E> Matrix<E>.set(pos: Point, value: E) {
     this[pos.y][pos.x] = value

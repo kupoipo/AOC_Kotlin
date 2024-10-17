@@ -70,7 +70,6 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             queue.add(from)
 
             while (queue.isNotEmpty()) {
-                println(visited.size)
                 val current = queue.poll()
 
 

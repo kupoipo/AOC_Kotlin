@@ -12,17 +12,11 @@ class Level(
 ) {
     lateinit var state: StateD182019
 
-
-    fun display() {
-        showMap(map, 2)
-
-    }
-
     companion object {
         fun levelFrom(input: String): Level {
             val matrix = matrixFromString(input, '.') { it }
             val tempDoorKeys = mutableSetOf<Point>()
-            var player: Point = Point(0, 0)
+            var player = Point(0, 0)
 
             matrix.forEachPoint {
                 when (matrix[it]) {
@@ -54,12 +48,12 @@ class Level(
             }
 
             val level = Level(matrix, paths, keys.toMutableSet(), doors.toMutableSet())
-            level.state = StateD182019(level, player, emptySet(), emptySet(), 0, null)
+            level.state = StateD182019(level, player, keys.map { matrix[it] }.toMutableSet(), emptySet(), 0, null)
             println("Level computed")
             return level
         }
 
-        fun getPathInfo(from: Point, to: Point, map: Matrix<Char>): PathInformation {
+        private fun getPathInfo(from: Point, to: Point, map: Matrix<Char>): PathInformation {
             val queue = mutableListOf(from to emptyList<Direction>())
             val visited = mutableListOf<Point>()
 
