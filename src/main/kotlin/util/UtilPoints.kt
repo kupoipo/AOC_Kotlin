@@ -105,6 +105,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     constructor(p: Point) : this(p.x, p.y)
 
     constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
+    constructor(p: Point3DLong) : this(p.x, p.y)
 
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(other.x - x, other.y - y)

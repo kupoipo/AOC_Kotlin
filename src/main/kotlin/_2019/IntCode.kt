@@ -66,10 +66,13 @@ class IntCode(
                         if (freeInputMode) {
                             beforeInput()
                             println("Input : ")
+                            setParam(number[2], 1, readln().toLong())
+                            /*
+                            For the vaccum day
                             setParam(number[2], 1, readln().let { if (it.isEmpty()) 10 else {
                                 if (it in "yn") it.first().code.toLong()
                                 else it.uppercase().first().code.toLong()
-                            } })
+                            } })*/
                         } else {
                             beforeInput()
                             setParam(number[2], 1, if (settingMode) setting else inputInt)
