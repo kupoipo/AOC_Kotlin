@@ -1,6 +1,7 @@
 package _2019.d20
 
 import util.*
+import java.util.PriorityQueue
 import kotlin.system.measureNanoTime
 
 class Wrap(val name: String, val outer: Point, val inner: Point, val isInner: Boolean, var exit: Wrap?) {
@@ -13,7 +14,7 @@ class Wrap(val name: String, val outer: Point, val inner: Point, val isInner: Bo
 
 class Day20(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
     private val map: Matrix<Char> = matrixFromString(input, ' ') { it }
-    private val wraps = mutableListOf<Wrap>()
+    private val wraps = mutableMapOf<Point, Wrap>()
     private val start: Point
     private val goal: Point
 
@@ -61,13 +62,13 @@ class Day20(private val isTest: Boolean, override val input: String) : Day<Long>
         processMap(wraps, horizontal = true)
         processMap(wraps, horizontal = false)
 
-        wraps.forEach { (_, v) -> this.wraps.addAll(v) }
+        wraps.forEach { (_, v) -> v.forEach { this.wraps[it.outer] = it } }
 
         start = wraps["AA"]!!.first().outer
         goal = wraps["ZZ"]!!.first().outer
 
-        for (w in this.wraps) {
-            val queue = mutableListOf(start to 0)
+        for (w in this.wraps.values) {
+            val queue = mutableListOf(w.outer to 0)
             val visited = mutableSetOf<Point>()
 
             while (queue.isNotEmpty()) {
@@ -77,15 +78,14 @@ class Day20(private val isTest: Boolean, override val input: String) : Day<Long>
 
                 for (dir in Direction.values().dropLast(1)) {
                     var newPoint = current.first + dir
-                    val wrap = this.wraps.firstOrNull { it.inner == newPoint }
+                    val wrap = this.wraps.values.firstOrNull { it.inner == newPoint }
                     var add: RecursivePoint
 
                     if (wrap != null) {
-                        if (wrap.exit != null) {
-                            w.reachableWraps.add(wrap to current.second)
-                        } else {
-                            continue
+                        if (wrap != w) {
+                            w.reachableWraps.add(wrap to current.second+1)
                         }
+                        continue
                     }
 
                     if (map[newPoint.y][newPoint.x] != '#' && newPoint !in visited && !queue.any { newPoint == it.first }) {
@@ -96,42 +96,41 @@ class Day20(private val isTest: Boolean, override val input: String) : Day<Long>
         }
     }
 
-    data class RecursivePoint(val point: Point, val pathSize: Int, val depth: Int)
+    data class RecursivePoint(val point: Point, val pathSize: Int, val depth: Int, val parent: RecursivePoint? = null) : Comparable<RecursivePoint> {
+        override fun compareTo(other: RecursivePoint): Int {
+            return pathSize.compareTo(other.pathSize)
+        }
+
+    }
 
     fun path(part2: Boolean): Long {
-        val queue = mutableListOf(RecursivePoint(start, 0, 0))
+        val queue = PriorityQueue<RecursivePoint>()
         val visited = mutableSetOf<Pair<Point, Int>>()
 
+        queue.add(RecursivePoint(start, 0, 0))
         while (queue.isNotEmpty()) {
-            val current = queue.removeAt(0)
-
-            if (current.point == goal && if (part2) current.depth == 0 else true) return current.pathSize.toLong()
+            val current = queue.poll()
 
             visited.add(current.point to current.depth)
 
-            for (dir in Direction.values().dropLast(1)) {
-                var newPoint = current.point + dir
-                var newDepth = current.depth
-                val wrap = wraps.firstOrNull { it.inner == newPoint }
-                var add: RecursivePoint
-
-                if (wrap != null) {
-                    if (wrap.exit != null) {
-                        newPoint = wrap.exit!!.outer
-                        newDepth = current.depth + (if (wrap.isInner) 1 else -1)
-                    } else {
-                        continue
+            for (p in wraps[current.point]!!.reachableWraps) {
+                if (p.first.exit == null) {
+                    if (p.first.outer == goal &&  if (part2) current.depth == 0 else true) {
+                        return current.pathSize.toLong() + p.second - 1
                     }
+                    continue
                 }
+                val newPoint = p.first.exit!!.outer
+                val newDepth = current.depth + (if (p.first.isInner) 1 else -1)
+
                 if (part2 && newDepth < 0) continue
 
-
                 if (map[newPoint.y][newPoint.x] != '#' && (newPoint to newDepth) !in visited && !queue.any { newPoint == it.point && newDepth == it.depth }) {
-                    add = RecursivePoint(newPoint, current.pathSize + 1, newDepth)
-                    queue.add(add)
+                    queue.add(RecursivePoint(newPoint, current.pathSize + p.second, newDepth, current))
                     visited.add(newPoint to newDepth)
                 }
             }
+
         }
 
         throw Exception("No path found")
