@@ -124,7 +124,7 @@ class IntCode(
         return output.last()
     }
 
-    fun execute(withOutput: Boolean = false, transform: (Long) -> String = { "" }): Long {
+    fun execute(withOutput: Boolean = false, transform: (Long) -> String = { it.toInt().toChar().toString() }): Long {
         while (!halted) {
             val v = executeUntilOutput()
             if (withOutput) print(transform(v))

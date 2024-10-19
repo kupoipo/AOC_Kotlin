@@ -1,10 +1,12 @@
 
 package _2019.d21
 
+import _2019.IntCode
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
 class Day21(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
+    val intCode = IntCode(input, freeInputMode = true).execute(true)
     override fun solve1(): Long {
         return -1
     }
