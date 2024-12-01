@@ -4,12 +4,13 @@ import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.writeText
+import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    val startDay = 7
+    val startDay = 1
     val endDay = 25
-    val year = 2019
+    val year = 2024
     try {
         Files.createDirectory(Paths.get("./src/main/kotlin/_$year"))
     } catch (_: Exception) {
@@ -45,9 +46,18 @@ fun main() {
 
     println()
 
-    val dayTest = Day$i(true, readFullText("_$year/d$i/test"))
-    println("Temps partie 1 : """+"$"+"{measureNanoTime { println(\"Part 1 : \" + dayTest.solve1()) } / 1e9}s\")"+"""
-    println("Temps partie 2 : """+"$"+"{measureNanoTime { println(\"Part 2 : \" + dayTest.solve2()) } / 1e9}s\")"+"""
+    for (i in 1..5) {
+        try {
+            val dayTest = Day$i(true, readFullText("_$year/d$i/test${'$'}i"))
+            println("Test """+"$"+"""i")
+            println("Temps partie 1 : ${'$'}{measureNanoTime { println("Part 1 : " + dayTest.solve1()) } / 1e9}s")
+            println("Temps partie 2 : ${'$'}{measureNanoTime { println("Part 2 : " + dayTest.solve2()) } / 1e9}s")
+            println()
+        } catch (e: Exception) {
+            break
+        }
+    }
+
 }"""
 
         f.writeText(str)
