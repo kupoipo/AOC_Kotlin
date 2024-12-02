@@ -1,16 +1,27 @@
-
 package _2024.d2
 
 import util.Day
+import util.allInts
 import util.readFullText
+import kotlin.math.abs
 import kotlin.system.measureNanoTime
-class Day2(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day2(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val lines = input.split("\n").map { it.allInts() }
+
+    private fun isSafe(report: List<Int>): Boolean {
+        val isAscendant = report[1] - report[0] > 0
+        return (1..report.lastIndex).map { report[it] - report[it - 1] }.all {
+            abs(it) in 1..3 && if (isAscendant) it > 0 else it < 0
+        }
     }
-    override fun solve2(): Long {
-        return -1
-    }
+
+    private fun isSafeV2(report: List<Int>): Boolean =
+        (isSafe(report)) || (0..report.lastIndex).any { i -> isSafe(report.toMutableList().apply { this.removeAt(i) }) }
+
+
+    override fun solve1(): Long = lines.count { report -> isSafe(report) }.toLong()
+    override fun solve2(): Long = lines.count { report -> isSafeV2(report) }.toLong()
 }
 
 fun main() {
