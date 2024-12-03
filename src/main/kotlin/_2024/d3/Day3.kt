@@ -1,15 +1,28 @@
-
 package _2024.d3
 
 import util.Day
+import util.allLong
+import util.listOfMatch
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day3(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
-    }
+
+class Day3(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private  val regex = Regex("""mul\(-?\d+,-?\d+\)""")
+
+    fun sumOfMul(line: String) = regex.listOfMatch(line).sumOf { match -> match.allLong().let { it.first() * it.last() } }
+
+    override fun solve1(): Long = sumOfMul(input)
+
     override fun solve2(): Long {
-        return -1
+        val toDos = input.split("do()").map {
+            try {
+                it.take(it.indexOf("don't()"))
+            } catch (e: Exception) {
+                it
+            }
+        }
+
+        return toDos.sumOf(::sumOfMul)
     }
 }
 
