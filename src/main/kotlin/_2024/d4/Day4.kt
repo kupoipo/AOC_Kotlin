@@ -26,15 +26,19 @@ class Day4(private val isTest: Boolean, override val input: String) : Day<Long>(
         }
     }
 
-    private fun nbXMAS() =
-        map.points().sumOf { p ->
+    private fun nbXMAS(): Long =
+        (0 until map.size - 2).flatMap { y -> (0 until map.nbColumns - 2).map { x -> Point(x, y) } }.sumOf { p ->
             val pos = listOf(Point(0, 0), Point(2, 0), Point(1, 1), Point(0, 2), Point(2, 2))
-            listOf("SSAMM", "MMASS", "MSAMS", "SMASM").count { word ->
-                (word.indices).all {
-                    val position = pos[it] + p
-                    position.inMap(map) && word[it] == map[position]
-                }
+            val word = when (map[p]) {
+                'S' -> if (map[p + Point(2, 0)] == 'S') "SSAMM" else "SMASM"
+                'M' -> if (map[p + Point(2, 0)] == 'M') "MMASS" else "MSAMS"
+                else -> return@sumOf 0L
             }
+
+            (word.indices).all {
+                val position = pos[it] + p
+                position.inMap(map) && word[it] == map[position]
+            }.let { if (it) 1L else 0L }
         }
 
     override fun solve1(): Long = getPlaces("XMAS").size.toLong()
