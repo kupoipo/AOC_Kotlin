@@ -4,66 +4,57 @@ import util.*
 import kotlin.system.measureNanoTime
 
 
-data class PositionDirection(val p: Point, val dir: Direction)
-
 class Day6(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
-    val map = matrixFromString(input, '.') { it }
-    val start = map.pointOfFirst { it == '^' }
+    private val map = matrixFromString(input, '.') { it }
+    private val start = map.pointOfFirst { it == '^' }
+    private val travel = places(start)
 
     private fun places(origin: Point): Set<Point> {
-        var current = origin
-        var direction = Direction.UP
+        var current = PositionDirection(origin, Direction.UP)
         val visited = mutableSetOf<Point>()
 
-        while (current.inMap(map)) {
-            visited.add(current)
-            val nextPosition = current + direction
-            if (nextPosition.inMap(map) && map[nextPosition] == '#') {
-                direction = direction.right()
-            } else {
-                current = nextPosition
-            }
+        while (current.p.inMap(map)) {
+            visited.add(current.p)
+            current = current.next(map)
         }
 
         return visited
     }
 
-    fun isLoop(p: Point): Boolean {
-        if (map[p] == '#') return false
+    private fun isLoop(p: Point): Boolean {
+        if (map[p] == '#' || p !in travel) return false
 
-        var isLoop = false
         map[p] = '#'
 
-
-        var current = start
-        var direction = Direction.UP
+        var current = PositionDirection(start, Direction.UP)
         val visited = mutableSetOf<PositionDirection>()
 
-        while (current.inMap(map)) {
-            val pd = PositionDirection(current, direction)
-
-            if (pd in visited) {
-                isLoop = true
-                break
+        while (current.p.inMap(map)) {
+            current = current.next(map)
+            if (current in visited) {
+                map[p] = '.'
+                return true
             }
-
-            visited.add(PositionDirection(current, direction))
-            val nextPosition = current + direction
-            if (nextPosition.inMap(map) && map[nextPosition] == '#') {
-                direction = direction.right()
-            } else {
-                current = nextPosition
-            }
+            visited.add(current)
         }
 
-
-
         map[p] = '.'
-        return isLoop
+        return false
     }
 
-    override fun solve1(): Long = places(map.pointOfFirst { it == '^' }).size.toLong()
-    override fun solve2(): Long = map.points().count { isLoop(it) }.toLong()
+    override fun solve1(): Long = travel.size.toLong()
+    override fun solve2(): Long = map.points().count(::isLoop).toLong()
+
+    data class PositionDirection(val p: Point, val dir: Direction) {
+        fun next(map: Matrix<Char>): PositionDirection {
+            val nextPosition = p + dir
+            return if (nextPosition.inMap(map) && map[nextPosition] == '#') {
+                PositionDirection(p, dir.right())
+            } else {
+                PositionDirection(nextPosition, dir)
+            }
+        }
+    }
 }
 
 fun main() {
