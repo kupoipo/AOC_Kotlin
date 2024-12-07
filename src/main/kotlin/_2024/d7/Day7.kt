@@ -1,16 +1,40 @@
-
 package _2024.d7
 
 import util.Day
+import util.allLong
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day7(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day7(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    val data = input.split("\n").map { it.allLong() }.map { it.first() to it.drop(1) }
+
+    private fun isCorrectRec(
+        target: Long,
+        current: Long,
+        available: List<Long>,
+        operators: List<(Long, Long) -> Long>
+    ): Boolean {
+        if (current == target && available.isEmpty()) return true
+        if (current > target || available.isEmpty()) return false
+
+        return operators.any { operator ->
+            isCorrectRec(target, operator(current, available.first()), available.drop(1), operators)
+        }
     }
-    override fun solve2(): Long {
-        return -1
-    }
+
+    private fun isCorrect(
+        data: Pair<Long, List<Long>>,
+        operators: List<(Long, Long) -> Long>
+    ) = isCorrectRec(
+        data.first,
+        data.second.first(),
+        data.second.drop(1),
+        operators
+    )
+
+    override fun solve1(): Long = data.filter { isCorrect(it, listOf(Long::plus, Long::times)) }.sumOf { it.first }
+
+    override fun solve2(): Long = data.filter { isCorrect(it, listOf(Long::plus, Long::times, { a, b -> "$a$b".toLong() })) }.sumOf { it.first }
 }
 
 fun main() {
