@@ -56,7 +56,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     fun right(): Point = this + Direction.RIGHT
     fun left(): Point = this + Direction.LEFT
 
-    fun angleWith(other: Point) : Double{
+    fun angleWith(other: Point): Double {
         val dx = other.x - x
         val dy = other.y - y
 
@@ -67,7 +67,7 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
 
     fun collinear(v: Point) = x * v.y - y * v.x == 0L
 
-    fun reduceToSmallestVector() : Point{
+    fun reduceToSmallestVector(): Point {
         val res = this.copy()
 
 
@@ -193,6 +193,8 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     override fun hashCode(): Int {
         return this.toString().hashCode()
     }
+
+    fun symmetries(p2: Point): Point = this + (p2 - this)
 
 
     companion object {

@@ -65,11 +65,15 @@ fun <T> permutations(list: List<T>): List<List<T>> {
     return result
 }
 
-fun <E> List<E>.pairs(): MutableList<Pair<E, E>> {
+/**
+ * If withReverse, will give [0,0], [0,1] [1,0] [1,1], without will give [0,0] [0,1] [1,1] for pairs in [0..1]
+ */
+fun <E> List<E>.pairs(withReverse: Boolean = false): MutableList<Pair<E, E>> {
     val res = mutableListOf<Pair<E, E>>()
 
     for (i in 0..this.lastIndex) {
-        for (j in i + 1..this.lastIndex) {
+        for (j in (if (withReverse) 0 else i + 1)..this.lastIndex) {
+            if (i == j) continue
             res.add(this@pairs[i] to this@pairs[j])
         }
     }
@@ -81,16 +85,17 @@ fun <T> List<T>.permutation(): List<List<T>> {
     return permutations(this)
 }
 
-fun <T> combination(from: List<T>, current: List<T>, nbPermutation: Int) : List<List<T>> {
+fun <T> combination(from: List<T>, current: List<T>, nbPermutation: Int): List<List<T>> {
     if (current.size >= nbPermutation) return listOf(current)
     val res = mutableListOf<List<T>>()
 
     for (index in from.indices) {
-        res.addAll(combination(from.drop(index+1), current.toMutableList().apply { add(from[index]) }, nbPermutation))
+        res.addAll(combination(from.drop(index + 1), current.toMutableList().apply { add(from[index]) }, nbPermutation))
     }
 
     return res
 }
+
 fun <T> List<T>.combination(nbPermutation: Int = 2): List<List<T>> {
     return combination(this, listOf(), nbPermutation)
 }

@@ -5,7 +5,7 @@ import java.lang.Exception
 typealias Matrix<T> = MutableList<MutableList<T>>
 
 fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T): Matrix<T> {
-    return matrixFromStringIndexed(input, emptyDefault)  { char, _, _ -> function(char) }
+    return matrixFromStringIndexed(input, emptyDefault) { char, _, _ -> function(char) }
 }
 
 val <E> Matrix<E>.nbColumns: Int
@@ -32,7 +32,7 @@ fun <T> matrixFromStringIndexed(input: String, emptyDefault: T, function: (Char,
     return res
 }
 
-fun <E> Matrix<E>.numberOf(el : E) = this.sumOf { it.count { it == el} }
+fun <E> Matrix<E>.numberOf(el: E) = this.sumOf { it.count { it == el } }
 
 fun <E> Matrix<E>.pointOfFirst(function: (E) -> Boolean): Point {
     for (lig in this.indices) {
@@ -65,14 +65,16 @@ fun <E> Matrix<E>.points(): List<Point> {
 }
 
 fun <T> matrixOf(vararg rows: MutableList<T>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
-fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> = MutableList(rows.size) { i -> rows[i] }
+fun <T> matrixOf(rows: MutableList<MutableList<T>>): Matrix<T> =
+    MutableList(rows.size) { y -> MutableList(rows[y].size) { x -> rows[y][x] } }
+
 fun <T> Matrix<T>.toString(): String = this.joinToString("\n") { it.joinToString(", ") }
 fun <T> Matrix<T>.subMap(fromX: Int, fromY: Int, width: Int, height: Int): Matrix<T> {
     val res = emptyMatrixOf(height, width, this[0][0])
 
     repeat(height) { y ->
         repeat(width) { x ->
-            res[y][x] = this[fromY+y][fromX+x]
+            res[y][x] = this[fromY + y][fromX + x]
         }
     }
 
@@ -92,7 +94,6 @@ operator fun <E> MutableList<E>.set(x: Long, value: E) {
 operator fun <E> MutableList<E>.get(y: Long): E {
     return this[y.toInt()]
 }
-
 
 
 operator fun <T> Matrix<T>.get(pos: Point) = this[pos.y][pos.x]
@@ -185,6 +186,7 @@ fun Matrix<Char>.addFirstLine(element: Char?) {
 fun <T> showMap(map: List<List<T>>, nbChar: Int = 4, transformation: (T) -> (String) = { it.toString() }) {
     showMap(map, 0, map.size, nbChar, transformation)
 }
+
 fun <T> showMap(map: List<List<T>>, from: Int, to: Int, nbChar: Int, transformation: (T) -> (String)) {
 
     print("   %${nbChar}s".format(" "))
@@ -204,12 +206,12 @@ fun <T> showMap(map: List<List<T>>, from: Int, to: Int, nbChar: Int, transformat
     }
 }
 
-fun <T> Matrix<T>.withoutSides() : Matrix<T> {
-    val res : Matrix<T> = emptyMatrixOf(this.size - 2, this[0].size - 2, this[0][0])
+fun <T> Matrix<T>.withoutSides(): Matrix<T> {
+    val res: Matrix<T> = emptyMatrixOf(this.size - 2, this[0].size - 2, this[0][0])
 
-    for (lig in 1..this.size-2) {
-        for (col in 1..this[0].size-2) {
-            res[lig-1][col-1] = this[lig][col]
+    for (lig in 1..this.size - 2) {
+        for (col in 1..this[0].size - 2) {
+            res[lig - 1][col - 1] = this[lig][col]
         }
     }
 
