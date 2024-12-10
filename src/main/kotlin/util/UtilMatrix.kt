@@ -1,11 +1,15 @@
 package util
 
-import java.lang.Exception
-
 typealias Matrix<T> = MutableList<MutableList<T>>
 
 fun <T> matrixFromString(input: String, emptyDefault: T, function: (Char) -> T): Matrix<T> {
-    return matrixFromStringIndexed(input, emptyDefault) { char, _, _ -> function(char) }
+    return matrixFromStringIndexed(input, emptyDefault) { char, _, _ ->
+        try {
+            function(char)
+        } catch (e: Exception) {
+            emptyDefault
+        }
+    }
 }
 
 val <E> Matrix<E>.nbColumns: Int
