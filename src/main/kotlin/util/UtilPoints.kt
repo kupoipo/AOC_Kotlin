@@ -195,6 +195,8 @@ data class Point(var x: Long, var y: Long) : Comparable<Point> {
     }
 
     fun symmetries(p2: Point): Point = this + (p2 - this)
+    fun notInLineWith(p: Point): Boolean = this.x != p.x && p.y != this.y
+    fun diagonals() = listOf(this + Point(1, 1), this + Point(1, -1), this + Point(-1, -1), this + Point(-1, 1))
 
 
     companion object {

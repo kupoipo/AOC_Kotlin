@@ -6,23 +6,34 @@ import kotlin.system.measureNanoTime
 class Day12(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
     data class Region(val char: Char, val perimeter: Long, val points: MutableSet<Point>, val map: Matrix<Char>) {
         fun getPerimeterV2(): Long {
-            val seen = mutableMapOf<Pair<Char, Double>, MutableList<Long>>()
 
-            points.forEach { p ->
-                if ((p + Direction.LEFT).let { it.outOfMap(map) || map[it] != map[p] }) seen.getOrPut('V' to p.x - 0.5) { mutableListOf() }
-                    .add(p.y)
-                if ((p + Direction.RIGHT).let { it.outOfMap(map) || map[it] != map[p] }) seen.getOrPut('V' to p.x + 0.5) { mutableListOf() }
-                    .add(p.y)
-                if ((p + Direction.DOWN).let { it.outOfMap(map) || map[it] != map[p] }) seen.getOrPut('H' to p.y + 0.5) { mutableListOf() }
-                    .add(p.x)
-                if ((p + Direction.UP).let { it.outOfMap(map) || map[it] != map[p] }) seen.getOrPut('H' to p.y - 0.5) { mutableListOf() }
-                    .add(p.x)
-            }
 
-            println(this)
-            seen.values.forEach { it.sort() }
-            println(seen.entries.map { (p, list) -> p to (1 until list.size).count { list[it] - list[it - 1] != 1L } + 1L })
-            return seen.values.sumOf { list -> (1 until list.size).count { list[it] - list[it - 1] != 1L } + 1L }
+            return points.map { p ->
+                val neighbors = p.adjacent(false).filter {
+                    it.outOfMap(map) || map[it] != map[p]
+                }
+
+                var corners = when (neighbors.size) {
+                    4 -> 4L
+                    3 -> 2L
+                    2 -> if (neighbors.first().notInLineWith(neighbors.last())) 1L else 0L
+                    else -> 0L
+                }
+
+                for (corner in listOf(Point(1, 1), Point(1, -1), Point(-1, -1), Point(-1, 1))) {
+                    val sideOne = p + Point(corner.x, 0)
+                    val sideTwo = p + Point(0, corner.y)
+                    val diagonal = p + corner
+
+                    if (sideOne.inMap(map) && map[sideOne] == map[p]
+                        && sideTwo.inMap(map) && map[sideTwo] == map[p]
+                        && map[diagonal] != map[p]) {
+                        corners++
+                    }
+                }
+
+                corners
+            }.sum()
         }
 
         override fun toString(): String =
