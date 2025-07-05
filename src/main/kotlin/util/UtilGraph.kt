@@ -1,7 +1,6 @@
 package util
 
-import _2023.d21.StepCounterState
-import java.util.PriorityQueue
+import java.util.*
 
 /**
  * Class state which represent a node in a graph.
@@ -10,7 +9,7 @@ import java.util.PriorityQueue
  *    - Add in your own class parameters that are useful, those parameters are used to determine if a state is already used or not
  *    - Override function
  */
-abstract class State(open var parent: State? = null, open var time: Int = 0) {
+abstract class State(open var parent: State? = null, open var time: Int = 0) : Comparable<State> {
     abstract fun isDeadLock(): Boolean
 
     abstract fun nextStates(): MutableList<State>
@@ -31,6 +30,10 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
         }
 
         return res
+    }
+
+    override fun compareTo(other: State): Int {
+        return other.time - time
     }
 
     companion object {
@@ -61,7 +64,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
         /**
          * Need to override timeToGoal in the specific case where this algorithm is used
          */
-        fun shortestPastFrom(from: State): State? {
+        fun shortestPastFrom(from: State, forEachCurrent: (State) -> Unit = {}): State? {
             val comparator: Comparator<State> = compareBy { it.timeWeighed() }
             val queue = PriorityQueue(comparator)
             val queueCost = mutableMapOf<State, Int>()
@@ -72,6 +75,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
             while (queue.isNotEmpty()) {
                 val current = queue.poll()
 
+                forEachCurrent(current)
 
                 if (current.isGoal()) {
                     return current
@@ -79,8 +83,6 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                 visited.add(current)
 
                 current.nextStates().forEach { nextState ->
-
-
                     if (!(nextState in visited || nextState.isDeadLock())) {
 
                         if (queueCost[nextState] == null) {
@@ -96,7 +98,7 @@ abstract class State(open var parent: State? = null, open var time: Int = 0) {
                 }
             }
 
-            println(visited.size)
+            println("No solution found, nb nodes visited : ${visited.size}")
             return null
         }
 
