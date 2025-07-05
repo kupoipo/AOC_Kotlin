@@ -20,6 +20,10 @@ fun Long.toPrimeFactor(): Map<Long, Int> {
     return factors.toSet().associateWith { prime -> factors.count { it == prime } }
 }
 
+fun Double.hasDecimalPart() : Boolean {
+    return this - this.toLong() > 0.0000001
+}
+
 fun Int.allBinaryPossibility() : List<String> {
     val pad = Integer.toBinaryString(this).length - 1
 
