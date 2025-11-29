@@ -21,7 +21,7 @@ class Day9(override val input: String) : Day<Long>(input) {
             current = next
         } while (!next.all { it == 0 })
 
-        println(historic)
+       // println(historic)
 
         return historic.reversed()
     }

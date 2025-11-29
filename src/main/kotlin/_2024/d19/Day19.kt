@@ -1,15 +1,36 @@
-
 package _2024.d19
 
+import _2021.d18.split
 import util.Day
 import util.readFullText
 import kotlin.system.measureNanoTime
-class Day19(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day19(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val towels = input.replace(" ", "").split("\n").first().split(",").sorted()
+    private val towelsToMake = input.split("\n").drop(2)
+    private val impossible = mutableSetOf<String>()
+    private fun isPossible(current: String) : Boolean {
+        if (current.isEmpty()) {
+            return true
+        }
+        if (impossible.contains(current)) return false
+
+        for (towel in towels) {
+            if (current.startsWith(towel)) {
+                if (isPossible(current.drop(towel.length))) {
+                    return true
+                }
+            }
+        }
+
+        impossible.add(current)
+
+        return false
     }
+
+    override fun solve1(): Long = towelsToMake.filter{  isPossible(it) } .size.toLong()
     override fun solve2(): Long {
-        return -1
+        return -1L
     }
 }
 
