@@ -9,7 +9,7 @@ import kotlin.system.measureTimeMillis
 
 fun main() {
     val startDay = 1
-    val endDay = 2
+    val endDay = 12
     val year = 2025
     try {
         Files.createDirectory(Paths.get("./src/main/kotlin/_$year"))
