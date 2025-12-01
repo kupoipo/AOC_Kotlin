@@ -50,7 +50,7 @@ enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
     }
 }
 
-data class Point(var x: Long, var y: Long) : Comparable<Point> {
+data class Point(var x: Long = 0L, var y: Long = 0L) : Comparable<Point> {
     fun up(): Point = this + Direction.UP
     fun down(): Point = this + Direction.DOWN
     fun right(): Point = this + Direction.RIGHT
