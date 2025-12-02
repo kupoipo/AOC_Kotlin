@@ -15,6 +15,7 @@ class Day21(private val isTest: Boolean, override val input: String) : Day<Long>
 
     private val codes = input.split("\n")
 
+
     private fun bfs(from: Point, to: Point, keyBoard: Map<Char, Point>): List<String> {
         val res = mutableListOf<String>()
         val queue = mutableListOf<Pair<MutableList<Direction>, Point>>()
@@ -66,6 +67,7 @@ class Day21(private val isTest: Boolean, override val input: String) : Day<Long>
                 val nextRes = mutableListOf<String>()
                 for (currentPath in res) {
                     for (newPath in paths) {
+
                         nextRes.add(currentPath + newPath)
                     }
                 }

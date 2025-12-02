@@ -1,17 +1,14 @@
 package _2025.d2
 
-import _2021.d18.split
 import util.Day
-import util.allInts
 import util.allLong
 import util.readFullText
-import kotlin.math.pow
 import kotlin.system.measureNanoTime
 
 class Day2(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
     private val ranges = input.split(",").map(String::allLong).map { it.first()..it.last() * -1 }
 
-    private fun nbInvalid(range: LongRange, part2: Boolean = false) = range.filter { number ->
+    private fun countInvalid(range: LongRange, part2: Boolean = false) = range.filter { number ->
         val str = number.toString()
         val start = if (part2) 1 else (str.length / 2).coerceAtLeast(1)
 
@@ -22,9 +19,17 @@ class Day2(private val isTest: Boolean, override val input: String) : Day<Long>(
         }
     }
 
-    override fun solve1(): Long = ranges.sumOf { nbInvalid(it).sum() }
+    /**
+     * Slower than the first version but more elegant.
+     *
+     * @param regex Pattern to find
+     */
+    private fun countInvalidRegex(regex: String) =
+        ranges.flatMap { range -> range.filter { number -> number.toString().matches(regex.toRegex()) } }.sum()
 
-    override fun solve2(): Long = ranges.sumOf { nbInvalid(it, true).sum() }
+    override fun solve1(): Long = countInvalidRegex("""(\d+)\1""")
+
+    override fun solve2(): Long = countInvalidRegex("""(\d+)(\1)+""")
 }
 
 fun main() {
