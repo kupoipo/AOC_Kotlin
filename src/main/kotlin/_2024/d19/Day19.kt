@@ -1,25 +1,25 @@
 package _2024.d19
 
-import _2021.d18.split
 import util.Day
+import util.combination
 import util.readFullText
 import kotlin.system.measureNanoTime
 
 class Day19(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
-    private val towels = input.replace(" ", "").split("\n").first().split(",").sorted()
+    private val towels = input.replace(" ", "").split("\n").first().split(",").sortedBy { it.length }
     private val towelsToMake = input.split("\n").drop(2)
     private val impossible = mutableSetOf<String>()
-    private fun isPossible(current: String) : Boolean {
+    private val combination = mutableMapOf<String, Long>()
+
+    private fun isPossible(current: String): Boolean {
         if (current.isEmpty()) {
             return true
         }
         if (impossible.contains(current)) return false
 
         for (towel in towels) {
-            if (current.startsWith(towel)) {
-                if (isPossible(current.drop(towel.length))) {
-                    return true
-                }
+            if (current.startsWith(towel) && isPossible(current.drop(towel.length))) {
+                return true
             }
         }
 
@@ -28,10 +28,21 @@ class Day19(private val isTest: Boolean, override val input: String) : Day<Long>
         return false
     }
 
-    override fun solve1(): Long = towelsToMake.filter{  isPossible(it) } .size.toLong()
-    override fun solve2(): Long {
-        return -1L
+    private fun nbCombination(current: String): Long = combination.getOrPut(current) {
+        return@getOrPut towels.sumOf { towel ->
+            if (current == towel) {
+                return@sumOf 1
+            }
+            if (current.startsWith(towel)) {
+                return@sumOf nbCombination(current.drop(towel.length))
+            }
+            
+            0
+        }
     }
+
+    override fun solve1(): Long = towelsToMake.filter(::isPossible).size.toLong()
+    override fun solve2(): Long = towelsToMake.sumOf(::nbCombination).toLong()
 }
 
 fun main() {

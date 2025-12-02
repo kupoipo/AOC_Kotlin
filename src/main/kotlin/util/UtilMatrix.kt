@@ -17,6 +17,9 @@ val <E> Matrix<E>.nbColumns: Int
         return this.first().size
     }
 
+/**
+ * The function accept parameters like this : (char, y, x)
+ */
 fun <T> matrixFromStringIndexed(input: String, emptyDefault: T, function: (Char, Int, Int) -> T): Matrix<T> {
     val lines = input.split("\n")
     val res = emptyMatrixOf(lines.size, lines.maxOf { it.length }, emptyDefault)

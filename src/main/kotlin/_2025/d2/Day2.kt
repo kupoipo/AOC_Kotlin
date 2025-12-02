@@ -1,16 +1,30 @@
-
 package _2025.d2
 
+import _2021.d18.split
 import util.Day
+import util.allInts
+import util.allLong
 import util.readFullText
+import kotlin.math.pow
 import kotlin.system.measureNanoTime
-class Day2(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day2(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val ranges = input.split(",").map(String::allLong).map { it.first()..it.last() * -1 }
+
+    private fun nbInvalid(range: LongRange, part2: Boolean = false) = range.filter { number ->
+        val str = number.toString()
+        val start = if (part2) 1 else (str.length / 2).coerceAtLeast(1)
+
+        val chunks = (start..str.length / 2).map { str.chunked(it) }
+
+        chunks.any { parts ->
+            parts.all { it == parts.first() }
+        }
     }
-    override fun solve2(): Long {
-        return -1
-    }
+
+    override fun solve1(): Long = ranges.sumOf { nbInvalid(it).sum() }
+
+    override fun solve2(): Long = ranges.sumOf { nbInvalid(it, true).sum() }
 }
 
 fun main() {
