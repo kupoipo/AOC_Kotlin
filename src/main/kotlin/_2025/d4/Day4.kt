@@ -1,15 +1,29 @@
-
 package _2025.d4
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
-class Day4(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day4(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val map = matrixFromString(input, '.') { it }
+
+    private fun nbNeighbors(p: Point) = p.adjacent().count {
+        it.inMap(map) && map[it] == '@'
     }
+
+    private fun papersToRemove() = map.points().filter { map[it] == '@' && nbNeighbors(it) < 4 }
+
+    override fun solve1(): Long = papersToRemove().size.toLong()
+
     override fun solve2(): Long {
-        return -1
+        var cpt = 0L
+
+        do {
+            val toRemove = papersToRemove()
+            toRemove.forEach { map[it] = '.' }
+            cpt += toRemove.size
+        } while (toRemove.isNotEmpty())
+
+        return cpt
     }
 }
 
