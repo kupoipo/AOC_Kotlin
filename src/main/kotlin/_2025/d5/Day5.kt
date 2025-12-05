@@ -1,15 +1,45 @@
-
 package _2025.d5
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
-class Day5(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
-    }
+
+class Day5(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val ranges =
+        input.split("\n\n").first().split("\n").map { line -> line.allLong().let { it[0]..it[1] * -1 } }
+    private val ingredients = input.split("\n\n").last().split("\n").map(String::toLong)
+
+    override fun solve1(): Long = ingredients.count { ingredient -> ranges.any { it.contains(ingredient) } }.toLong()
+
     override fun solve2(): Long {
-        return -1
+        val normalizedRanges = ranges.toMutableList()
+        var i = 0
+        while (i < normalizedRanges.lastIndex) {
+            do {
+                var change = false
+                val currentRange = normalizedRanges[i]
+                for (j in normalizedRanges.indices) {
+                    if (i == j) continue
+
+                    val otherRange = normalizedRanges[j]
+
+                    if (currentRange.contains(otherRange)) {
+                        change = true
+                        normalizedRanges.removeAt(j)
+                        break
+                    }
+
+                    if (currentRange.isOverlapping(otherRange)) {
+                        change = true
+                        normalizedRanges[i] = currentRange.merge(otherRange)
+                        normalizedRanges.removeAt(j)
+                        break
+                    }
+                }
+            } while (change)
+            i += 1
+        }
+
+        return normalizedRanges.sumOf(LongRange::size)
     }
 }
 

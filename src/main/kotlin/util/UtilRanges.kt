@@ -6,16 +6,22 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-fun IntRange.contains(other: IntRange) : Boolean = this.first <= other.first && this.last >= other.last
-fun LongRange.contains(other: LongRange) : Boolean = this.first <= other.first && this.last >= other.last
-fun LongRange.isOverlapping(other: LongRange) : Boolean {
+fun IntRange.contains(other: IntRange): Boolean = this.first <= other.first && this.last >= other.last
+fun LongRange.contains(other: LongRange): Boolean = this.first <= other.first && this.last >= other.last
+fun LongRange.isOverlapping(other: LongRange): Boolean {
     if (this.contains(other))
         return true
 
     return min(this.last, other.last) >= max(this.first, other.first)
 }
 
-fun LongRange.offCut(other: LongRange) : LongRange{
+fun LongRange.merge(other: LongRange): LongRange {
+    return min(this.first, other.first)..max(this.last, other.last)
+}
+
+fun LongRange.size(): Long = last - first + 1
+
+fun LongRange.offCut(other: LongRange): LongRange {
     if (!this.isOverlapping(other))
         throw RuntimeException("No offcut existing for $this and $other.")
 
@@ -35,14 +41,14 @@ fun LongRange.minus(other: LongRange): List<LongRange> {
     return result
 }
 
-fun LongRange.overlap(other: LongRange) : LongRange {
+fun LongRange.overlap(other: LongRange): LongRange {
     if (!this.isOverlapping(other))
         throw RuntimeException("Ranges $this and $other doesn't overlap each other")
 
     if (this.contains(other)) return other
     if (other.contains(this)) return this
 
-    return max(this.first, other.first).. min(this.last, other.last)
+    return max(this.first, other.first)..min(this.last, other.last)
 }
 
 fun <T> LinkedList<T>.circle(count: Int) {
