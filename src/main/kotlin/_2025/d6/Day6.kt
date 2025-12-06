@@ -1,15 +1,67 @@
-
 package _2025.d6
 
-import util.Day
-import util.readFullText
+import util.*
 import kotlin.system.measureNanoTime
-class Day6(private val isTest: Boolean, override val input : String) : Day<Long>(input) {
-    override fun solve1(): Long {
-        return -1
+
+class Day6(private val isTest: Boolean, override val input: String) : Day<Long>(input) {
+    private val data = input.split("\n").dropLast(1).toMutableList()
+    private val operators = mutableListOf<String>()
+    private val columns = mutableListOf<MutableList<String>>()
+
+    init {
+        val tempOperators = input.split("\n").last().split("").drop(1).dropLast(1).toMutableList()
+        while (tempOperators.isNotEmpty()) {
+            this.operators.add(
+                buildString {
+                    append(tempOperators.removeFirst())
+                    while (tempOperators.isNotEmpty() && tempOperators.first() == " ") {
+                        append(tempOperators.removeFirst())
+                    }
+                }
+            )
+        }
+
+        for (operator in operators) {
+            val col = mutableListOf<String>()
+
+            for (i in data.indices) {
+                val line = data[i]
+                col.add(line.take(operator.length - 1))
+                data[i] = line.drop(operator.length)
+            }
+            columns.add(col)
+        }
     }
-    override fun solve2(): Long {
-        return -1
+
+    override fun solve1(): Long = operators.indices.sumOf { i ->
+        val col = columns[i].map { it.firstInt().toLong() }
+
+        if (operators[i].contains("+"))
+            col.sum() else col.reduce(Long::times)
+    }
+
+    override fun solve2(): Long = operators.indices.sumOf { i ->
+        val col = columns[i]
+        val newCol = mutableListOf<Long>()
+        
+        for (j in col.first().lastIndex downTo 0)
+        {
+            var longCol = 0L
+            
+            for (n in col) {
+                val unity = n[j]
+                if (unity != ' ' ) {
+                    longCol += unity.digitToInt().toLong()
+                    longCol *= 10
+                }
+            }
+            
+            longCol /= 10
+            newCol.add(longCol)
+        }
+        
+        if (operators[i].contains("+"))
+            newCol.sum() else newCol.reduce(Long::times)
     }
 }
 
