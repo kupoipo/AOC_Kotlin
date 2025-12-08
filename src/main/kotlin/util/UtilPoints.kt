@@ -1,8 +1,11 @@
 package util
 
+import java.lang.Math.pow
 import java.math.BigDecimal
 import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 enum class Direction(val dx: Int, val dy: Int, val sign: Char) {
 
@@ -242,6 +245,14 @@ data class Point3DLong(var x: Long, var y: Long, var z: Long) {
     }
 
     override fun toString(): String = "[$x,$y,$z]"
+    fun euclidean(pointTo: Point3DLong): Double {
+        return sqrt(
+            pow((x - pointTo.x).toDouble(), 2.0) + pow(
+                (y - pointTo.y).toDouble(),
+                2.0
+            ) + pow((z - pointTo.z).toDouble(), 2.0)
+        )
+    }
 }
 
 data class Point4DLong(val x: Long, val y: Long, val z: Long, val w: Long) {
