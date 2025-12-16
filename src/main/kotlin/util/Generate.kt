@@ -1,5 +1,6 @@
 package util
 
+import _2025.d9.Day9
 import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -8,7 +9,7 @@ import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    val startDay = 1
+    val startDay = 10
     val endDay = 12
     val year = 2025
     try {
@@ -40,7 +41,8 @@ class Day$i(private val isTest: Boolean, override val input : String) : Day<Long
 }
 
 fun main() {
-    val day = Day$i(false, readFullText("_$year/d$i/input"))
+    var day: Day$i
+    println("Temps construction : """+"$"+"{measureNanoTime { day = Day$i(false, readFullText(\"_$year/d$i/input\")) } / 1e9}s\")" + """
     println("Temps partie 1 : """+"$"+"{measureNanoTime { println(\"Part 1 : \" + day.solve1()) } / 1e9}s\")"+"""
     println("Temps partie 2 : """+"$"+"{measureNanoTime { println(\"Part 2 : \" + day.solve2()) } / 1e9}s\")"+"""
 
@@ -48,8 +50,9 @@ fun main() {
 
     for (i in 1..5) {
         try {
-            val dayTest = Day$i(true, readFullText("_$year/d$i/test${'$'}i"))
+            var dayTest: Day$i
             println("Test """+"$"+"""i")
+            println("Temps construction : ${'$'}{measureNanoTime { dayTest = Day$i(false, readFullText("_$year/d$i/test${'$'}i")) } / 1e9}s")
             println("Temps partie 1 : ${'$'}{measureNanoTime { println("Part 1 : " + dayTest.solve1()) } / 1e9}s")
             println("Temps partie 2 : ${'$'}{measureNanoTime { println("Part 2 : " + dayTest.solve2()) } / 1e9}s")
             println()

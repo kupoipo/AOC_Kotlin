@@ -14,7 +14,8 @@ class Day11(private val isTest: Boolean, override val input : String) : Day<Long
 }
 
 fun main() {
-    val day = Day11(false, readFullText("_2025/d11/input"))
+    var day: Day11
+    println("Temps construction : ${measureNanoTime { day = Day11(false, readFullText("_2025/d11/input")) } / 1e9}s")
     println("Temps partie 1 : ${measureNanoTime { println("Part 1 : " + day.solve1()) } / 1e9}s")
     println("Temps partie 2 : ${measureNanoTime { println("Part 2 : " + day.solve2()) } / 1e9}s")
 
@@ -22,8 +23,9 @@ fun main() {
 
     for (i in 1..5) {
         try {
-            val dayTest = Day11(true, readFullText("_2025/d11/test$i"))
+            var dayTest: Day11
             println("Test $i")
+            println("Temps construction : ${measureNanoTime { dayTest = Day11(false, readFullText("_2025/d11/test$i")) } / 1e9}s")
             println("Temps partie 1 : ${measureNanoTime { println("Part 1 : " + dayTest.solve1()) } / 1e9}s")
             println("Temps partie 2 : ${measureNanoTime { println("Part 2 : " + dayTest.solve2()) } / 1e9}s")
             println()

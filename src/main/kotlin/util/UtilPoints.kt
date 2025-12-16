@@ -200,7 +200,41 @@ data class Point(var x: Long = 0L, var y: Long = 0L) : Comparable<Point> {
     fun symmetries(p2: Point): Point = this + (p2 - this)
     fun notInLineWith(p: Point): Boolean = this.x != p.x && p.y != this.y
     fun diagonals() = listOf(this + Point(1, 1), this + Point(1, -1), this + Point(-1, -1), this + Point(-1, 1))
+    fun isPointInsidePolygon(polygon: List<Point>): Boolean {
+        val n = polygon.size
+        if (n < 3) return false
 
+        fun isPointOnSegment(p: Point, a: Point, b: Point): Boolean {
+            val cross = (p.y - a.y) * (b.x - a.x) - (p.x - a.x) * (b.y - a.y)
+            if (kotlin.math.abs(cross) > 1e-9) return false
+
+            val dot = (p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)
+            if (dot < 0) return false
+
+            val lenSq = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)
+            if (dot > lenSq) return false
+
+            return true
+        }
+
+        var inside = false
+        var j = n - 1
+
+        for (i in 0 until n) {
+            val a = polygon[i]
+            val b = polygon[j]
+
+            if (isPointOnSegment(this, a, b)) return true
+
+            val intersect = ((a.y > y) != (b.y > y)) &&
+                    (x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x)
+
+            if (intersect) inside = !inside
+            j = i
+        }
+
+        return inside
+    }
 
     companion object {
         var ID = 1
