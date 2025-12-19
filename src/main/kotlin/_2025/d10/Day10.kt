@@ -5,7 +5,7 @@ import util.*
 import kotlin.system.measureNanoTime
 
 
-private data class MachineP1(var machine: Int, val operationsAsInt: List<Int>, val goal: Int) {
+data class MachineP1(var machine: Int, val operationsAsInt: List<Int>, val goal: Int) {
     private class Day10StatePart1(parent: Day10StatePart1?, val machine: MachineP1, val path: Int, time: Int) :
         State(parent, time) {
         override fun isDeadLock(): Boolean = false
